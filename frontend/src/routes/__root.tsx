@@ -1,14 +1,24 @@
-import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
+import {
+  HeadContent,
+  Scripts,
+  createRootRouteWithContext,
+} from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
-import Footer from '../components/Footer'
-import Header from '../components/Header'
+import { ReactQueryDevtoolsPanel } from '@tanstack/react-query-devtools'
+import type { QueryClient } from '@tanstack/react-query'
 
-import appCss from '../styles.css?url'
+import appCss from '#/styles.css?url'
+import { TanstackQueryProvider } from '#/components/providers/tanstack-query-provider'
+import { ThemeProvider } from '#/components/providers/theme-provider'
+import { TooltipProvider } from '#/components/ui/tooltip'
+import { Toaster } from '#/components/ui/sonner'
 
-const THEME_INIT_SCRIPT = `(function(){try{var stored=window.localStorage.getItem('theme');var mode=(stored==='light'||stored==='dark'||stored==='auto')?stored:'auto';var prefersDark=window.matchMedia('(prefers-color-scheme: dark)').matches;var resolved=mode==='auto'?(prefersDark?'dark':'light'):mode;var root=document.documentElement;root.classList.remove('light','dark');root.classList.add(resolved);if(mode==='auto'){root.removeAttribute('data-theme')}else{root.setAttribute('data-theme',mode)}root.style.colorScheme=resolved;}catch(e){}})();`
+interface AppRouterContext {
+  queryClient: QueryClient
+}
 
-export const Route = createRootRoute({
+export const Route = createRootRouteWithContext<AppRouterContext>()({
   head: () => ({
     meta: [
       {
@@ -36,24 +46,30 @@ function RootDocument({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <HeadContent />
       </head>
-      <body className="font-sans antialiased [overflow-wrap:anywhere] selection:bg-[rgba(79,184,178,0.24)]">
-        <Header />
-        {children}
-        <Footer />
-        <TanStackDevtools
-          config={{
-            position: 'bottom-right',
-          }}
-          plugins={[
-            {
-              name: 'Tanstack Router',
-              render: <TanStackRouterDevtoolsPanel />,
-            },
-          ]}
-        />
+      <body>
+        <TanstackQueryProvider>
+          <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+            <TooltipProvider>{children}</TooltipProvider>
+            <Toaster position="top-right" />
+          </ThemeProvider>
+          <TanStackDevtools
+            config={{
+              position: 'bottom-right',
+            }}
+            plugins={[
+              {
+                name: 'Tanstack Router',
+                render: <TanStackRouterDevtoolsPanel />,
+              },
+              {
+                name: 'Tanstack Query',
+                render: <ReactQueryDevtoolsPanel />,
+              },
+            ]}
+          />
+        </TanstackQueryProvider>
         <Scripts />
       </body>
     </html>
