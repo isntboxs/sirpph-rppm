@@ -41,33 +41,24 @@ export const Route = createRootRouteWithContext<AppRouterContext>()({
       },
     ],
   }),
-  // beforeLoad: ({ context, location }) => {
-  //   const token =
-  //     typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null
+  beforeLoad: async ({ context, location }) => {
+    if (location.pathname === '/sign-in') return
 
-  //   if (!token) {
-  //     throw redirect({
-  //       to: '/sign-in',
-  //       search: {
-  //         redirect: location.pathname,
-  //       },
-  //     })
-  //   }
+    const session =
+      await context.queryClient.ensureQueryData(userQueryOptions())
 
-  //   const session = context.queryClient.ensureQueryData(userQueryOptions(token))
+    if ('message' in session) {
+      throw redirect({
+        to: '/sign-in',
+        search: {
+          redirect: location.pathname,
+        },
+      })
+    }
+  },
 
-  //   if (!session) {
-  //     throw redirect({
-  //       to: '/sign-in',
-  //       search: {
-  //         redirect: location.pathname,
-  //       },
-  //     })
-  //   }
-
-  //   return { session }
-  // },
   shellComponent: RootDocument,
+  ssr: false,
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {

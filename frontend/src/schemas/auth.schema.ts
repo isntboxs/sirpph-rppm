@@ -9,8 +9,8 @@ export type SignInRequestSchema = z.infer<typeof signInRequestSchema>
 
 export const signInResponseSchema = z.object({
   message: z.string(),
-  token: z.string(),
-  token_type: z.string(),
+  token: z.string().optional(),
+  token_type: z.string().optional(),
   user: z.object({
     id: z.number().int(),
     name: z.string(),
@@ -22,6 +22,13 @@ export const signInResponseSchema = z.object({
 })
 
 export type SignInResponseSchema = z.infer<typeof signInResponseSchema>
+
+export const signInErrorSchema = z.object({
+  message: z.string(),
+  errors: z.record(z.string(), z.array(z.string())),
+})
+
+export type SignInErrorSchema = z.infer<typeof signInErrorSchema>
 
 export const sessionSchema = z.object({
   user: z.object({

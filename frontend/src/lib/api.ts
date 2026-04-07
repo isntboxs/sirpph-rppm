@@ -1,49 +1,53 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { queryOptions } from '@tanstack/react-query'
-import type { SessionSchema, SignInResponseSchema } from '#/schemas/auth.schema'
-import { env } from '#/env'
-
-const BASE_URL = env.VITE_BASE_API_URL
+import type {
+  SessionSchema,
+  SignInErrorSchema,
+  SignInResponseSchema,
+} from '#/schemas/auth.schema'
 
 export const login = async (username: string, password: string) => {
-  const response = await fetch(`${BASE_URL}/auth/login`, {
+  const response = await fetch(`/api/auth/login`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      Accept: 'application/json',
     },
+    credentials: 'include',
     body: JSON.stringify({ username, password }),
   })
 
-  if (response.ok) {
-    const data = await response.json()
-    return data.data as SignInResponseSchema
+  const data = await response.json()
+
+  if (!response.ok) {
+    return data as SignInErrorSchema
   }
 
-  throw new Error('Login failed')
+  return data as SignInResponseSchema
 }
 
-export const getCurrentUser = async (token: string) => {
-  const response = await fetch(`${BASE_URL}/auth/me`, {
+export const getCurrentUser = async () => {
+  const response = await fetch(`/api/auth/me`, {
     method: 'GET',
     headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
+      Accept: 'application/json',
+      Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
     },
+    credentials: 'include',
   })
+  const data = await response.json()
 
   if (response.ok) {
-    const data = await response.json()
-    return data.data as SessionSchema
+    return data as SessionSchema
   }
 
-  return null
+  return data as { message: string }
 }
 
-export const userQueryOptions = (token: string) => {
+export const userQueryOptions = () => {
   return queryOptions({
     queryKey: ['user'],
-    queryFn: () => getCurrentUser(token),
+    queryFn: getCurrentUser,
     staleTime: Infinity,
   })
 }

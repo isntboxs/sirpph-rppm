@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useForm } from '@tanstack/react-form'
 
@@ -34,6 +35,7 @@ export const Route = createFileRoute('/_auth/sign-in')({
 function RouteComponent() {
   const [showPassword, setShowPassword] = useState<boolean>(false)
 
+  const queryClient = useQueryClient()
   const navigate = useNavigate()
 
   const form = useForm({
@@ -46,11 +48,22 @@ function RouteComponent() {
       onSubmit: signInRequestSchema,
     },
     onSubmit: async ({ value }) => {
-      const { token } = await login(value.username, value.password)
-      // localStorage.setItem('auth_token', token)
+      const result = await login(value.username, value.password)
+
+      if ('errors' in result) {
+        toast.error('Login gagal', {
+          description: result.message,
+        })
+        return
+      }
+
+      if (result.token) {
+        localStorage.setItem('auth_token', result.token)
+      }
+
+      queryClient.removeQueries({ queryKey: ['user'] })
       toast.success('Login berhasil')
-      // await navigate({ to: '/' })
-      console.log(token)
+      await navigate({ to: '/' })
     },
   })
 
