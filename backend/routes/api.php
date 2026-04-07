@@ -1,5 +1,10 @@
 <?php
 
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\SekolahController;
+use App\Http\Controllers\Admin\SiswaController;
+use App\Http\Controllers\Admin\TahunAjaranController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,28 +24,59 @@ Route::prefix('auth')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| Protected Routes (by role)
+| Admin Routes
 |--------------------------------------------------------------------------
 */
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index']);
 
-    // Admin
-    Route::middleware('role:admin')->prefix('admin')->group(function () {
-        // Route::get('/dashboard', ...);
-    });
+    // Pengguna
+    Route::get('/users', [UserController::class, 'index']);
+    Route::post('/users', [UserController::class, 'store']);
+    Route::get('/users/{user}', [UserController::class, 'show']);
+    Route::put('/users/{user}', [UserController::class, 'update']);
+    Route::patch('/users/{user}/toggle-aktif', [UserController::class, 'toggleAktif']);
 
-    // Kepala Sekolah
-    Route::middleware('role:kepala sekolah')->prefix('kepala-sekolah')->group(function () {
-        // Route::get('/dashboard', ...);
-    });
+    // Siswa
+    Route::get('/siswa', [SiswaController::class, 'index']);
+    Route::post('/siswa', [SiswaController::class, 'store']);
+    Route::get('/siswa/{siswa}', [SiswaController::class, 'show']);
+    Route::put('/siswa/{siswa}', [SiswaController::class, 'update']);
+    Route::delete('/siswa/{siswa}', [SiswaController::class, 'destroy']);
 
-    // Guru
-    Route::middleware('role:guru')->prefix('guru')->group(function () {
-        // Route::get('/dashboard', ...);
-    });
+    // Tahun Ajaran
+    Route::get('/tahun-ajaran', [TahunAjaranController::class, 'index']);
+    Route::post('/tahun-ajaran', [TahunAjaranController::class, 'store']);
+    Route::patch('/tahun-ajaran/{tahunAjaran}/set-aktif', [TahunAjaranController::class, 'setAktif']);
 
-    // Orang Tua
-    Route::middleware('role:orang tua')->prefix('orang-tua')->group(function () {
-        // Route::get('/dashboard', ...);
-    });
+    // Sekolah
+    Route::get('/sekolah', [SekolahController::class, 'show']);
+    Route::put('/sekolah', [SekolahController::class, 'update']);
+});
+
+/*
+|--------------------------------------------------------------------------
+| Kepala Sekolah Routes
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth:sanctum', 'role:kepala sekolah'])->prefix('kepala-sekolah')->group(function () {
+    // akan diisi nanti
+});
+
+/*
+|--------------------------------------------------------------------------
+| Guru Routes
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth:sanctum', 'role:guru'])->prefix('guru')->group(function () {
+    // akan diisi nanti
+});
+
+/*
+|--------------------------------------------------------------------------
+| Orang Tua Routes
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth:sanctum', 'role:orang tua'])->prefix('orang-tua')->group(function () {
+    // akan diisi nanti
 });
