@@ -2,6 +2,7 @@ import {
   HeadContent,
   Scripts,
   createRootRouteWithContext,
+  redirect,
 } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
@@ -13,6 +14,7 @@ import { TanstackQueryProvider } from '#/components/providers/tanstack-query-pro
 import { ThemeProvider } from '#/components/providers/theme-provider'
 import { TooltipProvider } from '#/components/ui/tooltip'
 import { Toaster } from '#/components/ui/sonner'
+import { userQueryOptions } from '#/lib/api'
 
 interface AppRouterContext {
   queryClient: QueryClient
@@ -39,6 +41,32 @@ export const Route = createRootRouteWithContext<AppRouterContext>()({
       },
     ],
   }),
+  // beforeLoad: ({ context, location }) => {
+  //   const token =
+  //     typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null
+
+  //   if (!token) {
+  //     throw redirect({
+  //       to: '/sign-in',
+  //       search: {
+  //         redirect: location.pathname,
+  //       },
+  //     })
+  //   }
+
+  //   const session = context.queryClient.ensureQueryData(userQueryOptions(token))
+
+  //   if (!session) {
+  //     throw redirect({
+  //       to: '/sign-in',
+  //       search: {
+  //         redirect: location.pathname,
+  //       },
+  //     })
+  //   }
+
+  //   return { session }
+  // },
   shellComponent: RootDocument,
 })
 
@@ -50,7 +78,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <TanstackQueryProvider>
-          <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+          <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
             <TooltipProvider>{children}</TooltipProvider>
             <Toaster position="top-right" />
           </ThemeProvider>
