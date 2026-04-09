@@ -2,11 +2,8 @@ import {
   HeadContent,
   Scripts,
   createRootRouteWithContext,
-  redirect,
 } from '@tanstack/react-router'
-import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
-import { TanStackDevtools } from '@tanstack/react-devtools'
-import { ReactQueryDevtoolsPanel } from '@tanstack/react-query-devtools'
+import * as React from 'react'
 import type { QueryClient } from '@tanstack/react-query'
 
 import appCss from '#/styles.css?url'
@@ -14,7 +11,22 @@ import { TanstackQueryProvider } from '#/components/providers/tanstack-query-pro
 import { ThemeProvider } from '#/components/providers/theme-provider'
 import { TooltipProvider } from '#/components/ui/tooltip'
 import { Toaster } from '#/components/ui/sonner'
-import { userQueryOptions } from '#/lib/api'
+
+const TanStackDevtools = React.lazy(() =>
+  import('@tanstack/react-devtools').then((mod) => ({
+    default: mod.TanStackDevtools,
+  }))
+)
+const TanStackRouterDevtoolsPanel = React.lazy(() =>
+  import('@tanstack/react-router-devtools').then((mod) => ({
+    default: mod.TanStackRouterDevtoolsPanel,
+  }))
+)
+const ReactQueryDevtoolsPanel = React.lazy(() =>
+  import('@tanstack/react-query-devtools').then((mod) => ({
+    default: mod.ReactQueryDevtoolsPanel,
+  }))
+)
 
 interface AppRouterContext {
   queryClient: QueryClient
@@ -41,22 +53,6 @@ export const Route = createRootRouteWithContext<AppRouterContext>()({
       },
     ],
   }),
-  beforeLoad: async ({ context, location }) => {
-    if (location.pathname === '/sign-in') return
-
-    const session =
-      await context.queryClient.ensureQueryData(userQueryOptions())
-
-    if ('message' in session) {
-      throw redirect({
-        to: '/sign-in',
-        search: {
-          redirect: location.pathname,
-        },
-      })
-    }
-  },
-
   shellComponent: RootDocument,
   ssr: false,
 })
@@ -73,21 +69,23 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             <TooltipProvider>{children}</TooltipProvider>
             <Toaster position="top-right" />
           </ThemeProvider>
-          <TanStackDevtools
-            config={{
-              position: 'bottom-right',
-            }}
-            plugins={[
-              {
-                name: 'Tanstack Router',
-                render: <TanStackRouterDevtoolsPanel />,
-              },
-              {
-                name: 'Tanstack Query',
-                render: <ReactQueryDevtoolsPanel />,
-              },
-            ]}
-          />
+          <React.Suspense fallback={null}>
+            <TanStackDevtools
+              config={{
+                position: 'bottom-right',
+              }}
+              plugins={[
+                {
+                  name: 'Tanstack Router',
+                  render: <TanStackRouterDevtoolsPanel />,
+                },
+                {
+                  name: 'Tanstack Query',
+                  render: <ReactQueryDevtoolsPanel />,
+                },
+              ]}
+            />
+          </React.Suspense>
         </TanstackQueryProvider>
         <Scripts />
       </body>

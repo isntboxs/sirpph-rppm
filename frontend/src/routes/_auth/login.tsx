@@ -28,7 +28,7 @@ import {
 import { Button } from '#/components/ui/button'
 import { login } from '#/lib/api'
 
-export const Route = createFileRoute('/_auth/sign-in')({
+export const Route = createFileRoute('/_auth/login')({
   component: RouteComponent,
 })
 
@@ -73,7 +73,7 @@ function RouteComponent() {
 
   return (
     <div className="w-full max-w-sm">
-      <Card>
+      <Card className="ring-0">
         <CardHeader>
           <div className="mb-3.5 flex size-14 items-center justify-center rounded-lg bg-linear-to-br from-g6 to-g4 text-2xl">
             <span>📚</span>
