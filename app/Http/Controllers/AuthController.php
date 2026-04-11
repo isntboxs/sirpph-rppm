@@ -15,7 +15,7 @@ class AuthController extends Controller
         if (Auth::check()) {
             return redirect()->route('beranda');
         }
-        return view('pages.login.index');
+        return view('auth.login');
     }
 
     /**
