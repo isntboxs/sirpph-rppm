@@ -7,7 +7,7 @@
 <div class="card">
   <div class="ch">
     <div class="ct">📚 Kelola Tema</div>
-    <button class="btn bp bsm" onclick="document.getElementById('mTema').classList.add('on')">+ Tambah</button>
+    <button class="btn bp bsm" id="btn-tambah-tema">+ Tambah</button>
   </div>
   <div class="g2" style="gap:12px">
     <div class="card" style="border-color:var(--g2)">
@@ -74,3 +74,13 @@
   </div>
 </div>
 @endsection
+@push('scripts')
+    <script>
+        $(function() {
+            $('#btn-tambah-tema').on('click', function() {
+                $('#mTema').addClass('on');
+            });
+        });
+    </script>
+@endpush
+

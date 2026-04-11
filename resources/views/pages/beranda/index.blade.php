@@ -14,7 +14,7 @@
   <div class="card">
     <div class="ch">
       <div class="ct">🏫 Data Sekolah</div>
-      <button class="btn bp bsm" onclick="document.getElementById('mSek').classList.add('on')">Kelola</button>
+      <button class="btn bp bsm" id="btn-edit-sekolah">Kelola</button>
     </div>
     <div class="ig">
       <div class="ib"><div class="ik">Nama</div><div class="iv">PAUDQu AL-AULIA</div></div>
@@ -36,3 +36,12 @@
   </div>
 </div>
 @endsection
+@push('scripts')
+<script>
+$(function () {
+    $('#btn-edit-sekolah').on('click', function () {
+        $('#mSek').addClass('on');
+    });
+});
+</script>
+@endpush

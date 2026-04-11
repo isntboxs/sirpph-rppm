@@ -32,65 +32,52 @@
     {{-- Jquery --}}
     <script src="{{ asset('assets/js/core/external.min.js') }}"></script>
     <script src="{{ asset('assets/js/core/libs.min.js') }}"></script>
-
     <script>
-        // Global: modal open/close
-        document.querySelectorAll('.mc').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                this.closest('.mo').classList.remove('on');
+        $(function() {
+            // Modal: tombol ✕ tutup modal
+            $(document).on('click', '.mc', function() {
+                $(this).closest('.mo').removeClass('on');
             });
-        });
-        document.querySelectorAll('.mo').forEach(function(mo) {
-            mo.addEventListener('click', function(e) {
-                if (e.target === this) this.classList.remove('on');
-            });
-        });
 
-        // Global: notification bell toggle
-        var bell = document.querySelector('.notif-bell');
-        var dropdown = document.querySelector('.notif-dropdown');
-        if (bell && dropdown) {
-            bell.addEventListener('click', function(e) {
-                e.stopPropagation();
-                dropdown.classList.toggle('show');
-            });
-            document.addEventListener('click', function() {
-                dropdown.classList.remove('show');
-            });
-        }
-
-        // Global: tab switching
-        document.querySelectorAll('.tabs').forEach(function(tabGroup) {
-            tabGroup.querySelectorAll('.tbn').forEach(function(btn, i) {
-                btn.addEventListener('click', function() {
-                    tabGroup.querySelectorAll('.tbn').forEach(function(b) {
-                        b.classList.remove('on');
-                    });
-                    this.classList.add('on');
-                });
-            });
-        });
-
-        // Global: toast helper
-        function showToast(msg) {
-            var t = document.getElementById('toast');
-            if (!t) return;
-            t.textContent = (msg || '✅ Data berhasil disimpan');
-            t.style.display = 'block';
-            setTimeout(function() {
-                t.style.display = 'none';
-            }, 2500);
-        }
-
-        // Save buttons show toast
-        document.querySelectorAll('.mf .bp').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                var mo = this.closest('.mo');
-                if (mo) {
-                    mo.classList.remove('on');
+            // Modal: klik backdrop (luar modal) tutup modal 
+            $(document).on('click', '.mo', function(e) {
+                if ($(e.target).is('.mo')) {
+                    $(this).removeClass('on');
                 }
-                showToast();
             });
+
+            // Notifikasi: toggle dropdown bell 
+            $(document).on('click', '.notif-bell', function(e) {
+                e.stopPropagation();
+                $('.notif-dropdown').toggleClass('show');
+            });
+
+            $(document).on('click', function() {
+                $('.notif-dropdown').removeClass('show');
+            });
+
+            // Tab switching global 
+            $(document).on('click', '.tabs .tbn', function() {
+                $(this).closest('.tabs').find('.tbn').removeClass('on');
+                $(this).addClass('on');
+            });
+
+            // Toast helper 
+            window.showToast = function(msg) {
+                var $t = $('#toast');
+                if (!$t.length) return;
+                $t.text(msg || '✅ Data berhasil disimpan').fadeIn(200);
+                setTimeout(function() {
+                    $t.fadeOut(400);
+                }, 2500);
+            };
+
+            // Tombol simpan di modal: tutup modal + tampilkan toast
+            $(document).on('click', '.mf .bp', function() {
+                $(this).closest('.mo').removeClass('on');
+                window.showToast();
+            });
+
         });
     </script>
     @stack('scripts')

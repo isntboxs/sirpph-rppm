@@ -7,7 +7,7 @@
 <div class="card">
   <div class="ch">
     <div class="ct">👥 Daftar Pengguna</div>
-    <button class="btn bp bsm" onclick="document.getElementById('mUser').classList.add('on')">+ Tambah</button>
+    <button class="btn bp bsm" id="btn-tambah-user">+ Tambah</button>
   </div>
   <div class="tw">
     <table>
@@ -79,3 +79,12 @@
   </div>
 </div>
 @endsection
+@push('scripts')
+    <script>
+        $(function() {
+            $('#btn-tambah-user').on('click', function() {
+                $('#mUser').addClass('on');
+            });
+        });
+    </script>
+@endpush
