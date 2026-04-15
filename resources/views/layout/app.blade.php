@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('page-title', 'Beranda') — SiRPPH</title>
 
     <meta name="page-title" content="@yield('page-title', 'Beranda')">
@@ -16,8 +17,8 @@
             href="{{ asset('assets/custom-app.css') }}?v={{ filemtime(public_path('assets/custom-app.css')) }}">
     @endif
 </head>
+
 {{-- Jquery --}}
-<script src="{{ asset('assets/js/core/external.min.js') }}"></script>
 <script src="{{ asset('assets/js/core/libs.min.js') }}"></script>
 
 {{-- Custom --}}
@@ -30,7 +31,6 @@
             @include('layout.topbar')
             <div class="ca" id="main-content">
                 @yield('content')
-                @stack('scripts')
             </div>
         </main>
     </div>
@@ -41,15 +41,12 @@
 
     <script>
         $(function() {
-            // Init: set active sidebar saat pertama kali load
             setActiveSidebar(window.location.pathname);
 
-            // Simpan state awal agar popstate pertama bisa dibaca
             window.history.replaceState({
                 url: window.location.href
             }, '', window.location.href);
 
-            // Klik menu sidebar
             $(document).on('click', '.sb a.ni', function(e) {
                 e.preventDefault();
                 var url = $(this).attr('href');
@@ -60,25 +57,21 @@
                 loadPage(url, true);
             });
 
-            // Handle browser back/forward
             window.addEventListener('popstate', function(e) {
                 var url = (e.state && e.state.url) ? e.state.url : window.location.href;
                 loadPage(url, false);
             });
 
-            // Modal tombol X tutup modal
             $(document).on('click', '.mc', function() {
                 $(this).closest('.mo').removeClass('on');
             });
 
-            // Modal klik backdrop tutup modal
             $(document).on('click', '.mo', function(e) {
-                if ($(e.target).is('.mo')) {
+                if (e.target === this) {
                     $(this).removeClass('on');
                 }
             });
 
-            // Notifikasi toggle dropdown bell
             $(document).on('click', '.notif-bell', function(e) {
                 e.stopPropagation();
                 $('.notif-dropdown').toggleClass('show');
@@ -88,13 +81,11 @@
                 $('.notif-dropdown').removeClass('show');
             });
 
-            // Tab switching global
             $(document).on('click', '.tabs .tbn', function() {
                 $(this).closest('.tabs').find('.tbn').removeClass('on');
                 $(this).addClass('on');
             });
 
-            // Toast helper
             window.showToast = function(msg) {
                 var $t = $('#toast');
                 if (!$t.length) return;
@@ -104,7 +95,6 @@
                 }, 2500);
             };
 
-            // Tombol simpan di modal
             $(document).on('click', '.mf .bp', function() {
                 $(this).closest('.mo').removeClass('on');
                 window.showToast();

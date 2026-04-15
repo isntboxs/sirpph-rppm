@@ -1,143 +1,103 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login — SiRPPH PAUDQu AL-AULIA</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-:root{
-  --g9:#0d1f15;--g8:#152b1f;--g7:#1e3d2b;--g6:#2d6a4f;--g5:#40916c;--g4:#52b788;
-  --g3:#74c69d;--g2:#b7e4c7;--g1:#d8f3dc;--g0:#f4f7f5;
-  --acc:#f4a261;--acc2:#e76f51;--red:#e63946;
-  --gold:#f5cc5a;--txt:#1a2e22;--txt2:#3d5a47;--txt3:#6b8a77;
-  --white:#fff;--sh2:0 6px 24px rgba(0,0,0,.14);--r:12px;--r2:8px;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Nunito',sans-serif;color:var(--txt)}
-button{cursor:pointer;border:none;font-family:inherit}
-input,select{font-family:inherit;outline:none}
-h1,h2,h3,h4{font-family:'Plus Jakarta Sans',sans-serif}
-
-#lp{display:flex;min-height:100vh;background:var(--g8);overflow:hidden;position:relative}
-#lp::before{content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse at 20% 50%,rgba(64,145,108,.25) 0%,transparent 60%),
-             radial-gradient(ellipse at 80% 20%,rgba(245,204,90,.1) 0%,transparent 50%)}
-.ll{flex:1;display:flex;flex-direction:column;justify-content:center;padding:60px;z-index:1}
-.ll h1{font-size:52px;font-weight:800;color:var(--white);line-height:1;margin-bottom:12px}
-.ll h1 span{color:var(--gold)}
-.ll p{color:rgba(255,255,255,.55);font-size:15px;line-height:1.7;max-width:400px;margin-bottom:28px}
-.role-chips{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:380px}
-.rc{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;
-  padding:12px 14px;display:flex;align-items:center;gap:10px}
-.rc-ico{font-size:20px}
-.rc-nm{font-size:12px;font-weight:700;color:rgba(255,255,255,.8)}
-.rc-ds{font-size:10.5px;color:rgba(255,255,255,.35);margin-top:1px}
-
-.lr{width:400px;background:var(--white);display:flex;align-items:center;justify-content:center;padding:36px;z-index:1}
-.lc{width:100%}
-.lb{margin-bottom:28px}
-.lb .bm{width:52px;height:52px;background:linear-gradient(135deg,var(--g6),var(--g4));border-radius:14px;
-  display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:14px;
-  box-shadow:0 8px 20px rgba(45,106,79,.3)}
-.lb h2{font-size:24px;font-weight:800;color:var(--txt)}
-.lb p{font-size:12.5px;color:var(--txt3);margin-top:3px}
-.fg{margin-bottom:16px}
-.fg label{display:block;font-size:11px;font-weight:700;color:var(--txt2);margin-bottom:6px;
-  text-transform:uppercase;letter-spacing:.5px}
-.fg input,.fg select{width:100%;padding:11px 13px;border:2px solid var(--g1);border-radius:var(--r2);
-  font-size:13.5px;background:var(--g0);transition:.2s;color:var(--txt)}
-.fg input:focus,.fg select:focus{border-color:var(--g5);background:var(--white)}
-.btn-login{width:100%;padding:13px;background:linear-gradient(135deg,var(--g7),var(--g5));color:var(--white);
-  border-radius:var(--r2);font-size:14px;font-weight:700;transition:.2s;
-  box-shadow:0 4px 14px rgba(45,106,79,.3)}
-.btn-login:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(45,106,79,.4)}
-.demos{margin-top:20px;background:var(--g0);border-radius:var(--r2);padding:14px}
-.demos p{font-size:10.5px;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
-.dg{display:grid;grid-template-columns:1fr 1fr;gap:7px}
-.db{padding:8px 10px;background:var(--white);border:1.5px solid var(--g2);border-radius:6px;
-  font-size:11.5px;font-weight:700;color:var(--g7);text-align:left;line-height:1.4;transition:.15s}
-.db:hover{background:var(--g1);border-color:var(--g4)}
-.db span{display:block;font-size:10px;font-weight:500;color:var(--txt3);margin-top:1px}
-#lerr{display:none;margin-top:10px;background:#fee2e2;color:#991b1b;padding:10px 13px;border-radius:6px;font-size:12.5px}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — SiRPPH PAUDQu AL-AULIA</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    @if (file_exists(public_path('assets/custom-login.css')))
+        <link rel="stylesheet"
+            href="{{ asset('assets/custom-login.css') }}?v={{ filemtime(public_path('assets/custom-login.css')) }}">
+    @endif
 </head>
+
 <body>
-<div id="lp">
-  <div class="ll">
-    <h1>Si<span>RPPH</span></h1>
-    <p>Sistem Informasi Penyusunan RPPM & RPPH<br>PAUDQu AL-AULIA — Kota Serang</p>
-    <div class="role-chips">
-      <div class="rc">
-        <div class="rc-ico">⚙️</div>
-        <div><div class="rc-nm">Admin/Operator</div><div class="rc-ds">Kelola data master</div></div>
-      </div>
-      <div class="rc">
-        <div class="rc-ico">👑</div>
-        <div><div class="rc-nm">Kepala Sekolah</div><div class="rc-ds">Validasi & PROSEM</div></div>
-      </div>
-      <div class="rc">
-        <div class="rc-ico">🧑‍🏫</div>
-        <div><div class="rc-nm">Guru</div><div class="rc-ds">Buat RPPM & RPPH</div></div>
-      </div>
-      <div class="rc">
-        <div class="rc-ico">👨‍👩‍👧</div>
-        <div><div class="rc-nm">Orang Tua</div><div class="rc-ds">Pantau anak</div></div>
-      </div>
+    <div id="lp">
+        <div class="ll">
+            <h1>Si<span>RPPH</span></h1>
+            <p>Sistem Informasi Penyusunan RPPM & RPPH<br>PAUDQu AL-AULIA — Kota Serang</p>
+            <div class="role-chips">
+                <div class="rc">
+                    <div class="rc-ico">⚙️</div>
+                    <div>
+                        <div class="rc-nm">Admin/Operator</div>
+                        <div class="rc-ds">Kelola data master</div>
+                    </div>
+                </div>
+                <div class="rc">
+                    <div class="rc-ico">👑</div>
+                    <div>
+                        <div class="rc-nm">Kepala Sekolah</div>
+                        <div class="rc-ds">Validasi & PROSEM</div>
+                    </div>
+                </div>
+                <div class="rc">
+                    <div class="rc-ico">🧑‍🏫</div>
+                    <div>
+                        <div class="rc-nm">Guru</div>
+                        <div class="rc-ds">Buat RPPM & RPPH</div>
+                    </div>
+                </div>
+                <div class="rc">
+                    <div class="rc-ico">👨‍👩‍👧</div>
+                    <div>
+                        <div class="rc-nm">Orang Tua</div>
+                        <div class="rc-ds">Pantau anak</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="lr">
+            <div class="lc">
+                <div class="lb">
+                    <div class="bm">📚</div>
+                    <h2>Masuk ke SiRPPH</h2>
+                    <p>PAUDQu AL-AULIA — Tahun Ajaran 2024/2025</p>
+                </div>
+                <form method="POST" action="{{ route('login') }}">
+                    @csrf
+                    <div class="fg">
+                        <label>Username</label>
+                        <input name="username" placeholder="Username" value="{{ old('username') }}"
+                            autocomplete="username" />
+                    </div>
+                    <div class="fg">
+                        <label>Password</label>
+                        <input type="password" name="password" placeholder="Password" autocomplete="current-password" />
+                    </div>
+                    <div class="fg">
+                        <label>Masuk Sebagai</label>
+                        <select name="role">
+                            <option value="admin">⚙️ Admin / Operator</option>
+                            <option value="kepala">👑 Kepala Sekolah</option>
+                            <option value="guru">🧑‍🏫 Guru</option>
+                            <option value="ortu">👨‍👩‍👧 Orang Tua</option>
+                        </select>
+                    </div>
+                    @if ($errors->any())
+                        <div id="lerr" style="display:block">{{ $errors->first() }}</div>
+                    @endif
+                    <button type="submit" class="btn-login">🔐 Masuk ke Sistem</button>
+                </form>
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="lr">
-    <div class="lc">
-      <div class="lb">
-        <div class="bm">📚</div>
-        <h2>Masuk ke SiRPPH</h2>
-        <p>PAUDQu AL-AULIA — Tahun Ajaran 2024/2025</p>
-      </div>
-      <form method="POST" action="{{ route('login') }}">
-        @csrf
-        <div class="fg">
-          <label>Username</label>
-          <input name="username" placeholder="Username" value="{{ old('username') }}" autocomplete="username"/>
-        </div>
-        <div class="fg">
-          <label>Password</label>
-          <input type="password" name="password" placeholder="Password" autocomplete="current-password"/>
-        </div>
-        <div class="fg">
-          <label>Masuk Sebagai</label>
-          <select name="role">
-            <option value="admin">⚙️ Admin / Operator</option>
-            <option value="kepala">👑 Kepala Sekolah</option>
-            <option value="guru">🧑‍🏫 Guru</option>
-            <option value="ortu">👨‍👩‍👧 Orang Tua</option>
-          </select>
-        </div>
-        @if ($errors->any())
-          <div id="lerr" style="display:block">{{ $errors->first() }}</div>
-        @endif
-        <button type="submit" class="btn-login">🔐 Masuk ke Sistem</button>
-      </form>
-      <div class="demos">
-        <p>Akun Demo</p>
-        <div class="dg">
-          <button class="db" onclick="fillDemo('admin','admin123','admin')">⚙️ Admin<span>admin / admin123</span></button>
-          <button class="db" onclick="fillDemo('kepala','kepala123','kepala')">👑 Kepala Sekolah<span>kepala / kepala123</span></button>
-          <button class="db" onclick="fillDemo('guru_a','guru123','guru')">🧑‍🏫 Guru Kelas A<span>guru_a / guru123</span></button>
-          <button class="db" onclick="fillDemo('ortu1','ortu123','ortu')">👨‍👩‍👧 Orang Tua<span>ortu1 / ortu123</span></button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-<script>
-function fillDemo(user, pass, role) {
-  document.querySelector('input[name=username]').value = user;
-  document.querySelector('input[name=password]').value = pass;
-  var sel = document.querySelector('select[name=role]');
-  for (var i = 0; i < sel.options.length; i++) {
-    if (sel.options[i].value === role) { sel.selectedIndex = i; break; }
-  }
-}
-</script>
+    <script>
+        function fillDemo(user, pass, role) {
+            document.querySelector('input[name=username]').value = user;
+            document.querySelector('input[name=password]').value = pass;
+            var sel = document.querySelector('select[name=role]');
+            for (var i = 0; i < sel.options.length; i++) {
+                if (sel.options[i].value === role) {
+                    sel.selectedIndex = i;
+                    break;
+                }
+            }
+        }
+    </script>
 </body>
+
 </html>

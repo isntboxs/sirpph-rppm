@@ -4,16 +4,17 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-class Auth
+class AuthenticationHandler
 {
     public function handle(Request $request, Closure $next)
     {
-        // Just simple login check
-        // Jika ada tabel user, cek role dari db/session (simple Auth)
-        if (!session('logged_in')) {
+        // Simpel cek sudah login atau belum
+        if (!Auth::check()) {
             return redirect()->route('login');
         }
+
         return $next($request);
     }
 }

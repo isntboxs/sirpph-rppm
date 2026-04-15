@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -11,6 +10,8 @@ use Illuminate\Support\Facades\Hash;
 class User extends Authenticatable
 {
     protected $table = 'users';
+
+    protected $authIdentifierName = 'username';
 
     protected $fillable = [
         'name',
@@ -23,6 +24,7 @@ class User extends Authenticatable
 
     protected $hidden = [
         'password',
+        'remember_token',
     ];
 
     protected $casts = [

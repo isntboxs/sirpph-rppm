@@ -34,35 +34,29 @@ class AuthController extends Controller
         ]);
 
         // Demo credentials, ganti dengan Auth::attempt() tunggu tabel users
-        $demoAccounts = [
-            'admin'  => ['password' => 'admin123', 'role' => 'Admin'],
-            'kepala' => ['password' => 'kepala123', 'role' => 'Kepala Sekolah'],
-            'guru_a' => ['password' => 'guru123',  'role' => 'Guru'],
-            'guru_b' => ['password' => 'guru123',  'role' => 'Guru'],
-            'ortu1'  => ['password' => 'ortu123',  'role' => 'Orang Tua'],
+        $credentials = [
+            'username' => $request->username,
+            'password' => $request->password,
+            'active'   => 1,
         ];
 
-        $username = $request->input('username');
-        $password = $request->input('password');
-
-        if (isset($demoAccounts[$username]) && $demoAccounts[$username]['password'] === $password) {
-            // Create Session
-            session([
-                'demo_user'     => $username,
-                'demo_role'     => $demoAccounts[$username]['role'],
-                'logged_in' => true,
-            ]);
-            return redirect()->route('beranda');
+        if (Auth::attempt($credentials, $request->boolean('remember'))) {
+            $request->session()->regenerate();
+            return redirect()->intended(route('beranda'));
         }
 
         return back()
-            ->withInput($request->only('username', 'role'))
-            ->withErrors(['username' => 'Username atau password salah.']);
+            ->withInput($request->only('username'))
+            ->withErrors([
+                'username' => 'Username atau password salah.',
+            ]);
     }
 
     public function logout(Request $request)
     {
-        $request->session()->flush();
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
         return redirect()->route('login');
     }
 }

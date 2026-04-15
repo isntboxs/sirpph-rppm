@@ -10,10 +10,10 @@
     </div>
     <div class="sbu">
         <div class="sbur">
-            <div class="sbav" style="background:var(--g5)">{{ strtoupper(substr(auth()->user()->name ?? 'A', 0, 1)) }}
+            <div class="sbav" style="background:var(--g5)">{{ strtoupper(substr(Auth::user()->name ?? 'A', 0, 1)) }}
             </div>
             <div>
-                <div class="sbun">{{ auth()->user()->name ?? 'Admin' }}</div>
+                <div class="sbun">{{ Auth::user()->name ?? 'Admin' }}</div>
                 <div class="sbrl">{{ auth()->user()->role ?? 'Operator' }}</div>
             </div>
         </div>
@@ -110,11 +110,11 @@
     </div>
     <div class="sbu">
         <div class="sbur">
-            <div class="sbav" style="background:var(--g5)">{{ strtoupper(substr(auth()->user()->name ?? 'A', 0, 1)) }}
+            <div class="sbav" style="background:var(--g5)">{{ strtoupper(substr(Auth::user()->name ?? 'A', 0, 1)) }}
             </div>
             <div>
-                <div class="sbun">{{ auth()->user()->name ?? 'Admin' }}</div>
-                <div class="sbrl">{{ auth()->user()->role ?? 'Operator' }}</div>
+                <div class="sbun">{{ Auth::user()->name }}</div>
+                <div class="sbrl">{{ ucfirst(Auth::user()->role) }}</div>
             </div>
         </div>
     </div>

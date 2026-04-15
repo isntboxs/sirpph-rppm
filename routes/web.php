@@ -33,6 +33,7 @@ use App\Http\Controllers\RppmController;
 use App\Http\Controllers\RpphController;
 use App\Http\Controllers\PortofolioSiswaController;
 use App\Http\Controllers\AnalisisAspekController;
+use App\Http\Controllers\KelasController;
 use App\Http\Controllers\OrtuRppmController;
 use App\Http\Controllers\OrtuRpphController;
 use App\Http\Controllers\OrtuPortoController;
@@ -63,6 +64,11 @@ Route::middleware(['auth'])->group(function () {
     */
     Route::get('/beranda', [BerandaController::class, 'index'])->name('beranda');
     Route::get('/kelola-pengguna', [KelolaPenggunaController::class, 'index'])->name('kelola_pengguna');
+    Route::get('/kelola-pengguna/edit/{id}', [KelolaPenggunaController::class, 'show'])->name('kelola_pengguna.show');
+    Route::post('/kelola-pengguna', [KelolaPenggunaController::class, 'store'])->name('kelola_pengguna.store');
+    Route::put('/kelola-pengguna/{id}', [KelolaPenggunaController::class, 'update'])->name('kelola_pengguna.update');
+
+
     Route::get('/data-siswa', [DataSiswaController::class, 'index'])->name('data_siswa');
     Route::get('/tahun-ajaran', [TahunAjaranController::class, 'index'])->name('tahun_ajaran');
     Route::get('/data-sekolah', [DataSekolahController::class, 'index'])->name('data_sekolah');
@@ -99,5 +105,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/lihat-rppm', [OrtuRppmController::class, 'index'])->name('ortu_rppm');
     Route::get('/lihat-rpph', [OrtuRpphController::class, 'index'])->name('ortu_rpph');
     Route::get('/portofolio-anak', [OrtuPortoController::class, 'index'])->name('ortu_porto');
+
+    /*
+    |----------------------------------------------------------------------
+    | AJAX Data
+    |----------------------------------------------------------------------
+    */
+    Route::get('/sekolah/data', [KelasController::class, 'data'])->name('kelas.data');
+    Route::get('/siswa/data', [DataSiswaController::class, 'data'])->name('siswa.data');
+    
 });
 

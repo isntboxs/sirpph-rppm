@@ -16,6 +16,7 @@ return new class extends Migration
             $table->enum('role', ['admin', 'kepala', 'guru', 'ortu']);
             $table->tinyInteger('active')->default(1);
             $table->string('no_telp', 20)->nullable();
+            $table->rememberToken();
             $table->timestamps();
         });
     }
