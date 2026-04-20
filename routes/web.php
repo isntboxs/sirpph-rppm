@@ -52,7 +52,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 | Authenticated Routes
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'role'])->group(function () {
 
     // Redirect root to beranda
     Route::get('/', fn() => redirect()->route('beranda'));
@@ -71,7 +71,11 @@ Route::middleware(['auth'])->group(function () {
 
 
     Route::get('/data-siswa', [DataSiswaController::class, 'index'])->name('data_siswa');
+
     Route::get('/tahun-ajaran', [TahunAjaranController::class, 'index'])->name('tahun_ajaran');
+    Route::post('/tahun-ajaran', [TahunAjaranController::class, 'create'])->name('tahun_ajaran.create');
+    Route::put('/tahun-ajaran/active/{id}', [TahunAjaranController::class, 'active'])->name('tahun_ajaran.active');
+
     Route::get('/data-sekolah', [DataSekolahController::class, 'index'])->name('data_sekolah');
 
     /*
