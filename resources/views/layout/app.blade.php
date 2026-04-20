@@ -35,9 +35,9 @@
         </main>
     </div>
 
-    @include('layout.modals')
+    {{-- @include('layout.modals') --}}
 
-    <div id="toast">✅ Data berhasil disimpan</div>
+    <div id="toast"></div>
 
     <script>
         $(function() {
@@ -47,20 +47,16 @@
                 url: window.location.href
             }, '', window.location.href);
 
-            $(document).on('click', '.sb a.ni', function(e) {
-                e.preventDefault();
-                var url = $(this).attr('href');
+            // $(document).on('click', '.sb a.ni', function(e) {
+            //     e.preventDefault();
+            //     var url = $(this).attr('href');
 
-                // Jangan reload kalau halaman sama
-                if (url === window.location.href) return;
+            //     // Jangan reload kalau halaman sama
+            //     if (url === window.location.href) return;
 
-                loadPage(url, true);
-            });
-
-            window.addEventListener('popstate', function(e) {
-                var url = (e.state && e.state.url) ? e.state.url : window.location.href;
-                loadPage(url, false);
-            });
+            //     // loadPage(url, true);
+            //     // window.location.reload();
+            // });
 
             $(document).on('click', '.mc', function() {
                 $(this).closest('.mo').removeClass('on');
@@ -89,7 +85,7 @@
             window.showToast = function(msg) {
                 var $t = $('#toast');
                 if (!$t.length) return;
-                $t.text(msg || '✅ Data berhasil disimpan').fadeIn(200);
+                $t.text(msg).fadeIn(200);
                 setTimeout(function() {
                     $t.fadeOut(400);
                 }, 2500);

@@ -22,8 +22,9 @@ function updateTopbar($html) {
 
 // Helper jalankan scripts di dalam #main-content
 function evalPageScripts() {
-    $('#main-content script').each(function () {
+    $('#main-content').each(function () {
         $.globalEval($(this).text());
+        console.log($(this).text())
     });
 }
 

@@ -8,7 +8,6 @@ use App\Models\Siswa;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class KelolaPenggunaController extends Controller
@@ -28,7 +27,7 @@ class KelolaPenggunaController extends Controller
             'username' => 'required|string|max:50|unique:users,username',
             'password' => 'required|string|min:6',
             'role'     => 'required|in:guru,ortu',
-            'no_hp'    => 'nullable|string|max:20',
+            'no_telp'    => 'nullable|string|max:20',
         ];
 
         // Rule if Guru
@@ -59,7 +58,7 @@ class KelolaPenggunaController extends Controller
                     'username' => $request->username,
                     'password' => $request->password,
                     'role'     => $request->role,
-                    'no_telp'  => $request->no_hp,
+                    'no_telp'  => $request->no_telp,
                     'active'   => 1,
                 ];
 
@@ -93,8 +92,7 @@ class KelolaPenggunaController extends Controller
 
     public function show($id)
     {
-        $user = DB::table('users')
-            ->leftJoin('kelas', 'kelas.guru_id', '=', 'users.id')
+        $user = User::leftJoin('kelas', 'kelas.guru_id', '=', 'users.id')
             ->select(
                 'users.id',
                 'users.name',
@@ -107,25 +105,21 @@ class KelolaPenggunaController extends Controller
             ->where('users.id', $id)
             ->first();
 
-        if ($user->role === 'ortu') {
-            $siswas = DB::table('siswa')
-                ->select(
-                    'id',
-                    'name',
-                    DB::raw("CASE 
-                    WHEN ortu_id = ? THEN 1 
-                    ELSE 0 
-                END as related")
-                )
-                ->setBindings([$user->id])
-                ->get();
-        }
-
-        dd($siswas);
+        // if ($user->role === 'ortu') {
+        //     $siswas = Siswa::select(
+        //         'id',
+        //         'name',
+        //         'ortu_id',
+        //     )
+        //         ->where(function ($query) use ($user) {
+        //             $query->where('ortu_id', $user->id)
+        //                 ->orWhereNull('ortu_id');
+        //         })
+        //         ->get();
+        // }
 
         return response()->json([
             'user' => $user,
-            'siswas' => $siswas
         ]);
     }
 
@@ -137,7 +131,7 @@ class KelolaPenggunaController extends Controller
             'name'     => 'required|string|max:100',
             'username' => 'required|string|max:50|unique:users,username,' . $id,
             'role'     => 'required|in:admin,kepala,guru,ortu',
-            'no_hp'    => 'nullable|string|max:20',
+            'no_telp'    => 'nullable|string|max:20',
         ];
 
         if ($request->filled('password')) {
@@ -168,7 +162,7 @@ class KelolaPenggunaController extends Controller
                     'name'     => $request->name,
                     'username' => $request->username,
                     'role'     => $request->role,
-                    'no_telp'  => $request->no_hp,
+                    'no_telp'  => $request->no_telp,
                 ];
 
                 if ($request->filled('password')) {
@@ -177,17 +171,20 @@ class KelolaPenggunaController extends Controller
 
                 $user->update($data);
 
-                Kelas::where('guru_id', $user->id)->update(['guru_id' => null]);
-                Siswa::where('ortu_id', $user->id)->update(['ortu_id' => null]);
-
                 if ($request->role === 'guru') {
                     Kelas::where('id', $request->kelas)
                         ->update(['guru_id' => $user->id]);
                 }
 
                 if ($request->role === 'ortu') {
-                    Siswa::whereIn('id', $request->siswa_dipantau)
-                        ->update(['ortu_id' => $user->id]);
+                    Siswa::where('ortu_id', $user->id)
+                        ->whereNotIn('id', $request->siswa_dipantau)
+                        ->update(['ortu_id' => null]);
+
+                    if (!empty($request->siswa_dipantau)) {
+                        Siswa::whereIn('id', $request->siswa_dipantau)
+                            ->update(['ortu_id' => $user->id]);
+                    }
                 }
             });
 
@@ -202,5 +199,15 @@ class KelolaPenggunaController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function softDelete(Request $request, $id)
+    {
+        $command = $request->command == "del" ? 0 : 1;
+
+        $user = User::findOrFail($id);
+        $user->update(['active' => $command]);
+
+        return response()->json(['message' => 'User berhasil dinonaktifkan']);
     }
 }

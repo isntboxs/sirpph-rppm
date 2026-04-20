@@ -65,6 +65,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/beranda', [BerandaController::class, 'index'])->name('beranda');
     Route::get('/kelola-pengguna', [KelolaPenggunaController::class, 'index'])->name('kelola_pengguna');
     Route::get('/kelola-pengguna/edit/{id}', [KelolaPenggunaController::class, 'show'])->name('kelola_pengguna.show');
+    Route::delete('/kelola-pengguna/{id}', [KelolaPenggunaController::class, 'softDelete'])->name('kelola_pengguna.delete');
     Route::post('/kelola-pengguna', [KelolaPenggunaController::class, 'store'])->name('kelola_pengguna.store');
     Route::put('/kelola-pengguna/{id}', [KelolaPenggunaController::class, 'update'])->name('kelola_pengguna.update');
 

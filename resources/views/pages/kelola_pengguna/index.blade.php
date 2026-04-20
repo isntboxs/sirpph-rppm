@@ -66,7 +66,13 @@
                                 <button class="btn bo bxs btn-edit" data-id="{{ $user->id }}">✏️</button>
 
                                 @if (!$user->isAdmin())
-                                    <button class="btn bd bxs">🚫</button>
+                                    @if ($user->isActive())
+                                        <button class="btn bd bxs btn-active" data-id="{{ $user->id }}"
+                                            data-com="del">🚫</button>
+                                    @else
+                                        <button class="btn bd bxs btn-active" data-id="{{ $user->id }}"
+                                            data-com="act">✅</button>
+                                    @endif
                                 @endif
                             </td>
                         </tr>
@@ -108,7 +114,7 @@
                         <select id="kelas" name="kelas">
                         </select>
                     </div>
-                    <div class="ff"><label>No. HP</label><input id="no_hp" name="no_hp" placeholder="08xx" />
+                    <div class="ff"><label>No. HP</label><input id="no_telp" name="no_telp" placeholder="08xx" />
                     </div>
                 </div>
                 <div class="fr" style="display: none">
@@ -119,7 +125,7 @@
                 </div>
             </div>
             <div class="mf">
-                <button id="btn-add-user" class="btn bp">💾 Simpan</button>
+                <button id="btn-save" class="btn bp">💾 Simpan</button>
             </div>
         </div>
     </div>
@@ -130,11 +136,43 @@
             $('#btn-tambah-user').on('click', function() {
                 $('#mUser').addClass('on');
                 $('#role').trigger('change');
-                $('#btn-add-user').removeData('id');
-                $('#btn-add-user').text('Simpan');
+                $('#btn-save').removeData('id');
+                $('#btn-save').text('Simpan');
 
                 $('#role').val('').trigger('change');
             });
+
+            $('.btn-edit').on('click', function() {
+                let id = $(this).data('id');
+
+                $('#mUser').addClass('on');
+                $('#btn-save').text('Update');
+
+                loadUser(id);
+            });
+
+            $('.btn-active').on('click', function() {
+                let id = $(this).data('id');
+                let command = $(this).data('com');
+
+                $.ajax({
+                    url: `/kelola-pengguna/${id}`,
+                    type: 'DELETE',
+                    data: {
+                        command: command
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(res) {
+                        location.reload();
+                        showToast(res.msg);
+                    },
+                    error: function() {
+                        showToast("Gagal Menonaktifkan User");
+                    }
+                })
+            })
 
             // Trigger on role change different field
             $('#role').on('change', function() {
@@ -157,25 +195,17 @@
                 $('#password').val('');
                 $('#role').val('').trigger('change');
                 $('#kelas').val('').trigger('change');
-                $('#no_hp').val('');
+                $('#no_telp').val('');
 
                 $('#siswa_dipantau').val([]).trigger('change');
 
-                $('#btn-add-user').removeData('id');
+                $('#btn-save').removeData('id');
 
                 $('#kelas').closest('.fr').hide();
                 $('#siswa_dipantau').closest('.fr').hide();
             });
 
-            $(document).on('click', '.btn-edit', function() {
-                let id = $(this).data('id');
-
-                $('#mUser').addClass('on');
-
-                loadUser(id);
-            });
-
-            $('#btn-add-user').on('click', function() {
+            $('#btn-save').on('click', function() {
                 const id = $(this).data('id');
 
                 let url = id ? `/kelola-pengguna/${id}` : `/kelola-pengguna`;
@@ -183,12 +213,15 @@
                 let data = {
                     name: $('#name').val(),
                     username: $('#username').val(),
-                    password: $('#password').val(),
                     role: $('#role').val(),
                     kelas: $('#kelas').val(),
-                    no_hp: $('#no_hp').val(),
-                    siswa_dipantau: $('#siswa_dipantau').val()
+                    no_telp: $('#no_telp').val(),
+                    siswa_dipantau: $('#siswa_dipantau').val() || [],
                 };
+
+                if ($('#password').val()) {
+                    data.password = $('#password').val();
+                }
 
                 if (id) {
                     data._method = 'PUT';
@@ -206,7 +239,7 @@
                         location.reload();
                     },
                     error: function() {
-                        showToast("Gagal Menambahkan User");
+                        showToast(id ? "Gagal Update User" : "Gagal Menambahkan User");
                     }
                 })
             })
@@ -214,7 +247,7 @@
     </script>
 
     <script>
-        function loadKelas() {
+        function loadKelas(user = null) {
             $.ajax({
                 url: '{{ route('kelas.data') }}',
                 type: 'GET',
@@ -225,7 +258,9 @@
                     select.append('<option value="">-- Pilih Kelas --</option>');
 
                     res.forEach(kelas => {
-                        select.append(`<option value="${kelas.id}">${kelas.name}</option>`)
+                        let isSelected = user && user.kelas_id == kelas.id ? 'selected' : '';
+                        select.append(
+                            `<option value="${kelas.id}" ${isSelected}>${kelas.name}</option>`)
                     });
                 },
                 error: function() {
@@ -234,10 +269,13 @@
             })
         }
 
-        function loadSiswa() {
+        function loadSiswa(user = null) {
             $.ajax({
                 url: '{{ route('siswa.data') }}',
                 type: 'GET',
+                data: {
+                    user_id: user ? user.id : null,
+                },
                 success: function(res) {
                     let select = $('#siswa_dipantau');
                     select.empty();
@@ -245,7 +283,9 @@
                     select.append('<option value="">-- Pilih Siswa --</option>');
 
                     res.forEach(siswa => {
-                        select.append(`<option value="${siswa.id}">${siswa.name}</option>`)
+                        let isSelected = user && siswa.ortu_id == user.id ? 'selected' : '';
+                        select.append(
+                            `<option value="${siswa.id}" ${isSelected}>${siswa.name}</option>`)
                     });
                 },
                 error: function() {
@@ -260,35 +300,33 @@
                 type: 'GET',
                 success: function(res) {
 
-                    let user = res;
+                    let user = res.user;
 
                     $('#name').val(user.name);
                     $('#username').val(user.username);
-                    $('#no_hp').val(user.no_telp);
+                    $('#no_telp').val(user.no_telp);
 
                     $('#role').val(user.role);
 
                     if (user.role === 'guru') {
                         $('#kelas').closest('.fr').show();
-                        $('#siswa_dipantau').closest('.fr').hide();
+                        $('#no_telp').closest('.fr').show();
 
-                        // loadKelas(function() {
-                        //     $('#kelas').val(user.kelas_id).trigger('change');
-                        // });
+                        $('#no_telp').empty();
+                        $('#no_telp').val(user.no_telp);
+
+                        loadKelas(user)
                     }
 
                     if (user.role === 'ortu') {
-                        $('#kelas').closest('.fr').hide();
                         $('#siswa_dipantau').closest('.fr').show();
+                        $('#siswa_dipantau').empty();
 
-                        // loadSiswa(function() {
-                        //     let siswaIds = user.siswas.map(s => s.id);
-                        //     $('#siswa_dipantau').val(siswaIds).trigger('change');
-                        // });
+                        loadSiswa(user);
                     }
 
-                    $('#btn-add-user').data('id', user.id);
-                    $('#btn-add-user').text('Update');
+                    $('#btn-save').data('id', user.id);
+                    $('#btn-save').text('Update');
                 }
             });
         }
