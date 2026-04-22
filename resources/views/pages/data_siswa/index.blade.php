@@ -22,63 +22,57 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td><strong>Zaid Al-Fatih</strong></td>
-                        <td>Kelas A</td>
-                        <td>15/03/2019</td>
-                        <td>👦 L</td>
-                        <td>8 entri</td>
-                        <td class="fl g8">
-                            <button class="btn bo bxs">✏️</button>
-                            <button class="btn bd bxs">🗑️</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><strong>Aisyah Nur Fadilah</strong></td>
-                        <td>Kelas A</td>
-                        <td>22/07/2019</td>
-                        <td>👧 P</td>
-                        <td>10 entri</td>
-                        <td class="fl g8">
-                            <button class="btn bo bxs">✏️</button>
-                            <button class="btn bd bxs">🗑️</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><strong>Umar Hakim</strong></td>
-                        <td>Kelas B</td>
-                        <td>08/01/2019</td>
-                        <td>👦 L</td>
-                        <td>6 entri</td>
-                        <td class="fl g8">
-                            <button class="btn bo bxs">✏️</button>
-                            <button class="btn bd bxs">🗑️</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><strong>Fatimah Az-Zahra</strong></td>
-                        <td>Kelas B</td>
-                        <td>30/05/2019</td>
-                        <td>👧 P</td>
-                        <td>9 entri</td>
-                        <td class="fl g8">
-                            <button class="btn bo bxs">✏️</button>
-                            <button class="btn bd bxs">🗑️</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><strong>Ibrahim Khalil</strong></td>
-                        <td>Kelas A</td>
-                        <td>14/11/2018</td>
-                        <td>👦 L</td>
-                        <td>5 entri</td>
-                        <td class="fl g8">
-                            <button class="btn bo bxs">✏️</button>
-                            <button class="btn bd bxs">🗑️</button>
-                        </td>
-                    </tr>
+                    @foreach ($data as $siswa)
+                        <tr>
+                            <td><strong>{{ $siswa->name }}</strong></td>
+                            <td>{{ $siswa->kelas->name }}</td>
+                            <td>{{ $siswa->tanggal_lahir_format }}</td>
+                            <td>{{ $siswa->jenis_kelamin_label }}</td>
+                            <td>-</td>
+                            <td class="fl g8">
+                                <button data-id="{{ $siswa->id }}" class="btn bo bxs edit-siswa">✏️</button>
+                                <button data-id="{{ $siswa->id }}" class="btn bd bxs delete-siswa">🗑️</button>
+                            </td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
+        </div>
+    </div>
+
+    {{-- Modal: Tambah Siswa --}}
+    <div class="mo" id="mSiswa">
+        <div class="md mmd">
+            <div class="mh">
+                <div>
+                    <div class="mt2">Tambah Siswa</div>
+                </div>
+                <button class="mc">✕</button>
+            </div>
+            <div class="mb">
+                <div class="fr c2">
+                    <div class="ff"><label>Nama Siswa</label><input placeholder="Nama lengkap" /></div>
+                    <div class="ff"><label>Kelas</label>
+                        <select>
+                            <option value="A">Kelas A</option>
+                            <option value="B">Kelas B</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="fr c2">
+                    <div class="ff"><label>Tanggal Lahir</label><input type="date" /></div>
+                    <div class="ff"><label>Jenis Kelamin</label>
+                        <select>
+                            <option value="L">Laki-laki</option>
+                            <option value="P">Perempuan</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="mf">
+                <button class="btn bo">Batal</button>
+                <button id="save-siswa" class="btn bp">💾 Simpan</button>
+            </div>
         </div>
     </div>
 @endsection

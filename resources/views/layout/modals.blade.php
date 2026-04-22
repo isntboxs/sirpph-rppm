@@ -1,42 +1,6 @@
 
 
 
-{{-- Modal: Tambah Siswa --}}
-<div class="mo" id="mSiswa">
-    <div class="md mmd">
-        <div class="mh">
-            <div>
-                <div class="mt2">Tambah Siswa</div>
-            </div>
-            <button class="mc">✕</button>
-        </div>
-        <div class="mb">
-            <div class="fr c2">
-                <div class="ff"><label>Nama Siswa</label><input placeholder="Nama lengkap" /></div>
-                <div class="ff"><label>Kelas</label>
-                    <select>
-                        <option value="A">Kelas A</option>
-                        <option value="B">Kelas B</option>
-                    </select>
-                </div>
-            </div>
-            <div class="fr c2">
-                <div class="ff"><label>Tanggal Lahir</label><input type="date" /></div>
-                <div class="ff"><label>Jenis Kelamin</label>
-                    <select>
-                        <option value="L">Laki-laki</option>
-                        <option value="P">Perempuan</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-        <div class="mf">
-            <button class="btn bo">Batal</button>
-            <button class="btn bp">💾 Simpan</button>
-        </div>
-    </div>
-</div>
-
 {{-- Modal: Tambah Tema --}}
 <div class="mo" id="mTema">
     <div class="md mmd">

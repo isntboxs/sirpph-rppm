@@ -77,6 +77,7 @@ Route::middleware(['auth', 'role'])->group(function () {
     Route::put('/tahun-ajaran/active/{id}', [TahunAjaranController::class, 'active'])->name('tahun_ajaran.active');
 
     Route::get('/data-sekolah', [DataSekolahController::class, 'index'])->name('data_sekolah');
+    Route::put('/data-sekolah', [DataSekolahController::class, 'update'])->name('data_sekolah.update');
 
     /*
     |----------------------------------------------------------------------

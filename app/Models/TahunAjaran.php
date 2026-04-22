@@ -19,7 +19,7 @@ class TahunAjaran extends Model
         'semester' => 'integer',
     ];
 
-    public function scopeAvtive($query)
+    public function scopeActive($query)
     {
         return $query->where('active', true);
     }

@@ -10,7 +10,9 @@ class DataSiswaController extends Controller
 {
     public function index()
     {
-        return view('pages.data_siswa.index');
+        $data = Siswa::with('kelas')->get();
+    
+        return view('pages.data_siswa.index', compact('data'));
     }
 
     public function data(Request $request)
