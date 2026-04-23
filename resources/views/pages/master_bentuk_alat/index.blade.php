@@ -1,6 +1,6 @@
 @extends('layout.app')
 
-@section('page-title', 'Master Bentuk & Alat')
+@section('page-title', 'Bentuk & Alat')
 @section('page-subtitle', 'PAUDQu AL-AULIA — 2024/2025')
 
 @section('content')
