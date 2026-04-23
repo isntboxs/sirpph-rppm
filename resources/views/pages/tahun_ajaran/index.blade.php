@@ -46,7 +46,7 @@
                 <div>
                     <div class="mt2">Tambah Tahun Ajaran</div>
                 </div>
-                <button class="mc">✕</button>
+                <button type="button" class="mc">✕</button>
             </div>
             <div class="mb">
                 <div class="fr c2">
@@ -61,7 +61,6 @@
                 </div>
             </div>
             <div class="mf">
-                <button class="btn bo">Batal</button>
                 <button id="add-ajaran" class="btn bp">💾 Simpan</button>
             </div>
         </div>
