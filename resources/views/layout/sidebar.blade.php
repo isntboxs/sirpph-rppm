@@ -35,7 +35,7 @@
             <div class="sns">Kepala Sekolah</div>
             <a class="ni" href="{{ route('prosem') }}"><span class="nic">📊</span> PROSEM</a>
             <a class="ni" href="{{ route('kelola_tema') }}"><span class="nic">📚</span> Kelola Tema</a>
-            <a class="ni" href="{{ route('master_bentuk_alat') }}"><span class="nic">🔧</span> Master Bentuk &
+            <a class="ni" href="{{ route('master_bentuk_alat') }}"><span class="nic">🔧</span> Bentuk &
                 Alat</a>
             <a class="ni" href="{{ route('validasi_rppm') }}"><span class="nic">✅</span> Validasi RPPM <span
                     class="nbg">3</span></a>

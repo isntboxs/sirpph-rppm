@@ -1,38 +1,6 @@
 
 
 
-{{-- Modal: Tambah Tema --}}
-<div class="mo" id="mTema">
-    <div class="md mmd">
-        <div class="mh">
-            <div>
-                <div class="mt2">Tambah Tema</div>
-            </div>
-            <button class="mc">✕</button>
-        </div>
-        <div class="mb">
-            <div class="fr c2">
-                <div class="ff"><label>Nama Tema</label><input placeholder="Nama tema..." /></div>
-                <div class="ff"><label>Semester</label>
-                    <select>
-                        <option value="1">Semester 1</option>
-                        <option value="2">Semester 2</option>
-                    </select>
-                </div>
-            </div>
-            <div class="ff mb16">
-                <label>Sub Tema (satu per baris)</label>
-                <textarea rows="5" placeholder="Sub Tema 1&#10;Sub Tema 2"></textarea>
-            </div>
-        </div>
-        <div class="mf">
-            <button class="btn bo">Batal</button>
-            <button class="btn bp">💾 Simpan</button>
-        </div>
-    </div>
-</div>
-
-
 {{-- Modal: Usulkan Kegiatan Baru --}}
 <div class="mo" id="mKeg">
     <div class="md mlg">
