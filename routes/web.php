@@ -48,15 +48,13 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+Route::get('/', fn() => redirect()->route('login'));
 /*
 |--------------------------------------------------------------------------
 | Authenticated Routes
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'role'])->group(function () {
-
-    // Redirect root to beranda
-    Route::get('/', fn() => redirect()->route('beranda'));
 
     /*
     |----------------------------------------------------------------------
@@ -85,7 +83,12 @@ Route::middleware(['auth', 'role'])->group(function () {
     |----------------------------------------------------------------------
     */
     Route::get('/prosem', [ProsemController::class, 'index'])->name('prosem');
+
     Route::get('/kelola-tema', [KelolaTemaController::class, 'index'])->name('kelola_tema');
+    Route::post('/kelola-tema', [KelolaTemaController::class, 'store'])->name('kelola_tema.store');
+    Route::delete('/kelola-tema/{id}', [KelolaTemaController::class, 'destroy'])->name('kelola_tema.destroy');
+    Route::post('/kelola-tema/{temaId}/sub-tema', [KelolaTemaController::class, 'storeSubTema'])->name('kelola_tema.sub_tema.store');
+    Route::delete('/kelola-tema/sub-tema/{id}', [KelolaTemaController::class, 'destroySubTema'])->name('kelola_tema.sub_tema.destroy');
 
 
     Route::get('/master-bentuk-alat', [MasterBentukAlatController::class, 'index'])->name('master_bentuk_alat');
