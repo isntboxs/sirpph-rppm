@@ -32,49 +32,6 @@
     </div>
 </div>
 
-{{-- Modal: Tambah Bentuk Kegiatan --}}
-<div class="mo" id="mBentuk">
-    <div class="md msm">
-        <div class="mh">
-            <div>
-                <div class="mt2">Tambah Bentuk Kegiatan</div>
-            </div>
-            <button class="mc">✕</button>
-        </div>
-        <div class="mb">
-            <div class="ff">
-                <label>Nama Bentuk Kegiatan</label>
-                <input placeholder="Contoh: Mewarnai, Kolase..." />
-            </div>
-        </div>
-        <div class="mf">
-            <button class="btn bo">Batal</button>
-            <button class="btn bp">💾 Simpan</button>
-        </div>
-    </div>
-</div>
-
-{{-- Modal: Tambah Alat Bahan --}}
-<div class="mo" id="mAlat">
-    <div class="md msm">
-        <div class="mh">
-            <div>
-                <div class="mt2">Tambah Alat & Bahan</div>
-            </div>
-            <button class="mc">✕</button>
-        </div>
-        <div class="mb">
-            <div class="ff">
-                <label>Nama Alat / Bahan</label>
-                <input placeholder="Contoh: Crayon, HVS..." />
-            </div>
-        </div>
-        <div class="mf">
-            <button class="btn bo">Batal</button>
-            <button class="btn bp">💾 Simpan</button>
-        </div>
-    </div>
-</div>
 
 {{-- Modal: Usulkan Kegiatan Baru --}}
 <div class="mo" id="mKeg">

@@ -91,7 +91,7 @@
                 }, 2500);
             };
 
-            $(document).on('click', '.mf .bp', function() {
+            $(document).on('click', '.mf .bp:not(.btn-submit-form)', function() {
                 $(this).closest('.mo').removeClass('on');
                 window.showToast();
             });
