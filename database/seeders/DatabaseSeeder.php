@@ -123,5 +123,10 @@ class DatabaseSeeder extends Seeder
             'tanggal_lahir' => '2019-07-22',
             'jenis_kelamin' => 'P',
         ]);
+
+        $this->call([
+            BentukKegiatanSeeder::class,
+            AlatBahanSeeder::class,
+        ]);
     }
 }
