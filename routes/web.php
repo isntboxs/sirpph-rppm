@@ -43,6 +43,7 @@ use App\Http\Controllers\OrtuPortoController;
 | Authentication Routes
 |--------------------------------------------------------------------------
 */
+
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -69,7 +70,6 @@ Route::middleware(['auth', 'role'])->group(function () {
     Route::post('/kelola-pengguna', [KelolaPenggunaController::class, 'store'])->name('kelola_pengguna.store');
     Route::put('/kelola-pengguna/{id}', [KelolaPenggunaController::class, 'update'])->name('kelola_pengguna.update');
 
-
     Route::get('/data-siswa', [DataSiswaController::class, 'index'])->name('data_siswa');
 
     Route::get('/tahun-ajaran', [TahunAjaranController::class, 'index'])->name('tahun_ajaran');
@@ -86,7 +86,14 @@ Route::middleware(['auth', 'role'])->group(function () {
     */
     Route::get('/prosem', [ProsemController::class, 'index'])->name('prosem');
     Route::get('/kelola-tema', [KelolaTemaController::class, 'index'])->name('kelola_tema');
+
+
     Route::get('/master-bentuk-alat', [MasterBentukAlatController::class, 'index'])->name('master_bentuk_alat');
+    Route::post('/master-bentuk-alat/bentuk', [MasterBentukAlatController::class, 'storeBentuk'])->name('master_bentuk_alat.bentuk.store');
+    Route::delete('/master-bentuk-alat/bentuk/{id}', [MasterBentukAlatController::class, 'destroyBentuk'])->name('master_bentuk_alat.bentuk.destroy');
+    Route::post('/master-bentuk-alat/alat', [MasterBentukAlatController::class, 'storeAlat'])->name('master_bentuk_alat.alat.store');
+    Route::delete('/master-bentuk-alat/alat/{id}', [MasterBentukAlatController::class, 'destroyAlat'])->name('master_bentuk_alat.alat.destroy');
+
     Route::get('/validasi-rppm', [ValidasiRppmController::class, 'index'])->name('validasi_rppm');
     Route::get('/validasi-rpph', [ValidasiRpphController::class, 'index'])->name('validasi_rpph');
     Route::get('/validasi-kegiatan', [ValidasiKegiatanController::class, 'index'])->name('validasi_kegiatan');
@@ -119,6 +126,4 @@ Route::middleware(['auth', 'role'])->group(function () {
     */
     Route::get('/sekolah/data', [KelasController::class, 'data'])->name('kelas.data');
     Route::get('/siswa/data', [DataSiswaController::class, 'data'])->name('siswa.data');
-    
 });
-
