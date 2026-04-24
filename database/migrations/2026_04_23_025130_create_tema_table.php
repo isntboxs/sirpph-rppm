@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tema', function (Blueprint $table) {
-            $table->unsignedInteger('id')->autoIncrement();
+            $table->id();
             $table->string('name', 100);
             $table->tinyInteger('semester');
             $table->timestamps();

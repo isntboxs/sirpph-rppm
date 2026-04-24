@@ -10,15 +10,20 @@ return new class extends Migration
     {
         Schema::create('kelas', function (Blueprint $table) {
             $table->unsignedInteger('id')->autoIncrement();
-            $table->unsignedInteger('guru_id')->nullable();
+            // $table->unsignedInteger('guru_id')->nullable();
+            $table->foreignId('guru_id')
+                ->nullable()
+                ->constrained('users')
+                ->cascadeOnUpdate()
+                ->nullOnDelete();
             $table->string('name', 50);
             $table->timestamps();
 
-            $table->foreign('guru_id')
-                  ->references('id')
-                  ->on('users')
-                  ->onUpdate('cascade')
-                  ->onDelete('set null');
+            // $table->foreign('guru_id')
+            //       ->references('id')
+            //       ->on('users')
+            //       ->onUpdate('cascade')
+            //       ->onDelete('set null');
         });
     }
 

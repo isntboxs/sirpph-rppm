@@ -9,25 +9,31 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('siswa', function (Blueprint $table) {
-            $table->unsignedInteger('id')->autoIncrement();
+            $table->id();
             $table->unsignedInteger('kelas_id');
-            $table->unsignedInteger('ortu_id')->nullable();
+            // $table->unsignedInteger('ortu_id')->nullable();
+            $table->foreignId('ortu_id')
+                ->nullable()
+                ->constrained('users')
+                ->cascadeOnUpdate()
+                ->nullOnDelete();
             $table->string('name', 100);
             $table->date('tanggal_lahir');
             $table->enum('jenis_kelamin', ['L', 'P']);
             $table->timestamps();
 
             $table->foreign('kelas_id')
-                  ->references('id')
-                  ->on('kelas')
-                  ->onUpdate('cascade')
-                  ->onDelete('restrict');
+                ->references('id')
+                ->on('kelas')
+                ->onUpdate('cascade')
+                ->onDelete('restrict');
 
-            $table->foreign('ortu_id')
-                  ->references('id')
-                  ->on('users')
-                  ->onUpdate('cascade')
-                  ->onDelete('set null');
+
+            // $table->foreign('ortu_id')
+            //     ->references('id')
+            //     ->on('users')
+            //     ->onUpdate('cascade')
+            //     ->onDelete('set null');
         });
     }
 

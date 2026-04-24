@@ -10,15 +10,13 @@ return new class extends Migration
     {
         Schema::create('sub_tema', function (Blueprint $table) {
             $table->unsignedInteger('id')->autoIncrement();
-            $table->unsignedInteger('tema_id');
+            // $table->unsignedInteger('tema_id');
+            $table->foreignId('tema_id')
+                ->constrained('tema')
+                ->cascadeOnUpdate()
+                ->cascadeOnDelete();
             $table->string('name', 100);
             $table->timestamps();
-
-            $table->foreign('tema_id')
-                ->references('id')
-                ->on('tema')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
         });
     }
 
