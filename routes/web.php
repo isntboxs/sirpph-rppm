@@ -83,6 +83,9 @@ Route::middleware(['auth', 'role'])->group(function () {
     |----------------------------------------------------------------------
     */
     Route::get('/prosem', [ProsemController::class, 'index'])->name('prosem');
+    Route::post('/prosem', [ProsemController::class, 'store'])->name('prosem.store');
+    Route::delete('/prosem/{id}', [ProsemController::class, 'destroy'])->name('prosem.destroy');
+    Route::get('/prosem/sub-tema/{temaId}', [ProsemController::class, 'getSubTema'])->name('prosem.sub_tema');
 
     Route::get('/kelola-tema', [KelolaTemaController::class, 'index'])->name('kelola_tema');
     Route::post('/kelola-tema', [KelolaTemaController::class, 'store'])->name('kelola_tema.store');
@@ -108,6 +111,8 @@ Route::middleware(['auth', 'role'])->group(function () {
     |----------------------------------------------------------------------
     */
     Route::get('/kumpulan-kegiatan', [KumpulanKegiatanController::class, 'index'])->name('kumpulan_kegiatan');
+    Route::post('/kumpulan-kegiatan', [KumpulanKegiatanController::class, 'store'])->name('kumpulan_kegiatan.store');
+
     Route::get('/rppm', [RppmController::class, 'index'])->name('rppm');
     Route::get('/rpph', [RpphController::class, 'index'])->name('rpph');
     Route::get('/portofolio-siswa', [PortofolioSiswaController::class, 'index'])->name('portofolio_siswa');

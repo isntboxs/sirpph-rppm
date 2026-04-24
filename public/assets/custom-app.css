@@ -1374,8 +1374,14 @@ tr:hover td {
 
 .cbi input {
     accent-color: var(--g6);
+    margin-top: 2px;
     width: 13px;
     height: 13px
+}
+
+.cbi:has(input:checked) {
+    background: #179b76;
+    color: #ecf2f1;
 }
 
 /* PRINT */
