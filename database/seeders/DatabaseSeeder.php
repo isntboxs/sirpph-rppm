@@ -125,8 +125,10 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call([
+            TahunAjaranSeeder::class,
             BentukKegiatanSeeder::class,
             AlatBahanSeeder::class,
+            TemaSeeder::class,
         ]);
     }
 }
