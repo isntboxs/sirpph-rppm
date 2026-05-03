@@ -16,7 +16,13 @@ class KumpulanKegiatanController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Kegiatan::with(['tema', 'bentukKegiatan', 'aspeks', 'alatBahans']);
+        $query = Kegiatan::withJumlahTahun()
+            ->with([
+                'tema:id,name',
+                'bentukKegiatan:id,name',
+                'aspeks:id,name,emote,warna',
+                'alatBahans:id,name',
+            ]);
 
         if ($request->filled('cari')) {
             $query->cari($request->cari);
@@ -38,8 +44,19 @@ class KumpulanKegiatanController extends Controller
             $query->statusFilter($request->status);
         }
 
+        if ($request->filled('status_kunci')) {
+            match ($request->status_kunci) {
+                'terkunci' => $query->terkunci(),
+                'aktif'    => $query->belumTerkunci(),
+                default    => null,
+            };
+        }
+
         // Paginate 12 per halaman, pertahankan query string di URL
-        $kegiatans = $query->latest()->paginate(12)->withQueryString();
+        $kegiatans = $query->orderByRaw('jumlah_tahun_dipakai DESC')
+            ->orderBy('name')
+            ->paginate(12)
+            ->withQueryString();
 
         // Data untuk dropdown filter
         $temas   = Tema::orderBy('semester')->get();

@@ -102,7 +102,11 @@ Route::middleware(['auth', 'role'])->group(function () {
 
     Route::get('/validasi-rppm', [ValidasiRppmController::class, 'index'])->name('validasi_rppm');
     Route::get('/validasi-rpph', [ValidasiRpphController::class, 'index'])->name('validasi_rpph');
+
     Route::get('/validasi-kegiatan', [ValidasiKegiatanController::class, 'index'])->name('validasi_kegiatan');
+    Route::put('/validasi-kegiatan/{id}/setujui', [ValidasiKegiatanController::class, 'setujui'])->name('validasi_kegiatan.setujui');
+    Route::put('/validasi-kegiatan/{id}/tolak', [ValidasiKegiatanController::class, 'tolak'])->name('validasi_kegiatan.tolak');
+    
     Route::get('/monitoring-guru', [MonitoringGuruController::class, 'index'])->name('monitoring_guru');
 
     /*
@@ -114,7 +118,17 @@ Route::middleware(['auth', 'role'])->group(function () {
     Route::post('/kumpulan-kegiatan', [KumpulanKegiatanController::class, 'store'])->name('kumpulan_kegiatan.store');
 
     Route::get('/rppm', [RppmController::class, 'index'])->name('rppm');
+    Route::post('/rppm', [RppmController::class, 'store'])->name('rppm.store');
+    Route::get('/rppm/{id}', [RppmController::class, 'show'])->name('rppm.show');
+    Route::post('/rppm/{id}/kegiatan', [RppmController::class, 'tambahKegiatan'])->name('rppm.kegiatan.tambah');
+    Route::delete('/rppm/kegiatan/{id}', [RppmController::class, 'hapusKegiatan'])->name('rppm.kegiatan.hapus');
+    Route::put('/rppm/{id}/ajukan', [RppmController::class, 'ajukan'])->name('rppm.ajukan');
+    Route::post('/rppm/{id}/generate-rpph', [RppmController::class, 'generateRpph'])->name('rppm.generate_rpph');
+
     Route::get('/rpph', [RpphController::class, 'index'])->name('rpph');
+    Route::put('/rpph/{id}', [RpphController::class, 'update'])->name('rpph.update');
+    Route::put('/rpph/{id}/ajukan', [RpphController::class, 'ajukan'])->name('rpph.ajukan');
+
     Route::get('/portofolio-siswa', [PortofolioSiswaController::class, 'index'])->name('portofolio_siswa');
     Route::get('/analisis-aspek', [AnalisisAspekController::class, 'index'])->name('analisis_aspek');
 

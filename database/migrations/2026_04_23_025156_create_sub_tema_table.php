@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('sub_tema', function (Blueprint $table) {
-            $table->unsignedInteger('id')->autoIncrement();
+            $table->id();
             // $table->unsignedInteger('tema_id');
             $table->foreignId('tema_id')
                 ->constrained('tema')

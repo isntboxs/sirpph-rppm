@@ -1096,14 +1096,18 @@ tr:hover td {
     font-weight: 700;
     font-size: 13px;
     margin-bottom: 5px;
-    color: var(--txt)
+    color: var(--txt);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .kd {
     font-size: 12px;
     color: var(--txt3);
     line-height: 1.5;
-    margin-bottom: 7px
+    margin-bottom: 7px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 /* DAY SCHEDULE */

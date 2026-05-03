@@ -6,8 +6,22 @@
 @section('content')
 
     {{-- Filter Bar --}}
-    <div class="card mb16">
-        <form id="formFilter" class="fl fw g8 ic">
+    <div class="card">
+        {{-- Header --}}
+        <div class="fl jb ic mb16">
+            <div class="ch">
+                <div>
+                    <div class="ct">🗂️ Kumpulan Kegiatan</div>
+                    <div class="cs">Template kegiatan. Terkunci otomatis setelah dipakai di 3 tahun ajaran
+                        berbeda.</div>
+                </div>
+            </div>
+            <button type="button" class="btn bp bsm" id="btnUsulkanKegiatan">
+                + Usulkan Kegiatan Baru
+            </button>
+        </div>
+
+        <form id="formFilter" class="fl fw g8 ic fb">
             <input type="text" name="cari" value="{{ request('cari') }}" placeholder="🔍 Cari kegiatan..."
                 style="min-width:200px" />
 
@@ -57,71 +71,64 @@
             <button type="submit" class="btn bp bsm">🔍 Filter</button>
             <a href="{{ route('kumpulan_kegiatan') }}" class="btn bo bsm">Reset</a>
         </form>
-    </div>
 
-    {{-- Header --}}
-    <div class="fl jb ic mb16">
-        <div class="fs11 tc2">
-            {{ $kegiatans->total() }} kegiatan ditemukan
-        </div>
-        <button type="button" class="btn bp bsm" id="btnUsulkanKegiatan">
-            + Usulkan Kegiatan Baru
-        </button>
-    </div>
-
-    {{-- Grid Kegiatan --}}
-    @if ($kegiatans->isEmpty())
-        <div class="card emp">
-            <div class="ei">🗂️</div>
-            <h3>Tidak ada kegiatan ditemukan</h3>
-            <p>Coba ubah filter atau usulkan kegiatan baru.</p>
-        </div>
-    @else
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px">
-            @foreach ($kegiatans as $kegiatan)
-                <div class="kc">
-                    {{-- Header card --}}
-                    <div class="fl jb ic mb8">
-                        <div class="fl ic g8">
-                            <span style="font-size:24px">{{ $kegiatan->foto_icon }}</span>
-                            <div class="kn">{{ $kegiatan->name }}</div>
+        {{-- Grid Kegiatan --}}
+        @if ($kegiatans->isEmpty())
+            <div class="card emp">
+                <div class="ei">🗂️</div>
+                <h3>Tidak ada kegiatan ditemukan</h3>
+                <p>Coba ubah filter atau usulkan kegiatan baru.</p>
+            </div>
+        @else
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px">
+                @foreach ($kegiatans as $kegiatan)
+                    <div class="kc">
+                        {{-- Header card --}}
+                        <div class="fl jb ic mb8">
+                            <div class="fl ic g8">
+                                <span style="font-size:24px">{{ $kegiatan->foto_icon }}</span>
+                                <div class="kn">{{ Str::limit($kegiatan->name, 30) }}</div>
+                            </div>
+                            <span class="bdg {{ $kegiatan->status_badge_class }}">{{ $kegiatan->status_label }}</span>
                         </div>
-                        <span class="bdg {{ $kegiatan->status_badge_class }}">{{ $kegiatan->status_label }}</span>
-                    </div>
 
-                    {{-- Tema & Bentuk --}}
-                    <div class="fs11 tc2 mb8">
-                        📚 {{ $kegiatan->tema->name }} &nbsp;|&nbsp;
-                        🎭 {{ $kegiatan->bentukKegiatan->name }}
-                    </div>
+                        {{-- Deskripsi --}}
+                        @if ($kegiatan->deskripsi)
+                            <div class="kd">{{ Str::limit($kegiatan->deskripsi, 100) }}</div>
+                        @endif
+                        
+                        {{-- <div class="fs11 tc2 mb8">
+                            📚 {{ $kegiatan->tema->name }} &nbsp;|&nbsp;
+                            🎭 {{ $kegiatan->bentukKegiatan->name }}
+                        </div> --}}
 
-                    {{-- Deskripsi --}}
-                    @if ($kegiatan->deskripsi)
-                        <div class="kd">{{ Str::limit($kegiatan->deskripsi, 100) }}</div>
-                    @endif
+                        {{-- Aspek Perkembangan --}}
+                        <div class="fl fw g8 mb8">
+                            @foreach ($kegiatan->aspeks as $aspek)
+                                <span class="ap {{ $aspek->warna }}">
+                                    {{ $aspek->emote }} {{ $aspek->name }}
+                                </span>
+                            @endforeach
+                        </div>
 
-                    {{-- Aspek Perkembangan --}}
-                    <div class="fl fw g8 mb8">
-                        @foreach ($kegiatan->aspeks as $aspek)
-                            <span class="ap {{ $aspek->warna }}">
-                                {{ $aspek->emote }} {{ $aspek->name }}
-                            </span>
-                        @endforeach
-                    </div>
-
-                    {{-- Alat Bahan --}}
-                    @if ($kegiatan->alatBahans->isNotEmpty())
-                        <div class="fs11 tc2">
+                        <div class="fs11 tc2 mb8">
+                            🎭 {{ $kegiatan->bentukKegiatan->name }}&nbsp;|&nbsp;
                             🔧 {{ $kegiatan->alatBahans->pluck('name')->join(', ') }}
                         </div>
-                    @endif
-                </div>
-            @endforeach
-        </div>
 
-        {{-- Pagination --}}
-        {{ $kegiatans->links() }}
-    @endif
+                        {{-- @if ($kegiatan->alatBahans->isNotEmpty())
+                            <div class="fs11 tc2">
+                                🔧 {{ $kegiatan->alatBahans->pluck('name')->join(', ') }}
+                            </div>
+                        @endif --}}
+                    </div>
+                @endforeach
+            </div>
+
+            {{-- Pagination --}}
+            {{ $kegiatans->links() }}
+        @endif
+    </div>
 
     {{-- Modal: Usulkan Kegiatan Baru --}}
     <div class="mo" id="mUsulkanKegiatan">
@@ -274,6 +281,9 @@
                 .done(function() {
                     $('#mUsulkanKegiatan').removeClass('on');
                     showToast('📤 Kegiatan berhasil diusulkan, menunggu persetujuan Kepala');
+                    setTimeout(function() {
+                        window.location.href = '/kumpulan-kegiatan';
+                    }, 800);
                 })
                 .fail(function(xhr) {
                     var errors = xhr.responseJSON.errors;

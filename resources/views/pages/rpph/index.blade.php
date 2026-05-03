@@ -1,110 +1,222 @@
 @extends('layout.app')
 
 @section('page-title', 'Buat & Kelola RPPH')
-@section('page-subtitle', 'PAUDQu AL-AULIA — 2024/2025')
+@section('page-subtitle', $taAktif?->name ?? '-')
 
 @section('content')
-    <div class="card mb16">
-        <div class="ch">
-            <div class="ct">📄 RPPH dari RPPM Disetujui</div>
-        </div>
 
-        <div class="rc2">
-            <div class="rh">
+    @forelse ($rppms as $rppm)
+        <div class="card mb16">
+
+            {{-- Header RPPM --}}
+            <div class="ch mb12">
                 <div>
-                    <div class="rw">Mgg ke-1 • 2024/2025</div>
-                    <div class="rn">Aku, Makhluq Allah</div>
-                    <div class="rs">Allah Tuhanku</div>
+                    <div class="fs11 tc2">Mgg ke-{{ $rppm->minggu_ke }}</div>
+                    <div class="ct">{{ $rppm->subTema->tema->name }}</div>
+                    <div class="rs">{{ $rppm->subTema->name }}</div>
                 </div>
-                <span class="bdg bok">✅ RPPM Disetujui</span>
+                <div class="fl ic g8">
+                    <span class="bdg bok">✅ RPPM Disetujui</span>
+                    @if ($rppm->rpphs->isEmpty())
+                        <button type="button" class="btn bp bsm btn-generate-rpph" data-id="{{ $rppm->id }}">
+                            ⚡ Generate RPPH
+                        </button>
+                    @else
+                        <button type="button" class="btn bo bsm btn-generate-rpph" data-id="{{ $rppm->id }}">
+                            🔄 Refresh RPPH
+                        </button>
+                    @endif
+                </div>
             </div>
 
-            {{-- Status per hari --}}
-            <div class="fl fw g8 mt8 mb8">
-                <div
-                    style="padding:6px 12px;background:var(--g1);border:2px solid var(--g4);border-radius:7px;font-size:11.5px;font-weight:700">
-                    Senin ✅</div>
-                <div
-                    style="padding:6px 12px;background:#eff6ff;border:2px solid #bfdbfe;border-radius:7px;font-size:11.5px;font-weight:700">
-                    Selasa 📝</div>
-                <div
-                    style="padding:6px 12px;background:var(--g0);border:2px solid var(--g1);border-radius:7px;font-size:11.5px;font-weight:700">
-                    Rabu ⚪</div>
-                <div
-                    style="padding:6px 12px;background:var(--g1);border:2px solid var(--g4);border-radius:7px;font-size:11.5px;font-weight:700">
-                    Kamis ✅</div>
-                <div
-                    style="padding:6px 12px;background:var(--g0);border:2px solid var(--g1);border-radius:7px;font-size:11.5px;font-weight:700">
-                    Jumat ⚪</div>
-            </div>
+            {{-- Panel per hari --}}
+            @foreach (['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'] as $hari)
+                @php
+                    $kegiatanHari = $rppm->rppmKegiatans->where('hari', $hari);
+                    $rpph = $rppm->rpphs->where('hari', $hari)->first();
+                @endphp
 
-            <div class="ract">
-                <button class="btn bp bsm" onclick="showToast('⚡ RPPH di-generate ulang')">⚡ Generate/Refresh RPPH</button>
-                <button class="btn bo bsm" id="btn-cetak">🖨️ RPPM</button>
-            </div>
+                @if ($kegiatanHari->isNotEmpty())
+                    <div class="ds mb8">
+                        <div class="dsh">
+                            <span class="dn">📅 {{ $hari }}</span>
+                            <div class="fl ic g8">
+                                @if ($rpph)
+                                    <span class="bdg {{ $rpph->status_badge_class }}">
+                                        {{ $rpph->status_label }}
+                                    </span>
+                                    @if (in_array($rpph->status, ['draft', 'dikembalikan']))
+                                        <button type="button" class="btn bp bxs btn-edit-rpph"
+                                            data-id="{{ $rpph->id }}" data-hari="{{ $hari }}"
+                                            data-tujuan="{{ $rpph->tujuan_harian }}" data-catatan="{{ $rpph->catatan }}">
+                                            ✏️ Edit
+                                        </button>
+                                        <button type="button" class="btn ba bxs btn-ajukan-rpph"
+                                            data-id="{{ $rpph->id }}" data-hari="{{ $hari }}">
+                                            📤 Ajukan
+                                        </button>
+                                    @endif
+                                @else
+                                    <span class="fs11 tc2">Belum di-generate</span>
+                                @endif
+                            </div>
+                        </div>
 
-            {{-- Senin --}}
-            <div class="ds mt8">
-                <div class="dsh">
-                    <span class="dn">📅 Senin</span>
-                    <div class="fl g8">
-                        <button class="btn bp bxs">✏️ Edit</button>
-                        <button class="btn bo bxs">🖨️</button>
+                        {{-- List kegiatan hari ini --}}
+                        @foreach ($kegiatanHari as $rk)
+                            <div class="dki">
+                                <div>
+                                    <span style="font-weight:700">
+                                        {{ $rk->kegiatan->foto_icon }}
+                                        {{ $rk->kegiatan->name }}
+                                    </span>
+                                    <span class="fs11 tc2">
+                                        ({{ $rk->kegiatan->bentukKegiatan->name }})
+                                    </span>
+                                    <div class="fl fw g8 mt4">
+                                        @foreach ($rk->kegiatan->aspeks as $aspek)
+                                            <span class="ap {{ $aspek->warna }}">
+                                                {{ $aspek->emote }} {{ $aspek->name }}
+                                            </span>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+
+                        {{-- Catatan RPPH jika sudah dikembalikan --}}
+                        @if ($rpph && $rpph->status === 'dikembalikan' && $rpph->catatan_kepala)
+                            <div class="al ale mt8">
+                                📝 Catatan Kepala: {{ $rpph->catatan_kepala }}
+                            </div>
+                        @endif
+
+                    </div>
+                @endif
+            @endforeach
+
+        </div>
+    @empty
+        <div class="emp">
+            <div class="ei">📅</div>
+            <h3>Belum ada RPPH</h3>
+            <p>RPPH dibuat dari RPPM yang sudah disetujui. Pastikan RPPM kamu sudah disetujui Kepala Sekolah, lalu klik
+                Generate RPPH.</p>
+            <a href="{{ route('rppm') }}" class="btn bp" style="margin-top:12px">← Ke Halaman RPPM</a>
+        </div>
+    @endforelse
+
+    {{-- Modal: Edit Detail RPPH --}}
+    <div class="mo" id="mEditRpph">
+        <div class="md mmd">
+            <form id="formEditRpph">
+                <input type="hidden" id="inputRpphId" />
+                <div class="mh">
+                    <div>
+                        <div class="mt2">✏️ Edit RPPH</div>
+                        <div class="mst" id="labelHariRpph"></div>
+                    </div>
+                    <button type="button" class="mc">✕</button>
+                </div>
+                <div class="mb">
+                    <div class="ff mb12">
+                        <label>Tujuan Harian</label>
+                        <textarea id="inputTujuanRpph" name="tujuan_harian" rows="3"
+                            placeholder="Tujuan kegiatan hari ini secara spesifik..."></textarea>
+                    </div>
+                    <div class="ff">
+                        <label>Catatan Tambahan</label>
+                        <textarea id="inputCatatanRpph" name="catatan" rows="2" placeholder="Catatan persiapan, bahan tambahan, dsb..."></textarea>
                     </div>
                 </div>
-                <div class="dki">
-                    <strong>Kolase Tulisan "Terima Kasih Ya Allah"</strong>
-                    <span class="fs11 tc2">(Kolase)</span>
+                <div class="mf">
+                    <button type="button" class="btn bo">Batal</button>
+                    <button type="submit" class="btn bp btn-submit-form">💾 Simpan</button>
                 </div>
-                <div class="al als mt8">✅ Disetujui Kepala Sekolah</div>
-            </div>
-
-            {{-- Selasa --}}
-            <div class="ds mt8">
-                <div class="dsh">
-                    <span class="dn">📅 Selasa</span>
-                    <div class="fl g8">
-                        <button class="btn bp bxs">✏️ Edit</button>
-                        <button class="btn bo bxs">🖨️</button>
-                        <button class="btn ba bxs" onclick="showToast('📤 RPPH Selasa diajukan')">📤</button>
-                    </div>
-                </div>
-                <div class="dki">
-                    <strong>Menebalkan Nama Sendiri</strong>
-                    <span class="fs11 tc2">(Menggambar)</span>
-                </div>
-                <div class="al ali mt8">📝 Sudah diisi — klik 📤 untuk ajukan ke Kepala</div>
-            </div>
-
-            {{-- Rabu --}}
-            <div class="ds mt8">
-                <div class="dsh">
-                    <span class="dn">📅 Rabu</span>
-                    <div class="fl g8">
-                        <button class="btn bp bxs" id="btn-pilih-keg">+Pilih Kegiatan</button>
-                    </div>
-                </div>
-                <div class="emp" style="padding:16px 0">
-                    <div class="ei" style="font-size:24px">📭</div>
-                    <div style="font-size:12px;color:var(--txt3)">Belum ada kegiatan untuk hari Rabu</div>
-                </div>
-            </div>
-
+            </form>
         </div>
     </div>
+
 @endsection
+
 @push('scripts')
     <script>
-        $(function() {
-            $('#btn-cetak').on('click', function() {
-                $('#mCRP').addClass('on');
-            });
+        // ── Generate / Refresh RPPH ───────────────────────────────────────────
+        $(document).on('click', '.btn-generate-rpph', function() {
+            var id = $(this).data('id');
+
+            $.post('/rppm/' + id + '/generate-rpph', {
+                    _token: '{{ csrf_token() }}'
+                })
+                .done(function(res) {
+                    showToast(res.message);
+                    setTimeout(function() {
+                        location.reload();
+                    }, 800);
+                })
+                .fail(function(xhr) {
+                    showToast('❌ ' + xhr.responseJSON.message);
+                });
         });
 
-        $(function() {
-            $('#btn-pilih-keg').on('click', function() {
-                $('#mPilihKeg').addClass('on');
-            });
+        // ── Buka modal edit RPPH ──────────────────────────────────────────────
+        $(document).on('click', '.btn-edit-rpph', function() {
+            $('#inputRpphId').val($(this).data('id'));
+            $('#labelHariRpph').text('Hari: ' + $(this).data('hari'));
+            $('#inputTujuanRpph').val($(this).data('tujuan'));
+            $('#inputCatatanRpph').val($(this).data('catatan'));
+            $('#mEditRpph').addClass('on');
+        });
+
+        // ── Reset modal edit --------------------------------------------------
+        $('#mEditRpph').on('click', '.mc, .btn.bo', function() {
+            $('#formEditRpph')[0].reset();
+        });
+
+        // ── Submit edit RPPH ──────────────────────────────────────────────────
+        $('#formEditRpph').on('submit', function(e) {
+            e.preventDefault();
+
+            var id = $('#inputRpphId').val();
+
+            $.ajax({
+                    url: '/rpph/' + id,
+                    type: 'PUT',
+                    data: {
+                        tujuan_harian: $('#inputTujuanRpph').val(),
+                        catatan: $('#inputCatatanRpph').val(),
+                        _token: '{{ csrf_token() }}',
+                    },
+                })
+                .done(function(res) {
+                    $('#mEditRpph').removeClass('on');
+                    showToast(res.message);
+                });
+        });
+
+        // ── Ajukan RPPH ───────────────────────────────────────────────────────
+        $(document).on('click', '.btn-ajukan-rpph', function() {
+            var id = $(this).data('id');
+            var hari = $(this).data('hari');
+
+            if (!confirm('Ajukan RPPH hari ' + hari + ' ke Kepala Sekolah?')) return;
+
+            $.ajax({
+                    url: '/rpph/' + id + '/ajukan',
+                    type: 'PUT',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                })
+                .done(function(res) {
+                    showToast(res.message);
+                    setTimeout(function() {
+                        location.reload();
+                    }, 800);
+                })
+                .fail(function(xhr) {
+                    showToast('❌ ' + xhr.responseJSON.message);
+                });
         });
     </script>
 @endpush

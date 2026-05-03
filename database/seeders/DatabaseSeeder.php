@@ -129,6 +129,7 @@ class DatabaseSeeder extends Seeder
             BentukKegiatanSeeder::class,
             AlatBahanSeeder::class,
             TemaSeeder::class,
+            AspekPerkembanganSeeder::class,
         ]);
     }
 }
