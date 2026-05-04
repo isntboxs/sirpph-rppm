@@ -1,0 +1,54 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      APP_ENV: ${APP_ENV:-production}
+      APP_DEBUG: ${APP_DEBUG:-false}
+      LOG_CHANNEL: ${LOG_CHANNEL:-stderr}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      DB_CONNECTION: ${DB_CONNECTION:-mysql}
+      DB_HOST: ${DB_HOST:-mysql}
+      DB_PORT: ${DB_PORT:-3306}
+      DB_DATABASE: ${DB_DATABASE:-sirpph}
+      DB_USERNAME: ${DB_USERNAME:-sirpph}
+      DB_PASSWORD: ${DB_PASSWORD:-change-me}
+      CACHE_STORE: ${CACHE_STORE:-file}
+      SESSION_DRIVER: ${SESSION_DRIVER:-file}
+      QUEUE_CONNECTION: ${QUEUE_CONNECTION:-sync}
+      RUN_MIGRATIONS: ${RUN_MIGRATIONS:-true}
+      RUN_OPTIMIZE: ${RUN_OPTIMIZE:-true}
+      RUN_ROUTE_CACHE: ${RUN_ROUTE_CACHE:-false}
+      RUN_STORAGE_LINK: ${RUN_STORAGE_LINK:-true}
+    depends_on:
+      mysql:
+        condition: service_healthy
+    ports:
+      - "80"
+    volumes:
+      - app_storage:/var/www/html/storage
+
+  mysql:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-sirpph}
+      MYSQL_USER: ${DB_USERNAME:-sirpph}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-change-me}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-change-root-me}
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$${MYSQL_ROOT_PASSWORD} --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  app_storage:
+  mysql_data:
