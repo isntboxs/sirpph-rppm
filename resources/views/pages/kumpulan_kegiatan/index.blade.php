@@ -96,7 +96,7 @@
                         @if ($kegiatan->deskripsi)
                             <div class="kd">{{ Str::limit($kegiatan->deskripsi, 100) }}</div>
                         @endif
-                        
+
                         {{-- <div class="fs11 tc2 mb8">
                             📚 {{ $kegiatan->tema->name }} &nbsp;|&nbsp;
                             🎭 {{ $kegiatan->bentukKegiatan->name }}
@@ -114,6 +114,14 @@
                         <div class="fs11 tc2 mb8">
                             🎭 {{ $kegiatan->bentukKegiatan->name }}&nbsp;|&nbsp;
                             🔧 {{ $kegiatan->alatBahans->pluck('name')->join(', ') }}
+                        </div>
+                        <div class="fs11 tc2 mb4">
+                            📅 {{ $kegiatan->label_pemakaian }}
+                        </div>
+                        <div class="pw mb4">
+                            <div class="pb {{ $kegiatan->warna_progress }}"
+                                style="width:{{ $kegiatan->presentase_pemakaian }}%">
+                            </div>
                         </div>
 
                         {{-- @if ($kegiatan->alatBahans->isNotEmpty())

@@ -13,8 +13,9 @@ class Rpph extends Model
     protected $fillable = [
         'rppm_id',
         'hari',
-        'tujuan_harian',
-        'catatan',
+        'pembuka',
+        'inti',
+        'penutup',
         'status',
         'catatan_kepala',
     ];
@@ -33,12 +34,31 @@ class Rpph extends Model
             ->get();
     }
 
-    public function scopePending(Builder $q): Builder  { return $q->where('status', 'pending'); }
-    public function scopeDisetujui(Builder $q): Builder { return $q->where('status', 'disetujui'); }
+    public function scopePending(Builder $q): Builder
+    {
+        return $q->where('status', 'pending');
+    }
+
+    public function scopeDisetujui(Builder $q): Builder
+    {
+        return $q->where('status', 'disetujui');
+    }
+
+    public function scopePendingValidasi(Builder $q): Builder
+    {
+        return $q->where('status', 'pending');
+    }
+
+    public function getTanggalFormatAttribute(): string
+    {
+        return $this->created_at
+            ->locale('id')
+            ->translatedFormat('d F Y');
+    }
 
     public function getStatusLabelAttribute(): string
     {
-        return match($this->status) {
+        return match ($this->status) {
             'draft'        => '📝 Draft',
             'pending'      => '⏳ Menunggu',
             'disetujui'    => '✅ Disetujui',
@@ -49,7 +69,7 @@ class Rpph extends Model
 
     public function getStatusBadgeClassAttribute(): string
     {
-        return match($this->status) {
+        return match ($this->status) {
             'draft'        => 'bdr',
             'pending'      => 'bpnd',
             'disetujui'    => 'bok',

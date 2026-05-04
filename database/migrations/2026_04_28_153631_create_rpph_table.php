@@ -17,8 +17,9 @@ return new class extends Migration
                 ->cascadeOnDelete();
 
             $table->enum('hari', ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat']);
-            $table->text('tujuan_harian')->nullable();
-            $table->text('catatan')->nullable();
+            $table->text('pembuka')->nullable();
+            $table->text('inti')->nullable();
+            $table->text('penutup')->nullable();
 
             $table->enum('status', ['draft', 'pending', 'disetujui', 'dikembalikan'])
                 ->default('draft');

@@ -12,6 +12,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700&display=swap"
         rel="stylesheet">
+        <link rel="icon" type="image/jpeg" href="{{ asset('logo.jpeg') }}">
     @if (file_exists(public_path('assets/custom-app.css')))
         <link rel="stylesheet"
             href="{{ asset('assets/custom-app.css') }}?v={{ filemtime(public_path('assets/custom-app.css')) }}">

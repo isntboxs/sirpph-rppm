@@ -75,6 +75,20 @@ class Rppm extends Model
         return $q->where('guru_id', $guruId);
     }
 
+    public function scopePendingValidasi(Builder $q): Builder
+    {
+        return $q->where('status', 'pending');
+    }
+
+    public function getJumlahAspekAttribute(): int
+    {
+        return AspekPerkembangan::whereHas('kegiatans', function ($q) {
+            $q->whereHas('rppmKegiatans', function ($q2) {
+                $q2->where('rppm_id', $this->id);
+            });
+        })->count();
+    }
+
     public function kegiatanPerHari(): array
     {
         $hari = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'];
@@ -104,7 +118,7 @@ class Rppm extends Model
 
     public function getStatusLabelAttribute(): string
     {
-        return match($this->status) {
+        return match ($this->status) {
             'draft'        => '📝 Draft',
             'pending'      => '⏳ Menunggu',
             'disetujui'    => '✅ Disetujui',
@@ -115,7 +129,7 @@ class Rppm extends Model
 
     public function getStatusBadgeClassAttribute(): string
     {
-        return match($this->status) {
+        return match ($this->status) {
             'draft'        => 'bdr',
             'pending'      => 'bpnd',
             'disetujui'    => 'bok',

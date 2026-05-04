@@ -48,7 +48,7 @@
                                     @if (in_array($rpph->status, ['draft', 'dikembalikan']))
                                         <button type="button" class="btn bp bxs btn-edit-rpph"
                                             data-id="{{ $rpph->id }}" data-hari="{{ $hari }}"
-                                            data-tujuan="{{ $rpph->tujuan_harian }}" data-catatan="{{ $rpph->catatan }}">
+                                            data-pembuka="{{ $rpph->pembuka }}" data-inti="{{ $rpph->inti }}" data-penutup="{{ $rpph->penutup }}">
                                             ✏️ Edit
                                         </button>
                                         <button type="button" class="btn ba bxs btn-ajukan-rpph"
@@ -120,17 +120,22 @@
                 </div>
                 <div class="mb">
                     <div class="ff mb12">
-                        <label>Tujuan Harian</label>
-                        <textarea id="inputTujuanRpph" name="tujuan_harian" rows="3"
-                            placeholder="Tujuan kegiatan hari ini secara spesifik..."></textarea>
+                        <label>Pembuka</label>
+                        <textarea id="inputPembuka" name="pembuka" rows="3"
+                            placeholder="Pembuka kegiatan hari ini secara spesifik..."></textarea>
+                    </div>
+                    <div class="ff mb12">
+                        <label>Inti</label>
+                        <textarea id="inputInti" name="inti" rows="3"
+                            placeholder="Inti kegiatan hari ini secara spesifik..."></textarea>
                     </div>
                     <div class="ff">
-                        <label>Catatan Tambahan</label>
-                        <textarea id="inputCatatanRpph" name="catatan" rows="2" placeholder="Catatan persiapan, bahan tambahan, dsb..."></textarea>
+                        <label>Penutup</label>
+                        <textarea id="inputPenutup" name="penutup" rows="3"
+                            placeholder="Penutup kegiatan hari ini secara spesifik..."></textarea>
                     </div>
                 </div>
                 <div class="mf">
-                    <button type="button" class="btn bo">Batal</button>
                     <button type="submit" class="btn bp btn-submit-form">💾 Simpan</button>
                 </div>
             </form>
@@ -141,7 +146,6 @@
 
 @push('scripts')
     <script>
-        // ── Generate / Refresh RPPH ───────────────────────────────────────────
         $(document).on('click', '.btn-generate-rpph', function() {
             var id = $(this).data('id');
 
@@ -159,21 +163,19 @@
                 });
         });
 
-        // ── Buka modal edit RPPH ──────────────────────────────────────────────
         $(document).on('click', '.btn-edit-rpph', function() {
             $('#inputRpphId').val($(this).data('id'));
             $('#labelHariRpph').text('Hari: ' + $(this).data('hari'));
-            $('#inputTujuanRpph').val($(this).data('tujuan'));
-            $('#inputCatatanRpph').val($(this).data('catatan'));
+            $('#inputPembuka').val($(this).data('pembuka'));
+            $('#inputInti').val($(this).data('inti'));
+            $('#inputPenutup').val($(this).data('penutup'));
             $('#mEditRpph').addClass('on');
         });
 
-        // ── Reset modal edit --------------------------------------------------
         $('#mEditRpph').on('click', '.mc, .btn.bo', function() {
             $('#formEditRpph')[0].reset();
         });
 
-        // ── Submit edit RPPH ──────────────────────────────────────────────────
         $('#formEditRpph').on('submit', function(e) {
             e.preventDefault();
 
@@ -183,18 +185,21 @@
                     url: '/rpph/' + id,
                     type: 'PUT',
                     data: {
-                        tujuan_harian: $('#inputTujuanRpph').val(),
-                        catatan: $('#inputCatatanRpph').val(),
+                        pembuka: $('#inputPembuka').val(),
+                        inti: $('#inputInti').val(),
+                        penutup: $('#inputPenutup').val(),
                         _token: '{{ csrf_token() }}',
                     },
                 })
                 .done(function(res) {
                     $('#mEditRpph').removeClass('on');
                     showToast(res.message);
+                    setTimeout(function() {
+                        location.reload();
+                    }, 800);
                 });
         });
 
-        // ── Ajukan RPPH ───────────────────────────────────────────────────────
         $(document).on('click', '.btn-ajukan-rpph', function() {
             var id = $(this).data('id');
             var hari = $(this).data('hari');

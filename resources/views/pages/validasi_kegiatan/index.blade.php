@@ -105,9 +105,8 @@
                 </div>
             @empty
                 <div class="emp">
-                    <div class="ei">✅</div>
-                    <h3>Tidak ada usulan kegiatan</h3>
-                    <p>Semua usulan kegiatan sudah divalidasi.</p>
+                    <div class="ei">🎉</div>
+                    <h3>Semua kegiatan sudah divalidasi</h3>
                 </div>
             @endforelse
         </div>
@@ -407,15 +406,15 @@
                     },
                 })
                 .done(function(res) {
-                    $row.fadeOut(150, function() {
+                    $('#row-kegiatan-' + id).fadeOut(150, function() {
                         $(this).remove();
                     });
 
                     showToast(res.message);
 
-                    setTimeout(function() {
-                        window.location.href = '{{ route('validasi_kegiatan') }}';
-                    }, 800);
+                    // setTimeout(function() {
+                    //     window.location.href = '{{ route('validasi_kegiatan') }}';
+                    // }, 800);
 
                     var $badge = $('.tabs .nbg').first();
                     var count = parseInt($badge.text()) - 1;

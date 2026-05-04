@@ -103,10 +103,20 @@ Route::middleware(['auth', 'role'])->group(function () {
     Route::get('/validasi-rppm', [ValidasiRppmController::class, 'index'])->name('validasi_rppm');
     Route::get('/validasi-rpph', [ValidasiRpphController::class, 'index'])->name('validasi_rpph');
 
+    Route::get('/validasi-rppm', [ValidasiRppmController::class, 'index'])->name('validasi_rppm');
+    Route::get('/validasi-rppm/{id}', [ValidasiRppmController::class, 'show'])->name('validasi_rppm.show');
+    Route::put('/validasi-rppm/{id}/setujui', [ValidasiRppmController::class, 'setujui'])->name('validasi_rppm.setujui');
+    Route::put('/validasi-rppm/{id}/kembalikan', [ValidasiRppmController::class, 'kembalikan'])->name('validasi_rppm.kembalikan');
+
+    Route::get('/validasi-rpph', [ValidasiRpphController::class, 'index'])->name('validasi_rpph');
+    Route::get('/validasi-rpph/{id}/detail', [ValidasiRpphController::class, 'show'])->name('validasi_rpph.show');
+    Route::put('/validasi-rpph/{id}/setujui', [ValidasiRpphController::class, 'setujui'])->name('validasi_rpph.setujui');
+    Route::put('/validasi-rpph/{id}/kembalikan', [ValidasiRpphController::class, 'kembalikan'])->name('validasi_rpph.kembalikan');
+
     Route::get('/validasi-kegiatan', [ValidasiKegiatanController::class, 'index'])->name('validasi_kegiatan');
     Route::put('/validasi-kegiatan/{id}/setujui', [ValidasiKegiatanController::class, 'setujui'])->name('validasi_kegiatan.setujui');
     Route::put('/validasi-kegiatan/{id}/tolak', [ValidasiKegiatanController::class, 'tolak'])->name('validasi_kegiatan.tolak');
-    
+
     Route::get('/monitoring-guru', [MonitoringGuruController::class, 'index'])->name('monitoring_guru');
 
     /*

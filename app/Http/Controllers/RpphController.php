@@ -23,11 +23,11 @@ class RpphController extends Controller
             'rppmKegiatans.kegiatan.aspeks',
             'rppmKegiatans.kegiatan.bentukKegiatan',
         ])
-        ->olehGuru($guru->id)
-        ->where('tahun_ajaran_id', $taAktif?->id)
-        ->disetujui()
-        ->latest()
-        ->get();
+            ->olehGuru($guru->id)
+            ->where('tahun_ajaran_id', $taAktif?->id)
+            ->disetujui()
+            ->latest()
+            ->get();
 
         return view('pages.rpph.index', compact('rppms', 'taAktif'));
     }
@@ -38,15 +38,16 @@ class RpphController extends Controller
         abort_if($rpph->rppm->guru_id !== Auth::id(), 403);
 
         $validator = Validator::make($request->all(), [
-            'tujuan_harian' => 'nullable|string',
-            'catatan'       => 'nullable|string',
+            'pembuka' => 'nullable|string',
+            'inti'       => 'nullable|string',
+            'penutup'       => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['status' => false, 'errors' => $validator->errors()], 422);
         }
 
-        $rpph->update($request->only(['tujuan_harian', 'catatan']));
+        $rpph->update($request->only(['pembuka', 'inti', 'penutup']));
 
         return response()->json([
             'status'  => true,
