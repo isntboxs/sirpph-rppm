@@ -5,14 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('page-title', 'Beranda') — SiRPPH</title>
+    <title>@yield('page-title', 'Beranda') - SiRPPH</title>
 
     <meta name="page-title" content="@yield('page-title', 'Beranda')">
     <meta name="page-subtitle" content="@yield('page-subtitle', 'PAUDQu AL-AULIA — 2024/2025')">
     <link
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700&display=swap"
         rel="stylesheet">
-        <link rel="icon" type="image/jpeg" href="{{ asset('logo.jpeg') }}">
+    <link rel="icon" type="image/jpeg" href="{{ asset('logo.jpeg') }}">
     @if (file_exists(public_path('assets/custom-app.css')))
         <link rel="stylesheet"
             href="{{ asset('assets/custom-app.css') }}?v={{ filemtime(public_path('assets/custom-app.css')) }}">
@@ -48,16 +48,87 @@
                 url: window.location.href
             }, '', window.location.href);
 
-            // $(document).on('click', '.sb a.ni', function(e) {
-            //     e.preventDefault();
-            //     var url = $(this).attr('href');
+            // window.updateBadgeCount = function(id, cnt) {
+            //     const selector = id.startsWith('#') ? id : '#' + id;
+            //     const $el = $(selector);
 
-            //     // Jangan reload kalau halaman sama
-            //     if (url === window.location.href) return;
+            //     if (!$el.length) return;
 
-            //     // loadPage(url, true);
-            //     // window.location.reload();
-            // });
+            //     cnt = Number(cnt) || 0;
+
+            //     if (cnt > 0) {
+            //         $el.text(cnt).show();
+            //     } else {
+            //         $el.hide();
+            //     }
+
+            //     const key = $el.attr('id').replace('bdg-cnt-validasi-', '') + '_count';
+            //     $.post('{{ route('badge.update') }}', {
+            //         _token: '{{ csrf_token() }}',
+            //         key: key,
+            //         value: cnt
+            //     });
+            // };
+
+            // window.decrementBadgeCount = function(id) {
+            //     const selector = id.startsWith('#') ? id : '#' + id;
+            //     const $el = $(selector);
+
+            //     if (!$el.length) return;
+
+            //     let cnt = Number($el.text()) || 0;
+            //     cnt = Math.max(0, cnt - 1);
+
+            //     if (cnt > 0) {
+            //         $el.text(cnt).show();
+            //     } else {
+            //         $el.hide();
+            //     }
+
+            //     const key = $el.attr('id').replace('bdg-cnt-validasi-', '') + '_count';
+            //     $.post('{{ route('badge.update') }}', {
+            //         _token: '{{ csrf_token() }}',
+            //         key: key,
+            //         value: cnt
+            //     });
+            // };
+
+            // if ({{ Auth::user()->isKepalaSekolah() ? 'true' : 'false' }}) {
+            //     updateBadgeCount('bdg-cnt-validasi-rppm')
+            //     updateBadgeCount('bdg-cnt-validasi-rpph')
+            //     updateBadgeCount('bdg-cnt-validasi-kegiatan')
+            // }
+
+            window.updateBadgeCount = function(id, cnt) {
+                var selector = id.startsWith('#') ? id : '#' + id;
+                var $el = $(selector);
+                if (!$el.length) return;
+
+                cnt = Number(cnt) || 0;
+                cnt > 0 ? $el.text(cnt).show() : $el.hide();
+            };
+
+            window.decrementBadgeCount = function(id) {
+                var selector = id.startsWith('#') ? id : '#' + id;
+                var $el = $(selector);
+                if (!$el.length) return;
+
+                var cnt = Math.max(0, (Number($el.text()) || 0) - 1);
+                cnt > 0 ? $el.text(cnt).show() : $el.hide();
+            };
+
+            window.fetchBadgeCounts = function() {
+                $.get('{{ route('badge.update') }}')
+                    .done(function(data) {
+                        window.updateBadgeCount('bdg-cnt-validasi-rppm', data.rppm_count);
+                        window.updateBadgeCount('bdg-cnt-validasi-rpph', data.rpph_count);
+                        window.updateBadgeCount('bdg-cnt-validasi-kegiatan', data.kegiatan_count);
+                    });
+            };
+
+            @if (Auth::user()->isKepalaSekolah())
+                window.fetchBadgeCounts();
+            @endif
 
             $(document).on('click', '.mc', function() {
                 $(this).closest('.mo').removeClass('on');

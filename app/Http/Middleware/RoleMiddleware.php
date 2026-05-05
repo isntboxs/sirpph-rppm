@@ -26,6 +26,7 @@ class RoleMiddleware
             'validasi_rpph',
             'validasi_kegiatan',
             'monitoring_guru',
+            'badge'
         ],
         'guru' => [
             'kumpulan_kegiatan',

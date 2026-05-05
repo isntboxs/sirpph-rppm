@@ -36,25 +36,20 @@ function loadPage(url, pushState) {
         $.get(url, function (html) {
             var $html = $($.parseHTML(html, document, true));
 
-            // Inject content + scripts sekaligus
             $content.html($html.find('#main-content').html());
 
-            // Update sidebar & topbar
             setActiveSidebar(new URL(url, window.location.origin).pathname);
             updateTopbar($html);
 
-            // Tambah history state
             if (pushState) {
                 window.history.pushState({ url: url }, '', url);
             }
 
             $content.fadeTo(150, 1);
 
-            // Jalankan scripts halaman baru
             evalPageScripts();
 
         }).fail(function () {
-            // Fallback: full reload jika AJAX gagal
             window.location.href = url;
         });
     });

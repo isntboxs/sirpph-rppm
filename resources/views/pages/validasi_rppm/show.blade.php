@@ -100,7 +100,7 @@
                             </div>
                         @empty
                             <div style="font-size:12px;color:var(--txt3);padding:8px 0">
-                                — Tidak ada kegiatan
+                                Tidak ada kegiatan
                             </div>
                         @endforelse
                     </div>

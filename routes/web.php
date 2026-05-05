@@ -33,6 +33,7 @@ use App\Http\Controllers\RppmController;
 use App\Http\Controllers\RpphController;
 use App\Http\Controllers\PortofolioSiswaController;
 use App\Http\Controllers\AnalisisAspekController;
+use App\Http\Controllers\BadgeController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\OrtuRppmController;
 use App\Http\Controllers\OrtuRpphController;
@@ -158,4 +159,5 @@ Route::middleware(['auth', 'role'])->group(function () {
     */
     Route::get('/sekolah/data', [KelasController::class, 'data'])->name('kelas.data');
     Route::get('/siswa/data', [DataSiswaController::class, 'data'])->name('siswa.data');
+    Route::get('/badge/update', [BadgeController::class, 'update'])->name('badge.update');
 });

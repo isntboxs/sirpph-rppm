@@ -23,8 +23,6 @@ class Rppm extends Model
         'catatan_kepala',
     ];
 
-    // ── Relasi ────────────────────────────────────────────────────────────
-
     public function guru(): BelongsTo
     {
         return $this->belongsTo(User::class, 'guru_id');

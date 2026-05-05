@@ -38,11 +38,11 @@
             <a class="ni" href="{{ route('master_bentuk_alat') }}"><span class="nic">🔧</span> Bentuk &
                 Alat</a>
             <a class="ni" href="{{ route('validasi_rppm') }}"><span class="nic">✅</span> Validasi RPPM <span
-                    class="nbg">3</span></a>
+                    class="nbg" id="bdg-cnt-validasi-rppm" hidden>0</span></a>
             <a class="ni" href="{{ route('validasi_rpph') }}"><span class="nic">📄</span> Validasi RPPH <span
-                    class="nbg">2</span></a>
+                    class="nbg" id="bdg-cnt-validasi-rpph" hidden>0</span></a>
             <a class="ni" href="{{ route('validasi_kegiatan') }}"><span class="nic">🗂️</span> Validasi Kegiatan
-                <span class="nbg">1</span></a>
+                <span class="nbg" id="bdg-cnt-validasi-kegiatan" hidden>0</span></a>
             <a class="ni" href="{{ route('monitoring_guru') }}"><span class="nic">📈</span> Monitoring Guru</a>
         @endif
 

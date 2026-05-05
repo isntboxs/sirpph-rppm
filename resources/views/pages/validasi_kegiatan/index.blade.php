@@ -415,6 +415,7 @@
                     // setTimeout(function() {
                     //     window.location.href = '{{ route('validasi_kegiatan') }}';
                     // }, 800);
+                    decrementBadgeCount('bdg-cnt-validasi-kegiatan');
 
                     var $badge = $('.tabs .nbg').first();
                     var count = parseInt($badge.text()) - 1;
@@ -458,6 +459,7 @@
                     setTimeout(function() {
                         window.location.href = '{{ route('validasi_kegiatan') }}';
                     }, 800);
+                    decrementBadgeCount('bdg-cnt-validasi-kegiatan');
 
                     var $badge = $('.tabs .nbg').first();
                     var count = parseInt($badge.text()) - 1;

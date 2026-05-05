@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Kegiatan;
+use App\Models\Rpph;
+use App\Models\Rppm;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    /**
-     * Tampilkan halaman login.
-     */
     public function showLogin()
     {
         if (Auth::check()) {
@@ -18,11 +18,6 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    /**
-     * Proses login.
-     * akun hardcoded.
-     * Ganti pake Auth::attempt() jika sudah ada tabel users.
-     */
     public function login(Request $request)
     {
         $request->validate([
@@ -33,7 +28,6 @@ class AuthController extends Controller
             'password.required' => 'Password wajib diisi.',
         ]);
 
-        // Demo credentials, ganti dengan Auth::attempt() tunggu tabel users
         $credentials = [
             'username' => $request->username,
             'password' => $request->password,
@@ -42,6 +36,17 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
+
+            if (Auth::user()->role === 'kepala') {
+                $rppm_count     = Rppm::pending()->count();
+                $rpph_count     = Rpph::pending()->count();
+                $kegiatan_count = Kegiatan::pending()->count();
+                session([
+                    'rppm_count' => $rppm_count,
+                    'rpph_count' => $rpph_count,
+                    'kegiatan_count' => $kegiatan_count,
+                ]);
+            }
             return redirect()->intended(route('beranda'));
         }
 

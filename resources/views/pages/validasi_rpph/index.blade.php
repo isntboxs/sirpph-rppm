@@ -152,10 +152,10 @@
             @endforelse
         </div>
 
-        {{-- Tab: Disetujui --}}
+        {{-- Tab: riwayat --}}
         <div id="tab-riwayat-rpph" class="tab-content" style="display:none">
-            <form class="card mb16">
-                <div class="fl fw g8 ic">
+            <form class="mb16">
+                <div class="fl fw g8 ic fb">
                     <select name="status">
                         <option value="">Semua Status</option>
                         <option value="disetujui" {{ request('status') === 'disetujui' ? 'selected' : '' }}>
@@ -342,6 +342,7 @@
                         });
                         showToast(res.message);
                         updateBadgeRpph();
+                        decrementBadgeCount('bdg-cnt-validasi-rpph')
                     })
                     .fail(function(xhr) {
                         showToast('❌ ' + xhr.responseJSON.message);
@@ -451,6 +452,7 @@
                         });
                         showToast(res.message);
                         updateBadgeRpph();
+                        decrementBadgeCount('bdg-cnt-validasi-rpph')
                     })
                     .fail(function(xhr) {
                         var errors = xhr.responseJSON.errors;

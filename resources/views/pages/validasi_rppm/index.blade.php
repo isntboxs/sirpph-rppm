@@ -108,7 +108,7 @@
                                     color:{{ $count > 0 ? 'var(--g7)' : 'var(--txt3)' }}
                                 ">
                                 {{ $hari }}
-                                {{ $count > 0 ? '(' . $count . ')' : '-' }}
+                                {{ $count > 0 ? '(' . $count . ')' : '' }}
                             </div>
                         @endforeach
                     </div>
@@ -272,6 +272,7 @@
                         });
                         showToast(res.message);
                         updateBadgeCount();
+                        decrementBadgeCount('bdg-cnt-validasi-rppm');
                     })
                     .fail(function(xhr) {
                         showToast('❌ ' + xhr.responseJSON.message);
@@ -310,9 +311,10 @@
                         });
                         showToast(res.message);
                         updateBadgeCount();
+                        decrementBadgeCount('bdg-cnt-validasi-rppm');
                     })
                     .fail(function(xhr) {
-                        var errors = xhr.responseJSON.errors;
+                        var errors = xxzhr.responseJSON.errors;
                         $('#errorKembalikanRppm').text(errors.catatan[0]).show();
                     });
             });
