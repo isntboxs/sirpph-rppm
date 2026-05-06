@@ -189,18 +189,19 @@
                                 @endforeach
                             </select>
                         </div>
+                        
+                        {{-- Kegiatan (Optional) --}}
+                        <div class="ff mb12">
+                            <label>
+                                Kegiatan yang Dilakukan
+                                <span class="fs11 tc2">(opsional)</span>
+                            </label>
+                            <select id="inputPortoKegiatan" name="kegiatan_id">
+                                <option value="">-- Pilih RPPH dulu --</option>
+                            </select>
+                        </div>
                     @endif
 
-                    {{-- Kegiatan (Optional) --}}
-                    <div class="ff mb12">
-                        <label>
-                            Kegiatan yang Dilakukan
-                            <span class="fs11 tc2">(opsional)</span>
-                        </label>
-                        <select id="inputPortoKegiatan" name="kegiatan_id">
-                            <option value="">-- Pilih RPPH dulu --</option>
-                        </select>
-                    </div>
 
                     {{-- Catatan observasi --}}
                     <div class="ff mb12">

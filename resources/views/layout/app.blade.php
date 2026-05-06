@@ -48,57 +48,6 @@
                 url: window.location.href
             }, '', window.location.href);
 
-            // window.updateBadgeCount = function(id, cnt) {
-            //     const selector = id.startsWith('#') ? id : '#' + id;
-            //     const $el = $(selector);
-
-            //     if (!$el.length) return;
-
-            //     cnt = Number(cnt) || 0;
-
-            //     if (cnt > 0) {
-            //         $el.text(cnt).show();
-            //     } else {
-            //         $el.hide();
-            //     }
-
-            //     const key = $el.attr('id').replace('bdg-cnt-validasi-', '') + '_count';
-            //     $.post('{{ route('badge.update') }}', {
-            //         _token: '{{ csrf_token() }}',
-            //         key: key,
-            //         value: cnt
-            //     });
-            // };
-
-            // window.decrementBadgeCount = function(id) {
-            //     const selector = id.startsWith('#') ? id : '#' + id;
-            //     const $el = $(selector);
-
-            //     if (!$el.length) return;
-
-            //     let cnt = Number($el.text()) || 0;
-            //     cnt = Math.max(0, cnt - 1);
-
-            //     if (cnt > 0) {
-            //         $el.text(cnt).show();
-            //     } else {
-            //         $el.hide();
-            //     }
-
-            //     const key = $el.attr('id').replace('bdg-cnt-validasi-', '') + '_count';
-            //     $.post('{{ route('badge.update') }}', {
-            //         _token: '{{ csrf_token() }}',
-            //         key: key,
-            //         value: cnt
-            //     });
-            // };
-
-            // if ({{ Auth::user()->isKepalaSekolah() ? 'true' : 'false' }}) {
-            //     updateBadgeCount('bdg-cnt-validasi-rppm')
-            //     updateBadgeCount('bdg-cnt-validasi-rpph')
-            //     updateBadgeCount('bdg-cnt-validasi-kegiatan')
-            // }
-
             window.updateBadgeCount = function(id, cnt) {
                 var selector = id.startsWith('#') ? id : '#' + id;
                 var $el = $(selector);
