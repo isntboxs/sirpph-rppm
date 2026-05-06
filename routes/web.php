@@ -141,6 +141,11 @@ Route::middleware(['auth', 'role'])->group(function () {
     Route::put('/rpph/{id}/ajukan', [RpphController::class, 'ajukan'])->name('rpph.ajukan');
 
     Route::get('/portofolio-siswa', [PortofolioSiswaController::class, 'index'])->name('portofolio_siswa');
+    Route::post('/portofolio-siswa', [PortofolioSiswaController::class, 'store'])->name('portofolio_siswa.store');
+    Route::delete('/portofolio-siswa/{id}', [PortofolioSiswaController::class, 'destroy'])->name('portofolio_siswa.destroy');
+    Route::post('/portofolio-siswa/{id}/komentar', [PortofolioSiswaController::class, 'simpanKomentar'])->name('portofolio_siswa.komentar');
+    Route::get('/portofolio-siswa/{id}/detail', [PortofolioSiswaController::class, 'show'])->name('portofolio_siswa.show');
+
     Route::get('/analisis-aspek', [AnalisisAspekController::class, 'index'])->name('analisis_aspek');
 
     /*
