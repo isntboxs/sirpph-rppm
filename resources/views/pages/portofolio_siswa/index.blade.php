@@ -56,60 +56,55 @@
                         </option>
                     @endforeach
                 </select>
+
+                <a href="{{ route('portofolio_siswa') }}" class="btn bo bsm">Reset</a>
             </div>
 
-            <div class="g4 mt16">
-                @foreach ($portofolios as $porto)
-                    <div id="porto-card-{{ $porto->id }}" style="cursor:pointer">
-                        <div class="pfc" data-porto-id="{{ $porto->id }}">
-                            <div class="pfp" style="background:linear-gradient(135deg,var(--g1),var(--g2))">
-                                {{ $porto->foto_icon }}</div>
-                            <div class="pfb">
-                                <div class="pfn">{{ $siswaAktif->name }}</div>
-                                <div class="pfd">📅 {{ $porto->tanggal_format }} @if ($porto->kegiatan)
-                                        - {{ $porto->kegiatan->name }}
-                                    @endif
-                                </div>
-                                <div class="pfnt">{{ $porto->catatan }}</div>
-                                {{-- <div class="fl fw g8 mt8">
-                                    <span class="ap a1">🕌</span>
-                                    <span class="ap a6">🎨</span>
-                                    <span class="ap a2">🏃</span>
-                                </div> --}}
-                                <div class="fl fw g8 mt8">
-                                    @foreach ($porto->aspeks as $aspek)
-                                        <span class="ap {{ $aspek->warna }}">
-                                            {{ $aspek->emote }} {{ $aspek->name }}
-                                        </span>
-                                    @endforeach
-                                </div>
-                                <div class="fs11 tc2 mt8">💬 2 komentar</div>
-                                {{-- @if ($porto->komentars->isNotEmpty())
-                                        <div class="dv"></div>
-                                        @foreach ($porto->komentars as $kom)
-                                            <div class="kom-item">
-                                                <div class="kom-author">
-                                                    {{ $kom->user->role === 'ortu' ? '👨‍👩‍👧' : '🧑‍🏫' }}
-                                                    {{ $kom->user->name }}
-                                                </div>
-                                                <div class="kom-text">{{ $kom->komentar }}</div>
-                                                <div class="kom-time">{{ $kom->waktu_format }}</div>
-                                            </div>
+            @if (!$portofolios->isEmpty())
+                <div class="g4 mt16">
+                    @foreach ($portofolios as $porto)
+                        <div id="porto-card-{{ $porto->id }}" style="cursor:pointer">
+                            <div class="pfc" data-porto-id="{{ $porto->id }}">
+                                <div class="pfp" style="background:linear-gradient(135deg,var(--g1),var(--g2))">
+                                    {{ $porto->foto_icon }}</div>
+                                <div class="pfb">
+                                    <div class="pfn">{{ $siswaAktif->name }}</div>
+                                    <div class="pfd">📅 {{ $porto->tanggal_format }} @if ($porto->kegiatan)
+                                            - {{ $porto->kegiatan->name }}
+                                        @endif
+                                    </div>
+                                    <div class="pfnt">{{ $porto->catatan }}</div>
+                                    <div class="fl fw g8 mt8">
+                                        @foreach ($porto->aspeks as $aspek)
+                                            <span class="ap {{ $aspek->warna }}">
+                                                {{ $aspek->emote }} {{ $aspek->name }}
+                                            </span>
                                         @endforeach
-                                    @endif --}}
-                                {{-- Hapus --}}
-                                <div class="mt8">
-                                    <button type="button" class="btn bd bxs btn-hapus-porto"
-                                        data-id="{{ $porto->id }}">
-                                        🗑️ Hapus
-                                    </button>
+                                    </div>
+                                    <div class="fs11 tc2 mt8">
+                                        💬 {{ $porto->komentars->count() }} komentar
+                                    </div>
+                                    {{-- Hapus --}}
+                                    <div class="mt8">
+                                        <button type="button" class="btn bd bxs btn-hapus-porto"
+                                            data-id="{{ $porto->id }}">
+                                            🗑️ Hapus
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                @endforeach
-            </div>
-            {{ $portofolios->links() }}
+                    @endforeach
+                </div>
+
+                {{ $portofolios->links() }}
+            @else
+                <div class="card emp">
+                    <div class="ei">🗂️</div>
+                    <h3>Tidak ada Portofolio Untuk Anak</h3>
+                    <p>Coba ubah filter atau tambahkan portofolio siswa.</p>
+                </div>
+            @endif
         @endif
     </div>
 
@@ -189,7 +184,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        
+
                         {{-- Kegiatan (Optional) --}}
                         <div class="ff mb12">
                             <label>
@@ -286,7 +281,6 @@
                             💬 Komentar (0)
                         </div>
                         <div id="mDetailPortoKomentars"></div>
-
                         {{-- <div class="fl g8 mt8">
                             <input type="text" id="mDetailPortoInputKomentar" placeholder="Tulis komentar..."
                                 style="flex:1;padding:9px 12px;border:2px solid var(--g1);

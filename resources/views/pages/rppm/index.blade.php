@@ -1,7 +1,7 @@
 @extends('layout.app')
 
 @section('page-title', 'Buat & Kelola RPPM')
-@section('page-subtitle', 'PAUDQu AL-AULIA — 2024/2025')
+@section('page-subtitle', $taAktif?->name ?? '-')
 
 @section('content')
     <div class="tabs">

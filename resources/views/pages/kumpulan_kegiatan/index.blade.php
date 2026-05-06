@@ -299,9 +299,5 @@
                     $('#errorKegiatan').html(pesan).show();
                 });
         });
-
-        // Submit filter dengan AJAX
-        // Kita biarkan filter pakai full page reload karena URL perlu berubah
-        // agar pagination bekerja dengan benar (link pagination sudah mengandung query string)
     </script>
 @endpush
