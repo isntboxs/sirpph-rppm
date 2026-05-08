@@ -71,3 +71,15 @@
         @endif
     </div>
 @endsection
+@push('scripts')
+<script>
+    $('#inputCariGuru').on('input', function () {
+        var keyword = $(this).val().toLowerCase();
+
+        $('.card.mb16').each(function () {
+            var namaGuru = $(this).find('.fw7').first().text().toLowerCase();
+            $(this).toggle(namaGuru.includes(keyword));
+        });
+    });
+</script>
+@endpush
