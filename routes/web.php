@@ -161,6 +161,8 @@ Route::middleware(['auth', 'role'])->group(function () {
     Route::get('/lihat-rpph/{id}/detail', [OrtuRpphController::class, 'show'])->name('ortu_rpph.show');
 
     Route::get('/portofolio-anak', [OrtuPortoController::class, 'index'])->name('ortu_porto');
+    Route::get('/portofolio-anak/{id}/detail', [OrtuPortoController::class, 'show'])->name('ortu_porto.show');
+    Route::post('/portofolio-anak/{id}/komentar', [OrtuPortoController::class, 'simpanKomentar'])->name('ortu_porto.komentar');
 
     /*
     |----------------------------------------------------------------------
