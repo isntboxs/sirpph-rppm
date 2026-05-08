@@ -154,7 +154,12 @@ Route::middleware(['auth', 'role'])->group(function () {
     |----------------------------------------------------------------------
     */
     Route::get('/lihat-rppm', [OrtuRppmController::class, 'index'])->name('ortu_rppm');
+    Route::get('/lihat-rppm/{id}/detail', [OrtuRppmController::class, 'show'])->name('ortu_rppm.show');
     Route::get('/lihat-rpph', [OrtuRpphController::class, 'index'])->name('ortu_rpph');
+
+    Route::get('/lihat-rpph', [OrtuRpphController::class, 'index'])->name('ortu_rpph');
+    Route::get('/lihat-rpph/{id}/detail', [OrtuRpphController::class, 'show'])->name('ortu_rpph.show');
+
     Route::get('/portofolio-anak', [OrtuPortoController::class, 'index'])->name('ortu_porto');
 
     /*
