@@ -55,27 +55,16 @@ class AnalisisAspekController extends Controller
         })->sortByDesc('jumlah')->values();
 
         $ringkasan = [
-            'total_rppm'      => Rppm::olehGuru($guru->id)
-                                     ->where('tahun_ajaran_id', $taAktif?->id)
-                                     ->count(),
             'rppm_disetujui'  => Rppm::olehGuru($guru->id)
                                      ->disetujui()
                                      ->where('tahun_ajaran_id', $taAktif?->id)
                                      ->count(),
-            'total_kegiatan'  => $totalKegiatan,
-            'aspek_nol'       => $aspekData->where('jumlah', 0)->count(),
         ];
-
-        $rekomendasiAspek = $aspekData
-            ->sortBy('jumlah')
-            ->take(2)
-            ->values();
 
         return view('pages.analisis_aspek.index', compact(
             'aspekData',
             'kelas',
             'ringkasan',
-            'rekomendasiAspek',
             'taAktif',
             'totalKegiatan',
         ));
