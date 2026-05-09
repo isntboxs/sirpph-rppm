@@ -1,7 +1,7 @@
 @extends('layout.app')
 
 @section('page-title', 'Data Sekolah')
-@section('page-subtitle', 'PAUDQu AL-AULIA — 2024/2025')
+@section('page-subtitle', $taAktif->name)
 
 @section('content')
     <div class="card">
@@ -50,7 +50,7 @@
                 </div>
                 <button class="mc">✕</button>
             </div>
-            <form>
+            <form id="form-sekolah">
                 <div class="mb">
                     <div class="fr c2">
                         <div class="ff">
@@ -62,13 +62,14 @@
                             <input name="npsn" id="npsn" value="{{ $sekolah->npsn ?? '-' }}" />
                         </div>
                     </div>
+                    <div class="ff mb16"><label>No. HP</label><input id="no_telp" name="no_telp" placeholder="08xx" />
+                    </div>
                     <div class="ff mb16"><label>Alamat</label>
                         <textarea name="alamat" id="alamat" rows="2">{{ $sekolah->alamat ?? '-' }}</textarea>
                     </div>
                 </div>
                 <div class="mf">
-                    <button class="btn bo">Batal</button>
-                    <button type="submit" id="update-data" class="btn bp">💾 Update</button>
+                    <button type="submit" class="btn bp">💾 Update</button>
                 </div>
             </form>
         </div>
@@ -81,15 +82,18 @@
                 $('#mSek').addClass('on');
             });
 
-            $('#update-data').on('click', function() {
+            $('#form-sekolah').on('submit', function(e) {
+                e.preventDefault();
+
                 let data = {
                     name: $('#name').val(),
                     npsn: $('#npsn').val(),
                     alamat: $('#alamat').val(),
+                    no_telp: $('#no_telp').val(),
                 }
 
                 $.ajax({
-                    url: `/data-sekolah`,
+                    url: `/data-sekolah/update`,
                     type: 'PUT',
                     data: data,
                     headers: {
@@ -101,8 +105,8 @@
                     error: function() {
                         showToast("Gagal Update Data Sekolah");
                     }
-                })
-            })
+                });
+            });
         });
     </script>
 @endpush

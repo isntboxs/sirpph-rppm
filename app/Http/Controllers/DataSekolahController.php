@@ -16,6 +16,7 @@ class DataSekolahController extends Controller
             'sekolah'       => DataSekolah::select(['name', 'npsn', 'no_telp', 'alamat'])->first(),
             'kepala'        => User::where('role', 'kepala')->select(['name'])->first(),
             'tahun_ajaran'  => TahunAjaran::Active()->select(['name', 'semester'])->first(),
+            'taAktif'       => TahunAjaran::getActive(),
         ];
 
         return view('pages.data_sekolah.index', $data);

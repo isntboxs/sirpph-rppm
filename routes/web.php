@@ -76,7 +76,7 @@ Route::middleware(['auth', 'role'])->group(function () {
     Route::put('/tahun-ajaran/active/{id}', [TahunAjaranController::class, 'active'])->name('tahun_ajaran.active');
 
     Route::get('/data-sekolah', [DataSekolahController::class, 'index'])->name('data_sekolah');
-    Route::put('/data-sekolah', [DataSekolahController::class, 'update'])->name('data_sekolah.update');
+    Route::put('/data-sekolah/update', [DataSekolahController::class, 'update'])->name('data_sekolah.update');
 
     /*
     |----------------------------------------------------------------------
@@ -155,8 +155,8 @@ Route::middleware(['auth', 'role'])->group(function () {
     */
     Route::get('/lihat-rppm', [OrtuRppmController::class, 'index'])->name('ortu_rppm');
     Route::get('/lihat-rppm/{id}/detail', [OrtuRppmController::class, 'show'])->name('ortu_rppm.show');
+    
     Route::get('/lihat-rpph', [OrtuRpphController::class, 'index'])->name('ortu_rpph');
-
     Route::get('/lihat-rpph', [OrtuRpphController::class, 'index'])->name('ortu_rpph');
     Route::get('/lihat-rpph/{id}/detail', [OrtuRpphController::class, 'show'])->name('ortu_rpph.show');
 

@@ -32,23 +32,28 @@ class OrtuRppmController extends Controller
         $kelasIds = $siswas->pluck('kelas_id')->unique()->filter();
 
         $query = Rppm::with([
-                'guru:id,name',
-                'subTema:id,name,tema_id',
-                'subTema.tema:id,name',
-                'tahunAjaran:id,name,semester',
-                'rppmKegiatans.kegiatan.aspeks:id,name,emote,warna',
-                'rppmKegiatans.kegiatan.bentukKegiatan:id,name',
-                'rppmKegiatans.kegiatan.alatBahans:id,name',
-            ])
+            'guru:id,name',
+            'subTema:id,name,tema_id',
+            'subTema.tema:id,name',
+            'tahunAjaran:id,name,semester',
+            'rppmKegiatans.kegiatan.aspeks:id,name,emote,warna',
+            'rppmKegiatans.kegiatan.bentukKegiatan:id,name',
+            'rppmKegiatans.kegiatan.alatBahans:id,name',
+            'rpphs' => fn($q) => $q->where('status', 'disetujui')->select('id', 'rppm_id', 'hari', 'status'),
+        ])
             ->disetujui()
             ->where('tahun_ajaran_id', $taAktif?->id)
-            ->whereHas('guru.kelas', fn($q) =>
+            ->whereHas(
+                'guru.kelas',
+                fn($q) =>
                 $q->whereIn('id', $kelasIds)
             )
             ->orderBy('minggu_ke');
 
         if ($request->filled('tema_id')) {
-            $query->whereHas('subTema', fn($q) =>
+            $query->whereHas(
+                'subTema',
+                fn($q) =>
                 $q->where('tema_id', $request->tema_id)
             );
         }
@@ -75,18 +80,21 @@ class OrtuRppmController extends Controller
             ->filter();
 
         $rppm = Rppm::with([
-                'guru:id,name',
-                'subTema:id,name,tema_id',
-                'subTema.tema:id,name',
-                'tahunAjaran:id,name,semester',
-                'rppmKegiatans' => fn($q) => $q->orderBy('hari')->orderBy('urutan'),
-                'rppmKegiatans.kegiatan.aspeks:id,name,emote,warna',
-                'rppmKegiatans.kegiatan.bentukKegiatan:id,name',
-                'rppmKegiatans.kegiatan.alatBahans:id,name',
-            ])
+            'guru:id,name',
+            'subTema:id,name,tema_id',
+            'subTema.tema:id,name',
+            'tahunAjaran:id,name,semester',
+            'rpphs:id,rppm_id,hari,status',
+            'rppmKegiatans' => fn($q) => $q->whereHas('kegiatan', fn($k) => $k->disetujui())->orderBy('hari')->orderBy('urutan'),
+            'rppmKegiatans.kegiatan.aspeks:id,name,emote,warna',
+            'rppmKegiatans.kegiatan.bentukKegiatan:id,name',
+            'rppmKegiatans.kegiatan.alatBahans:id,name',
+        ])
             ->disetujui()
             ->where('tahun_ajaran_id', $taAktif?->id)
-            ->whereHas('guru.kelas', fn($q) =>
+            ->whereHas(
+                'guru.kelas',
+                fn($q) =>
                 $q->whereIn('id', $kelasIds)
             )
             ->findOrFail($id);
@@ -102,22 +110,35 @@ class OrtuRppmController extends Controller
                 'model'       => $rppm->model_pembelajaran ?? '-',
                 'tujuan'      => $rppm->tujuan ?? '-',
                 'capaian'     => $rppm->capaian ?? '-',
-                'kegiatan'    => collect(['Senin','Selasa','Rabu','Kamis','Jumat'])
-                    ->mapWithKeys(fn($hari) => [
-                        $hari => $rppm->rppmKegiatans
+                'kegiatan'    => collect(['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'])
+                    ->mapWithKeys(function ($hari) use ($rppm) {
+                        $rpphDisetujui = $rppm->rpphs
                             ->where('hari', $hari)
-                            ->map(fn($rk) => [
-                                'icon'   => $rk->kegiatan->foto_icon,
-                                'name'   => $rk->kegiatan->name,
-                                'bentuk' => $rk->kegiatan->bentukKegiatan->name,
-                                'alat'   => $rk->kegiatan->alatBahans->pluck('name')->join(', '),
-                                'aspeks' => $rk->kegiatan->aspeks->map(fn($a) => [
-                                    'emote' => $a->emote,
-                                    'name'  => $a->name,
-                                    'warna' => $a->warna,
-                                ]),
-                            ]),
-                    ]),
+                            ->where('status', 'disetujui')
+                            ->first();
+
+                        if (!$rpphDisetujui) {
+                            return [$hari => []];
+                        }
+
+                        return [
+                            $hari => $rppm->rppmKegiatans
+                                ->where('hari', $hari)
+                                ->map(fn($rk) => [
+                                    'icon'   => $rk->kegiatan->foto_icon,
+                                    'name'   => $rk->kegiatan->name,
+                                    'bentuk' => $rk->kegiatan->bentukKegiatan->name,
+                                    'alat'   => $rk->kegiatan->alatBahans->pluck('name')->join(', '),
+                                    'aspeks' => $rk->kegiatan->aspeks->map(fn($a) => [
+                                        'emote' => $a->emote,
+                                        'name'  => $a->name,
+                                        'warna' => $a->warna,
+                                    ]),
+                                ])
+                                ->values()
+                                ->toArray(),
+                        ];
+                    }),
             ],
         ]);
     }

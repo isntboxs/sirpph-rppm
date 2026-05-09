@@ -78,7 +78,7 @@
 
                 {{-- Kegiatan per hari ringkas --}}
                 <div class="fl fw g8 mt4 mb8">
-                    @foreach (['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'] as $hari)
+                    {{-- @foreach (['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'] as $hari)
                         @php $count = $rppm->rppmKegiatans->where('hari', $hari)->count(); @endphp
                         <div
                             style="padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;
@@ -86,6 +86,18 @@
                     border:1px solid {{ $count > 0 ? 'var(--g4)' : 'var(--g2)' }};
                     color:{{ $count > 0 ? 'var(--g7)' : 'var(--txt3)' }}">
                             {{ $hari }} {{ $count > 0 ? '(' . $count . ')' : '-' }}
+                        </div>
+                    @endforeach --}}
+
+
+                    @foreach (['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'] as $hari)
+                        @php
+                            $rpphDisetujui = $rppm->rpphs->where('hari', $hari)->first();
+                            $count = $rpphDisetujui ? $rppm->rppmKegiatans->where('hari', $hari)->count() : 0;
+                        @endphp
+                        <div
+                            style="padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;background:{{ $count > 0 ? 'var(--g1)' : 'var(--g0)' }}; border:1px solid {{ $count > 0 ? 'var(--g4)' : 'var(--g2)' }}; color:{{ $count > 0 ? 'var(--g7)' : 'var(--txt3)' }}">
+                            {{ $hari }} {{ $count > 0 ? '(' . $count . ')' : '⚪' }}
                         </div>
                     @endforeach
                 </div>
@@ -189,7 +201,11 @@
 
                     $.each(hariList, function(i, hari) {
                         var kegiatanHari = d.kegiatan[hari];
-                        if (!kegiatanHari || kegiatanHari.length === 0) return;
+
+                        if (!kegiatanHari || !Array.isArray(kegiatanHari) || kegiatanHari.length ===
+                            0) {
+                            return;
+                        }
 
                         kegHtml += '<div class="ds mb8">' +
                             '<div class="dsh"><span class="dn">📅 ' + hari + '</span>' +
