@@ -339,7 +339,7 @@
                         <select id="inputTaRppm" name="tahun_ajaran_id">
                             @foreach ($taList as $ta)
                                 <option value="{{ $ta->id }}" {{ $ta->active ? 'selected' : '' }}>
-                                    {{ $ta->name }} — Sem {{ $ta->semester }}
+                                    {{ $ta->name }} - Sem {{ $ta->semester }}
                                 </option>
                             @endforeach
                         </select>

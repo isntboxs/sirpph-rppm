@@ -147,7 +147,6 @@
             @else
                 <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px">
                     @foreach ($kegiatans as $kegiatan)
-                        {{-- jumlah_tahun_dipakai sudah ada dari selectRaw — tidak ada query tambahan --}}
                         @php $terkunci = $kegiatan->isTerkunci(); @endphp
 
                         <div class="kc {{ $terkunci ? 'lck' : '' }}">
@@ -346,7 +345,7 @@
                             <div class="pw mt8">
                                 <div class="pb pk" style="width:100%"></div>
                             </div>
-                            <div class="fs11">3/3 — TERKUNCI</div>
+                            <div class="fs11">3/3 - TERKUNCI</div>
                         </td>
                         <td><span class="bdg blk">🔒 Terkunci</span></td>
                     </tr>

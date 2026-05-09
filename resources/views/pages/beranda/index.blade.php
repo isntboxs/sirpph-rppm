@@ -1,7 +1,7 @@
 @extends('layout.app')
 
 @section('page-title', 'Beranda')
-@section('page-subtitle', 'PAUDQu AL-AULIA — 2024/2025')
+@section('page-subtitle', 'PAUDQu AL-AULIA - 2024/2025')
 
 @section('content')
     <div class="sg">

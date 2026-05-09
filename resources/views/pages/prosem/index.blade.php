@@ -2,22 +2,15 @@
 
 @section('page-title', 'Program Semester (PROSEM)')
 @section('page-subtitle')
-    {{ ($taAktif->name ?? ' - ') . ' — Semester ' . ($taAktif->semester ?? ' - ') }}
+    {{ ($taAktif->name ?? ' - ') . ' - Semester ' . ($taAktif->semester ?? ' - ') }}
 @endsection
 
 @section('content')
     <div class="card">
-        {{-- <div class="ch">
-            <div>
-                <div class="ct">📊 Program Semester (PROSEM)</div>
-                <div class="cs">PAUDQu AL-AULIA — 2024/2025</div>
-            </div>
-        </div> --}}
-
         <div class="tabs">
             @foreach ($tahunAjaran as $ta)
                 <button class="tbn {{ $ta->active ? 'on' : '' }}">
-                    {{ $ta->name }} — Sem {{ $ta->semester }}
+                    {{ $ta->name }} - Sem {{ $ta->semester }}
                 </button>
             @endforeach
         </div>

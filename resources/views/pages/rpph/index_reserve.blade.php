@@ -1,7 +1,7 @@
 @extends('layout.app')
 
 @section('page-title', 'Buat & Kelola RPPH')
-@section('page-subtitle', 'PAUDQu AL-AULIA — 2024/2025')
+@section('page-subtitle', 'PAUDQu AL-AULIA - 2024/2025')
 
 @section('content')
     <div class="card mb16">
@@ -73,7 +73,7 @@
                     <strong>Menebalkan Nama Sendiri</strong>
                     <span class="fs11 tc2">(Menggambar)</span>
                 </div>
-                <div class="al ali mt8">📝 Sudah diisi — klik 📤 untuk ajukan ke Kepala</div>
+                <div class="al ali mt8">📝 Sudah diisi - klik 📤 untuk ajukan ke Kepala</div>
             </div>
 
             {{-- Rabu --}}

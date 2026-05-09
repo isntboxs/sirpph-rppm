@@ -1,7 +1,7 @@
 @extends('layout.app')
 
 @section('page-title', 'Kelola Tema')
-@section('page-subtitle', 'PAUDQu AL-AULIA — 2024/2025')
+@section('page-subtitle', 'PAUDQu AL-AULIA - 2024/2025')
 
 @section('content')
     <div class="card">
@@ -15,7 +15,7 @@
                     <div class="ch">
                         <div>
                             <div class="ct">{{ $tema->name }}</div>
-                            <div class="cs">{{ $tema->semester_label }} — {{ $tema->subTemas->count() }} Sub Tema</div>
+                            <div class="cs">{{ $tema->semester_label }} - {{ $tema->subTemas->count() }} Sub Tema</div>
                         </div>
                         <button type="button" class="btn bd bxs btn-hapus-tema" data-id="{{ $tema->id }}">🗑️</button>
                     </div>

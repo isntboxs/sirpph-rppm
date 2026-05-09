@@ -148,7 +148,7 @@
                         ✅ Setujui RPPM
                     </button>
                     <button type="button" class="btn bd wf btn-buka-kembalikan-show" data-id="{{ $rppm->id }}"
-                        data-info="Mgg {{ $rppm->minggu_ke }} — {{ $rppm->subTema->name }}">
+                        data-info="Mgg {{ $rppm->minggu_ke }} - {{ $rppm->subTema->name }}">
                         ↩️ Kembalikan ke Guru
                     </button>
                 @endif

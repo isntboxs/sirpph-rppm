@@ -1,7 +1,6 @@
 @extends('layout.app')
 
 @section('page-title', 'Portofolio Siswa')
-{{-- @section('page-subtitle', 'PAUDQu AL-AULIA — 2024/2025') --}}
 @section('page-subtitle', $kelas ? 'Kelas ' . $kelas->name : 'Belum ada kelas')
 
 @section('content')

@@ -8,7 +8,7 @@
     <title>@yield('page-title', 'Beranda') - SiRPPH</title>
 
     <meta name="page-title" content="@yield('page-title', 'Beranda')">
-    <meta name="page-subtitle" content="@yield('page-subtitle', 'PAUDQu AL-AULIA — 2024/2025')">
+    <meta name="page-subtitle" content="@yield('page-subtitle', 'PAUDQu AL-AULIA - 2024/2025')">
     <link
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700&display=swap"
         rel="stylesheet">

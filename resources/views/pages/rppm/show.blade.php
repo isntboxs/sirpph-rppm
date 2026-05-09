@@ -1,7 +1,7 @@
 @extends('layout.app')
 
 @section('page-title', 'Edit Kegiatan RPPM')
-@section('page-subtitle', $rppm->subTema->tema->name . ' — ' . $rppm->subTema->name)
+@section('page-subtitle', $rppm->subTema->tema->name . ' - ' . $rppm->subTema->name)
 
 @section('content')
 
