@@ -24,9 +24,12 @@
         <div class="lr">
             <div class="lc">
                 <div class="lb">
-                    <div class="bm">📚</div>
-                    <h2>Masuk ke SIPENAQI</h2>
-                    <p>PAUDQu AL-AULIA - Tahun Ajaran {{ \App\Models\TahunAjaran::getActive()?->name }}</p>
+                    <div class="bi" style="text-align:center;">
+                        <img src="{{ asset('logo.jpeg') }}" alt="Logo"
+                            style="width:100px; height:100px; object-fit:cover;">
+                    </div>
+                    <h2 style="text-align:center;">Masuk ke SIPENAQI</h2>
+                    <p style="text-align:center;">PAUDQu AL-AULIA - Tahun Ajaran {{ \App\Models\TahunAjaran::getActive()?->name }}</p>
                 </div>
                 <form method="POST" action="{{ route('login') }}">
                     @csrf

@@ -1,7 +1,9 @@
 <aside class="sb">
     <div class="sbh">
         <div class="sbb">
-            <div class="bi">📚</div>
+            <div class="bi">
+                <img src="{{ asset('logo.jpeg') }}" alt="Logo" style="width:40px; height:40px; object-fit:cover;">
+            </div>
             <div>
                 <h2>SIPENAQI</h2>
                 <p>PAUDQu AL-AULIA</p>

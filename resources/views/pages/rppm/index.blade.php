@@ -376,7 +376,7 @@
                     <div class="ff">
                         <label>Minggu Ke</label>
                         <input id="inputMingguRppm" name="minggu_ke" type="number" min="1" max="34"
-                            placeholder="1 – 34" />
+                            placeholder="Cth: 1" />
                     </div>
                 </div>
 
