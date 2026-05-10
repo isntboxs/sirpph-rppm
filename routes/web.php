@@ -38,6 +38,7 @@ use App\Http\Controllers\KelasController;
 use App\Http\Controllers\OrtuRppmController;
 use App\Http\Controllers\OrtuRpphController;
 use App\Http\Controllers\OrtuPortoController;
+use App\Http\Controllers\ValidasiProsemController;
 
 /*
 |--------------------------------------------------------------------------
@@ -71,23 +72,6 @@ Route::middleware(['auth', 'role'])->group(function () {
 
     Route::get('/data-siswa', [DataSiswaController::class, 'index'])->name('data_siswa');
 
-    Route::get('/tahun-ajaran', [TahunAjaranController::class, 'index'])->name('tahun_ajaran');
-    Route::post('/tahun-ajaran', [TahunAjaranController::class, 'create'])->name('tahun_ajaran.create');
-    Route::put('/tahun-ajaran/active/{id}', [TahunAjaranController::class, 'active'])->name('tahun_ajaran.active');
-
-    Route::get('/data-sekolah', [DataSekolahController::class, 'index'])->name('data_sekolah');
-    Route::put('/data-sekolah/update', [DataSekolahController::class, 'update'])->name('data_sekolah.update');
-
-    /*
-    |----------------------------------------------------------------------
-    | Kepala Sekolah
-    |----------------------------------------------------------------------
-    */
-    Route::get('/prosem', [ProsemController::class, 'index'])->name('prosem');
-    Route::post('/prosem', [ProsemController::class, 'store'])->name('prosem.store');
-    Route::delete('/prosem/{id}', [ProsemController::class, 'destroy'])->name('prosem.destroy');
-    Route::get('/prosem/sub-tema/{temaId}', [ProsemController::class, 'getSubTema'])->name('prosem.sub_tema');
-
     Route::get('/kelola-tema', [KelolaTemaController::class, 'index'])->name('kelola_tema');
     Route::post('/kelola-tema', [KelolaTemaController::class, 'store'])->name('kelola_tema.store');
     Route::delete('/kelola-tema/{id}', [KelolaTemaController::class, 'destroy'])->name('kelola_tema.destroy');
@@ -100,6 +84,28 @@ Route::middleware(['auth', 'role'])->group(function () {
     Route::delete('/master-bentuk-alat/bentuk/{id}', [MasterBentukAlatController::class, 'destroyBentuk'])->name('master_bentuk_alat.bentuk.destroy');
     Route::post('/master-bentuk-alat/alat', [MasterBentukAlatController::class, 'storeAlat'])->name('master_bentuk_alat.alat.store');
     Route::delete('/master-bentuk-alat/alat/{id}', [MasterBentukAlatController::class, 'destroyAlat'])->name('master_bentuk_alat.alat.destroy');
+
+    Route::get('/prosem', [ProsemController::class, 'index'])->name('prosem');
+    Route::post('/prosem', [ProsemController::class, 'store'])->name('prosem.store');
+    Route::put('/prosem/{id}', [ProsemController::class, 'update'])->name('prosem.update');
+    Route::delete('/prosem/{id}', [ProsemController::class, 'destroy'])->name('prosem.destroy');
+    Route::get('/prosem/sub-tema/{temaId}', [ProsemController::class, 'getSubTema'])->name('prosem.sub_tema');
+
+    Route::get('/tahun-ajaran', [TahunAjaranController::class, 'index'])->name('tahun_ajaran');
+    Route::post('/tahun-ajaran', [TahunAjaranController::class, 'create'])->name('tahun_ajaran.create');
+    Route::put('/tahun-ajaran/active/{id}', [TahunAjaranController::class, 'active'])->name('tahun_ajaran.active');
+
+    Route::get('/data-sekolah', [DataSekolahController::class, 'index'])->name('data_sekolah');
+    Route::put('/data-sekolah/update', [DataSekolahController::class, 'update'])->name('data_sekolah.update');
+
+    /*
+    |----------------------------------------------------------------------
+    | Kepala Sekolah
+    |----------------------------------------------------------------------
+    */
+    Route::get('/validasi-prosem', [ValidasiProsemController::class, 'index'])->name('validasi_prosem');
+    Route::put('/validasi-prosem/{id}', [ValidasiProsemController::class, 'validasi'])->name('validasi_prosem.validasi');
+    Route::put('/validasi-prosem/semua/validasi', [ValidasiProsemController::class, 'validasiSemua'])->name('validasi_prosem.semua');
 
     Route::get('/validasi-rppm', [ValidasiRppmController::class, 'index'])->name('validasi_rppm');
     Route::get('/validasi-rpph', [ValidasiRpphController::class, 'index'])->name('validasi_rpph');
@@ -155,7 +161,7 @@ Route::middleware(['auth', 'role'])->group(function () {
     */
     Route::get('/lihat-rppm', [OrtuRppmController::class, 'index'])->name('ortu_rppm');
     Route::get('/lihat-rppm/{id}/detail', [OrtuRppmController::class, 'show'])->name('ortu_rppm.show');
-    
+
     Route::get('/lihat-rpph', [OrtuRpphController::class, 'index'])->name('ortu_rpph');
     Route::get('/lihat-rpph', [OrtuRpphController::class, 'index'])->name('ortu_rpph');
     Route::get('/lihat-rpph/{id}/detail', [OrtuRpphController::class, 'show'])->name('ortu_rpph.show');

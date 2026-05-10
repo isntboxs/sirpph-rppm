@@ -1,6 +1,3 @@
-
-
-
 {{-- Modal: Usulkan Kegiatan Baru --}}
 <div class="mo" id="mKeg">
     <div class="md mlg">

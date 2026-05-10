@@ -11,8 +11,8 @@ return new class extends Migration
         Schema::create('prosem', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('tahun_ajaran_id');
-            $table->unsignedInteger('tema_id');
-            $table->unsignedInteger('sub_tema_id');
+            $table->unsignedBigInteger('tema_id');
+            $table->unsignedBigInteger('sub_tema_id');
             $table->tinyInteger('minggu_ke');
             $table->enum('status', ['menunggu', 'valid', 'invalid'])
                 ->default('menunggu');

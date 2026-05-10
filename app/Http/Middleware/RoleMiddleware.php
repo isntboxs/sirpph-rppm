@@ -16,16 +16,17 @@ class RoleMiddleware
             'data_sekolah',
             'kelola_tema',
             'master_bentuk_alat',
+            'prosem',
             'kelas',
             'siswa',
         ],
         'kepala' => [
-            'prosem',
             'validasi_rppm',
             'validasi_rpph',
             'validasi_kegiatan',
             'monitoring_guru',
-            'badge'
+            'validasi_prosem',
+            'badge',
         ],
         'guru' => [
             'kumpulan_kegiatan',

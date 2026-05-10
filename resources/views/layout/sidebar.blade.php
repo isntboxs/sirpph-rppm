@@ -30,12 +30,13 @@
             <a class="ni" href="{{ route('data_sekolah') }}"><span class="nic">🏫</span> Data Sekolah</a>
             <a class="ni" href="{{ route('kelola_tema') }}"><span class="nic">📚</span> Kelola Tema</a>
             <a class="ni" href="{{ route('master_bentuk_alat') }}"><span class="nic">🔧</span> Bentuk & Alat</a>
+            <a class="ni" href="{{ route('prosem') }}"><span class="nic">📊</span> Input Prosem</a>
         @endif
 
         {{-- Kepala Sekolah --}}
         @if (Auth::user()->isKepalaSekolah())
             <div class="sns">Kepala Sekolah</div>
-            <a class="ni" href="{{ route('prosem') }}"><span class="nic">📊</span> PROSEM</a>
+            <a class="ni" href="{{ route('validasi_prosem') }}"><span class="nic">📊</span>Validasi PROSEM</a>
             <a class="ni" href="{{ route('validasi_rppm') }}"><span class="nic">✅</span> Validasi RPPM <span
                     class="nbg" id="bdg-cnt-validasi-rppm" hidden>0</span></a>
             <a class="ni" href="{{ route('validasi_rpph') }}"><span class="nic">📄</span> Validasi RPPH <span
