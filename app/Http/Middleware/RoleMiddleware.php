@@ -8,20 +8,19 @@ use Illuminate\Support\Facades\Auth;
 
 class RoleMiddleware
 {
-    // Definisikan prefix route yang boleh diakses per role
     protected array $roleRoutes = [
         'admin' => [
             'kelola_pengguna',
             'data_siswa',
             'tahun_ajaran',
             'data_sekolah',
+            'kelola_tema',
+            'master_bentuk_alat',
             'kelas',
             'siswa',
         ],
         'kepala' => [
             'prosem',
-            'kelola_tema',
-            'master_bentuk_alat',
             'validasi_rppm',
             'validasi_rpph',
             'validasi_kegiatan',

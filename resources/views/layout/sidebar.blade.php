@@ -3,7 +3,7 @@
         <div class="sbb">
             <div class="bi">📚</div>
             <div>
-                <h2>SiRPPH</h2>
+                <h2>SIPENAQI</h2>
                 <p>PAUDQu AL-AULIA</p>
             </div>
         </div>
@@ -28,15 +28,14 @@
             <a class="ni" href="{{ route('data_siswa') }}"><span class="nic">👶</span> Data Siswa</a>
             <a class="ni" href="{{ route('tahun_ajaran') }}"><span class="nic">📅</span> Tahun Ajaran</a>
             <a class="ni" href="{{ route('data_sekolah') }}"><span class="nic">🏫</span> Data Sekolah</a>
+            <a class="ni" href="{{ route('kelola_tema') }}"><span class="nic">📚</span> Kelola Tema</a>
+            <a class="ni" href="{{ route('master_bentuk_alat') }}"><span class="nic">🔧</span> Bentuk & Alat</a>
         @endif
 
         {{-- Kepala Sekolah --}}
         @if (Auth::user()->isKepalaSekolah())
             <div class="sns">Kepala Sekolah</div>
             <a class="ni" href="{{ route('prosem') }}"><span class="nic">📊</span> PROSEM</a>
-            <a class="ni" href="{{ route('kelola_tema') }}"><span class="nic">📚</span> Kelola Tema</a>
-            <a class="ni" href="{{ route('master_bentuk_alat') }}"><span class="nic">🔧</span> Bentuk &
-                Alat</a>
             <a class="ni" href="{{ route('validasi_rppm') }}"><span class="nic">✅</span> Validasi RPPM <span
                     class="nbg" id="bdg-cnt-validasi-rppm" hidden>0</span></a>
             <a class="ni" href="{{ route('validasi_rpph') }}"><span class="nic">📄</span> Validasi RPPH <span

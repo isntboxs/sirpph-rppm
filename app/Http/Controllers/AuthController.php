@@ -2,9 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Kegiatan;
-use App\Models\Rpph;
-use App\Models\Rppm;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -36,17 +33,6 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
-
-            if (Auth::user()->role === 'kepala') {
-                $rppm_count     = Rppm::pending()->count();
-                $rpph_count     = Rpph::pending()->count();
-                $kegiatan_count = Kegiatan::pending()->count();
-                session([
-                    'rppm_count' => $rppm_count,
-                    'rpph_count' => $rpph_count,
-                    'kegiatan_count' => $kegiatan_count,
-                ]);
-            }
             return redirect()->intended(route('beranda'));
         }
 

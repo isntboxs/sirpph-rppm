@@ -97,4 +97,26 @@ class User extends Authenticatable
     {
         return $query->where('active', 1);
     }
+
+    public function roleText(): string
+    {
+        return match ($this->role) {
+            'admin'  => 'Admin',
+            'kepala' => 'Kepala Sekolah',
+            'guru'   => 'Guru',
+            'ortu'   => 'Orang Tua',
+            default  => 'Tidak Diketahui',
+        };
+    }
+
+    public function roleBadge(): string
+    {
+        return match ($this->role) {
+            'admin'  => 'ra',
+            'kepala' => 'rk',
+            'guru'   => 'rg',
+            'ortu'   => 'ro',
+            default  => 'ro',
+        };
+    }
 }

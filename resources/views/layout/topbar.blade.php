@@ -30,7 +30,9 @@
                 </div>
             </div>
         </div>
-        <span class="rbdg ra">Admin</span>
+        <span class="rbdg {{ Auth::user()->roleBadge() }}">
+            {{ Auth::user()->roleText() }}
+        </span>
         <span style="font-size:11.5px;color:var(--txt3)">{{ now()->format('d/m/Y') }}</span>
     </div>
 </div>

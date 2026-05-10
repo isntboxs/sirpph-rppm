@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('page-title', 'Beranda') - SiRPPH</title>
+    <title>@yield('page-title', 'Beranda') - SIPENAQI</title>
 
     <meta name="page-title" content="@yield('page-title', 'Beranda')">
     <meta name="page-subtitle" content="@yield('page-subtitle', 'PAUDQu AL-AULIA - 2024/2025')">
