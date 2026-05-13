@@ -19,41 +19,6 @@
             <button class="tbn" data-tab="tab-riwayat-rpph">📋 Riwayat</button>
         </div>
 
-        {{-- Tab: Menunggu --}}
-        {{-- <div id="vtab-menunggu" class="tab-content">
-            <div class="rc2">
-                <div class="rh">
-                    <div>
-                        <div class="rw">Senin, 14 Juli 2025 • Kelas A</div>
-                        <div class="rn">Aku, Makhluq Allah</div>
-                        <div class="rs">Allah Tuhanku — Aku Bersyukur kepada Allah</div>
-                    </div>
-                    <span class="bdg bpnd">⏳ Pending</span>
-                </div>
-                <div class="ract">
-                    <button class="btn bo bsm">🔍 Detail</button>
-                    <button class="btn bp bsm" onclick="showToast('✅ RPPH berhasil disetujui')">✅ Setujui</button>
-                    <button class="btn bd bsm">↩️</button>
-                    <button class="btn bo bsm">🖨️</button>
-                </div>
-            </div>
-            <div class="rc2">
-                <div class="rh">
-                    <div>
-                        <div class="rw">Selasa, 15 Juli 2025 • Kelas B</div>
-                        <div class="rn">Tanah Airku</div>
-                        <div class="rs">Identitas Negara — Bendera Merah Putih</div>
-                    </div>
-                    <span class="bdg bpnd">⏳ Pending</span>
-                </div>
-                <div class="ract">
-                    <button class="btn bo bsm">🔍 Detail</button>
-                    <button class="btn bp bsm" onclick="showToast('✅ RPPH berhasil disetujui')">✅ Setujui</button>
-                    <button class="btn bd bsm">↩️</button>
-                    <button class="btn bo bsm">🖨️</button>
-                </div>
-            </div>
-        </div> --}}
 
         <div id="tab-pending-rpph" class="tab-content">
             @forelse ($pending as $rpph)
@@ -71,71 +36,18 @@
                         <span class="bdg bpnd">⏳ Pending</span>
                     </div>
 
-                    {{-- @php
-                        $kegiatanHari = $rpph->rppm->rppmKegiatans->where('hari', $rpph->hari);
-                    @endphp
-                    <div class="mt8 mb8">
-                        @foreach ($kegiatanHari as $rk)
-                            <div class="dki mb4">
-                                <div>
-                                    <span style="font-weight:700;font-size:12.5px">
-                                        {{ $rk->kegiatan->foto_icon }}
-                                        {{ $rk->kegiatan->name }}
-                                    </span>
-                                    <span class="fs11 tc2">
-                                        ({{ $rk->kegiatan->bentukKegiatan->name }})
-                                    </span>
-                                    <div class="fl fw g8 mt4">
-                                        @foreach ($rk->kegiatan->aspeks as $aspek)
-                                            <span class="ap {{ $aspek->warna }}">
-                                                {{ $aspek->emote }} {{ $aspek->name }}
-                                            </span>
-                                        @endforeach
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-
-                    @if ($rpph->pembuka)
-                        <div class="ib mb8">
-                            <div class="ik">Pembuka</div>
-                            <div style="font-size:12px;color:var(--txt2);margin-top:3px;line-height:1.5">
-                                {{ $rpph->pembuka }}
-                            </div>
-                        </div>
-                    @endif
-
-                    @if ($rpph->inti)
-                        <div class="ib mb8">
-                            <div class="ik">Inti</div>
-                            <div style="font-size:12px;color:var(--txt2);margin-top:3px">
-                                {{ $rpph->inti }}
-                            </div>
-                        </div>
-                    @endif
-
-                    @if ($rpph->penutup)
-                        <div class="ib mb8">
-                            <div class="ik">Penutup</div>
-                            <div style="font-size:12px;color:var(--txt2);margin-top:3px">
-                                {{ $rpph->penutup }}
-                            </div>
-                        </div>
-                    @endif --}}
-
                     <div class="ract">
                         <button type="button" class="btn bo bsm btn-detail-rpph" data-id="{{ $rpph->id }}"
                             data-hari="{{ $rpph->hari }}" data-pending="true">
-                            🔍 Detail
+                            Detail
                         </button>
                         <button type="button" class="btn bp bsm btn-setujui-rpph" data-id="{{ $rpph->id }}"
                             data-hari="{{ $rpph->hari }}">
-                            ✅ Setujui
+                            Setujui
                         </button>
                         <button type="button" class="btn bd bsm btn-buka-kembalikan-rpph" data-id="{{ $rpph->id }}"
                             data-info="{{ $rpph->hari }} - {{ $rpph->rppm->subTema->name }}">
-                            ↩️ Kembalikan
+                            Kembalikan
                         </button>
                         <button type="button" class="btn bo bsm"
                             onclick="window.open('/rpph/{{ $rpph->id }}/cetak', '_blank')">
@@ -237,6 +149,7 @@
             </div>
         </div>
 
+        {{-- Modal Detail RPPH --}}
         <div class="mo" id="mDetailRpph">
             <div class="md mlg">
                 <div class="mh">
@@ -276,7 +189,7 @@
                                 style="font-weight:700;letter-spacing:.5px;text-transform:uppercase">
                                 Pembuka
                             </div>
-                            <div id="mDetailPembuka" style="font-size:13px;color:var(--txt2);line-height:1.6"></div>
+                            <div id="mDetailPembuka" style="font-size:13px;color:var(--txt2);line-height:1.6;white-space:pre-line"></div>
                         </div>
                     </div>
 
@@ -299,7 +212,7 @@
                                 style="font-weight:700;letter-spacing:.5px;text-transform:uppercase">
                                 Penutup
                             </div>
-                            <div id="mDetailPenutup" style="font-size:13px;color:var(--txt2);line-height:1.6"></div>
+                            <div id="mDetailPenutup" style="font-size:13px;color:var(--txt2);line-height:1.6;white-space:pre-line"></div>
                         </div>
                     </div>
 

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Rpph extends Model
 {
@@ -13,11 +14,19 @@ class Rpph extends Model
     protected $fillable = [
         'rppm_id',
         'hari',
+        'tanggal',
+        'sub_sub_tema',
+        'kelas_id',
         'pembuka',
         'inti',
+        'recalling',
         'penutup',
         'status',
         'catatan_kepala',
+    ];
+
+    protected $casts = [
+        'tanggal' => 'date',
     ];
 
     public function rppm(): BelongsTo
@@ -76,5 +85,19 @@ class Rpph extends Model
             'dikembalikan' => 'brj',
             default        => 'bdr',
         };
+    }
+
+    public function penilaians(): HasMany
+    {
+        return $this->hasMany(RpphPenilaian::class, 'rpph_id')
+            ->with('poins')
+            ->orderBy('urutan');
+    }
+
+    public function getTanggalValidAttribute(): bool
+    {
+        if (!$this->tanggal || !$this->rppm?->bulan) return false;
+        return \Carbon\Carbon::parse($this->tanggal)->month === $this->rppm->bulan
+            && \Carbon\Carbon::parse($this->tanggal)->year  === $this->rppm->tahun;
     }
 }

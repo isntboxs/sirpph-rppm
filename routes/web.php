@@ -141,10 +141,13 @@ Route::middleware(['auth', 'role'])->group(function () {
     Route::delete('/rppm/kegiatan/{id}', [RppmController::class, 'hapusKegiatan'])->name('rppm.kegiatan.hapus');
     Route::put('/rppm/{id}/ajukan', [RppmController::class, 'ajukan'])->name('rppm.ajukan');
     Route::post('/rppm/{id}/generate-rpph', [RppmController::class, 'generateRpph'])->name('rppm.generate_rpph');
+    Route::delete('/rppm/{id}', [RppmController::class, 'destroy'])->name('rppm.destroy');
 
     Route::get('/rpph', [RpphController::class, 'index'])->name('rpph');
     Route::put('/rpph/{id}', [RpphController::class, 'update'])->name('rpph.update');
     Route::put('/rpph/{id}/ajukan', [RpphController::class, 'ajukan'])->name('rpph.ajukan');
+    Route::get('/rpph/tanggal-terpakai/{rppmId}', [RpphController::class, 'tanggalTerpakai'])->name('rpph.tanggal_terpakai');
+    Route::get('/rpph/{id}/penilaian', [RpphController::class, 'getPenilaian'])->name('rpph.penilaian');
 
     Route::get('/portofolio-siswa', [PortofolioSiswaController::class, 'index'])->name('portofolio_siswa');
     Route::post('/portofolio-siswa', [PortofolioSiswaController::class, 'store'])->name('portofolio_siswa.store');

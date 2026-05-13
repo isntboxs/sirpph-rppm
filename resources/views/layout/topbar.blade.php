@@ -23,7 +23,7 @@
                         <div class="nd-time">🕐 1 jam lalu</div>
                     </div>
                     <div class="nd-item">
-                        <div class="nd-title">✅ RPPM Disetujui</div>
+                        <div class="nd-title">RPPM Disetujui</div>
                         <div class="nd-msg">RPPM "Tanah Airku" telah disetujui</div>
                         <div class="nd-time">🕐 Kemarin</div>
                     </div>

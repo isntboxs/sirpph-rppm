@@ -14,6 +14,7 @@ use App\Models\Kegiatan;
 use App\Models\Tema;
 use App\Models\TahunAjaran;
 use App\Models\AspekPerkembangan;
+use App\Models\Prosem;
 
 class RppmController extends Controller
 {
@@ -28,8 +29,14 @@ class RppmController extends Controller
             ->latest()
             ->get();
 
-        $temas       = Tema::with('subTemas')->orderBy('semester')->get();
-        $taList      = TahunAjaran::orderByDesc('active')->get();
+        $prosemValid = Prosem::with(['tema', 'subTema'])
+            ->where('tahun_ajaran_id', $taAktif?->id)
+            ->valid()
+            ->orderBy('minggu_ke')
+            ->get();
+
+        $mingguSudahAda = $rppms->pluck('minggu_ke')->toArray();
+
         $modelList   = [
             'Berbasis Proyek',
             'Kelompok dengan Sudut',
@@ -40,8 +47,8 @@ class RppmController extends Controller
 
         return view('pages.rppm.index', compact(
             'rppms',
-            'temas',
-            'taList',
+            'prosemValid',
+            'mingguSudahAda',
             'taAktif',
             'modelList'
         ));
@@ -50,16 +57,15 @@ class RppmController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'tahun_ajaran_id'    => 'required|exists:tahun_ajaran,id',
-            'sub_tema_id'        => 'required|exists:sub_tema,id',
             'minggu_ke'          => 'required|integer|min:1|max:34',
+            'bulan'              => 'required|integer|min:1|max:12',
+            'tahun'              => 'required|integer',
             'model_pembelajaran' => 'nullable|string|max:100',
             'tujuan'             => 'nullable|string',
             'capaian'            => 'nullable|string',
         ], [
-            'sub_tema_id.required'     => 'Sub tema wajib dipilih.',
-            'minggu_ke.required'       => 'Minggu ke wajib diisi.',
-            'tahun_ajaran_id.required' => 'Tahun ajaran wajib dipilih.',
+            'minggu_ke.required' => 'Minggu ke wajib diisi.',
+            'bulan.required'     => 'Bulan pelaksanaan wajib dipilih.',
         ]);
 
         if ($validator->fails()) {
@@ -69,23 +75,39 @@ class RppmController extends Controller
             ], 422);
         }
 
+        $taAktif = TahunAjaran::getActive();
+        $prosem = \App\Models\Prosem::with(['subTema'])
+            ->where('tahun_ajaran_id', $taAktif?->id)
+            ->where('minggu_ke', $request->minggu_ke)
+            ->valid()
+            ->first();
+
+        if (!$prosem) {
+            return response()->json([
+                'status' => false,
+                'errors' => ['minggu_ke' => ['PROSEM untuk minggu ini belum divalidasi atau tidak ditemukan.']],
+            ], 422);
+        }
+
         $sudahAda = Rppm::where('guru_id', Auth::id())
-            ->where('tahun_ajaran_id', $request->tahun_ajaran_id)
-            ->where('sub_tema_id', $request->sub_tema_id)
+            ->where('tahun_ajaran_id', $taAktif?->id)
+            ->where('minggu_ke', $request->minggu_ke)
             ->exists();
 
         if ($sudahAda) {
             return response()->json([
                 'status' => false,
-                'errors' => ['sub_tema_id' => ['RPPM untuk sub tema ini sudah ada.']],
+                'errors' => ['minggu_ke' => ['RPPM untuk minggu ke-' . $request->minggu_ke . ' sudah pernah dibuat.']],
             ], 422);
         }
 
         $rppm = Rppm::create([
             'guru_id'            => Auth::id(),
-            'tahun_ajaran_id'    => $request->tahun_ajaran_id,
-            'sub_tema_id'        => $request->sub_tema_id,
+            'tahun_ajaran_id'    => $taAktif->id,
+            'sub_tema_id'        => $prosem->sub_tema_id,
             'minggu_ke'          => $request->minggu_ke,
+            'bulan'              => $request->bulan,
+            'tahun'              => $request->tahun,
             'model_pembelajaran' => $request->model_pembelajaran,
             'tujuan'             => $request->tujuan,
             'capaian'            => $request->capaian,
@@ -96,6 +118,8 @@ class RppmController extends Controller
             'status'  => true,
             'message' => 'RPPM berhasil dibuat sebagai draft.',
             'rppm_id' => $rppm->id,
+            'tema'    => $prosem->subTema->tema->name ?? '-',
+            'sub_tema' => $prosem->subTema->name ?? '-',
         ]);
     }
 
@@ -233,6 +257,27 @@ class RppmController extends Controller
         return response()->json([
             'status'  => true,
             'message' => '⚡ RPPH berhasil di-generate untuk ' . $hariAda->count() . ' hari.',
+        ]);
+    }
+
+    public function destroy(string $id)
+    {
+        $rppm = Rppm::with('rpphs')->findOrFail((int) $id);
+
+        abort_if($rppm->guru_id !== Auth::id(), 403);
+
+        if ($rppm->status === 'disetujui') {
+            return response()->json([
+                'status'  => false,
+                'message' => 'RPPM yang sudah disetujui tidak bisa dihapus.',
+            ], 422);
+        }
+
+        $rppm->delete();
+
+        return response()->json([
+            'status'  => true,
+            'message' => '🗑️ RPPM berhasil dihapus. Kamu bisa membuat RPPM baru untuk minggu tersebut.',
         ]);
     }
 }

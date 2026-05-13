@@ -9,63 +9,13 @@
         <button class="tbn" id="tab-btn-baru">+ Buat RPPM Baru</button>
     </div>
 
-    {{-- Panel: Daftar RPPM --}}
-    {{-- <div id="panel-daftar">
-        <div class="rc2">
-            <div class="rh">
-                <div>
-                    <div class="rw">Mgg ke-1 — Sem 1 — 2024/2025</div>
-                    <div class="rn">Aku, Makhluq Allah</div>
-                    <div class="rs">Allah Tuhanku</div>
-                </div>
-                <span class="bdg bok">✅ Disetujui</span>
-            </div>
-            <div class="ract">
-                <button class="btn bo bsm">👁️ Detail</button>
-                <button class="btn bp bsm">⚡ Generate RPPH</button>
-                <button class="btn bo bsm" onclick="document.getElementById('mCRP').classList.add('on')">🖨️</button>
-            </div>
-        </div>
-        <div class="rc2">
-            <div class="rh">
-                <div>
-                    <div class="rw">Mgg ke-2 — Sem 1 — 2024/2025</div>
-                    <div class="rn">Tanah Airku</div>
-                    <div class="rs">Identitas Negara</div>
-                </div>
-                <span class="bdg bpnd">⏳ Pending</span>
-            </div>
-            <div class="ract">
-                <button class="btn bo bsm">👁️ Detail</button>
-                <button class="btn bo bsm" onclick="document.getElementById('mCRP').classList.add('on')">🖨️</button>
-            </div>
-        </div>
-        <div class="rc2">
-            <div class="rh">
-                <div>
-                    <div class="rw">Mgg ke-3 — Sem 1 — 2024/2025</div>
-                    <div class="rn">Lingkunganku</div>
-                    <div class="rs">Rumahku</div>
-                </div>
-                <span class="bdg bdr">📝 Draft</span>
-            </div>
-            <div class="al ale mt8">📝 Perlu ditambahkan kegiatan aspek Seni</div>
-            <div class="ract">
-                <button class="btn bo bsm">👁️ Detail</button>
-                <button class="btn ba bsm" onclick="showToast('📤 RPPM diajukan ke Kepala Sekolah')">📤 Ajukan ke
-                    Kepala</button>
-                <button class="btn bo bsm" onclick="document.getElementById('mCRP').classList.add('on')">🖨️</button>
-            </div>
-        </div>
-    </div> --}}
-
     <div id="panel-daftar">
         @forelse ($rppms as $rppm)
             <div class="rc2">
                 <div class="rh">
                     <div>
                         <div class="rw">
-                            Mgg ke-{{ $rppm->minggu_ke }} •
+                            Minggu ke-{{ $rppm->minggu_ke }} •
                             {{ $rppm->tahunAjaran->name }}
                         </div>
                         <div class="rn">{{ $rppm->subTema->tema->name }}</div>
@@ -104,11 +54,7 @@
                                     <span style="color:var(--g5)">
                                         {{ $rpph->status === 'disetujui' ? '✅' : ($rpph->status === 'pending' ? '⏳' : '📝') }}
                                     </span>
-                                @else
-                                    ✓
                                 @endif
-                            @else
-                                ⚪
                             @endif
                         </div>
                     @endforeach
@@ -128,7 +74,7 @@
                 {{-- Tombol aksi --}}
                 <div class="ract">
                     <a href="{{ route('rppm.show', $rppm->id) }}" class="btn bo bsm">
-                        ✏️ {{ in_array($rppm->status, ['draft', 'dikembalikan']) ? 'Edit Kegiatan' : 'Lihat Detail' }}
+                        {{ in_array($rppm->status, ['draft', 'dikembalikan']) ? 'Edit Kegiatan' : 'Detail' }}
                     </a>
 
                     @if (in_array($rppm->status, ['draft', 'dikembalikan']))
@@ -139,9 +85,16 @@
 
                     @if ($rppm->status === 'disetujui')
                         <button type="button" class="btn bp bsm btn-generate-rpph" data-id="{{ $rppm->id }}">
-                            ⚡ Generate RPPH
+                            Generate RPPH
                         </button>
-                        <a href="{{ route('rpph') }}" class="btn bo bsm">📅 Lihat RPPH</a>
+                        <a href="{{ route('rpph') }}" class="btn bo bsm">Lihat RPPH</a>
+                    @endif
+
+                    @if ($rppm->status !== 'disetujui')
+                        <button type="button" class="btn bd bsm btn-hapus-rppm" data-id="{{ $rppm->id }}"
+                            data-info="Minggu ke-{{ $rppm->minggu_ke }} - {{ $rppm->subTema->tema->name }} | {{ $rppm->subTema->name }}">
+                            Hapus
+                        </button>
                     @endif
 
                     <button type="button" class="btn bo bsm"
@@ -160,170 +113,11 @@
     </div>
 
     {{-- Panel: Form Buat RPPM Baru --}}
-    {{-- <div id="panel-baru" style="display:none">
-        <div class="card">
-            <div class="ch">
-                <div class="ct">📝 Form RPPM Baru</div>
-            </div>
-
-            <div class="fs11 tc2 mb16" style="text-transform:uppercase;letter-spacing:1px;font-weight:700">A. Identitas
-            </div>
-
-            <div class="fr c3">
-                <div class="ff">
-                    <label>Tema</label>
-                    <select id="selectTema" onchange="updateSubTema()">
-                        <option value="">-- Pilih --</option>
-                        <option value="aku">Aku, Makhluq Allah</option>
-                        <option value="tanah">Tanah Airku</option>
-                        <option value="lingkungan">Lingkunganku</option>
-                        <option value="binatang">Binatang Ciptaan Allah</option>
-                    </select>
-                </div>
-                <div class="ff">
-                    <label>Sub Tema</label>
-                    <select id="selectSubTema">
-                        <option>Pilih tema dulu</option>
-                    </select>
-                </div>
-                <div class="ff">
-                    <label>Minggu Ke</label>
-                    <input type="number" min="1" max="17" placeholder="1-17" />
-                </div>
-            </div>
-            <div class="fr c2">
-                <div class="ff">
-                    <label>Model Pembelajaran</label>
-                    <select>
-                        <option>Berbasis Proyek</option>
-                        <option>Kelompok dengan Sudut</option>
-                        <option>Sentra</option>
-                        <option>Area</option>
-                        <option>STEM</option>
-                    </select>
-                </div>
-                <div class="ff">
-                    <label>Tahun Ajaran</label>
-                    <input value="2024/2025" disabled />
-                </div>
-            </div>
-            <div class="fr">
-                <div class="ff">
-                    <label>Tujuan Pembelajaran</label>
-                    <textarea rows="2" placeholder="Tujuan pembelajaran minggu ini..."></textarea>
-                </div>
-            </div>
-            <div class="fr">
-                <div class="ff">
-                    <label>Capaian Pembelajaran</label>
-                    <textarea rows="2" placeholder="Capaian yang diharapkan..."></textarea>
-                </div>
-            </div>
-
-            <div class="dv"></div>
-            <div class="fs11 tc2 mb16" style="text-transform:uppercase;letter-spacing:1px;font-weight:700">B. Kegiatan Per
-                Hari</div>
-            <div class="al alw mb16">⚠️ Aspek belum terstimulasi: <strong>🎨 Seni</strong>, <strong>❤️ Sosial
-                    Emosional</strong></div>
-
-            <div class="dt">
-                <div class="dtb on">Senin (2)</div>
-                <div class="dtb fl">Selasa (1)</div>
-                <div class="dtb">Rabu (0)</div>
-                <div class="dtb fl">Kamis (2)</div>
-                <div class="dtb">Jumat (0)</div>
-            </div>
-
-            <div class="ds">
-                <div class="dsh">
-                    <span class="dn">📅 Senin</span>
-                    <button class="btn bp bxs" onclick="document.getElementById('mPilihKeg').classList.add('on')">+ Pilih
-                        Kegiatan</button>
-                </div>
-                <div class="dki">
-                    <div>
-                        <strong>Menebalkan Nama Sendiri</strong> <span class="fs11 tc2">(Menggambar)</span>
-                        <div class="mt8"><span class="ap a3">🧠 Kognitif</span> <span class="ap a4">💬 Bahasa</span>
-                        </div>
-                    </div>
-                    <button class="btn bd bxs">✕</button>
-                </div>
-                <div class="dki">
-                    <div>
-                        <strong>Finger Painting Anggota Tubuh</strong> <span class="fs11 tc2">(Finger Painting)</span>
-                        <div class="mt8"><span class="ap a2">🏃 Fisik Motorik</span> <span class="ap a6">🎨
-                                Seni</span></div>
-                    </div>
-                    <button class="btn bd bxs">✕</button>
-                </div>
-            </div>
-
-            <div class="dv"></div>
-            <div class="fs11 tc2 mb16" style="text-transform:uppercase;letter-spacing:1px;font-weight:700">C. Analisis
-                Aspek Real-time</div>
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px">
-                <div class="card" style="padding:12px">
-                    <div class="fl jb ic mb8"><span class="ap a1">🕌 Nilai Agama</span><strong
-                            style="font-size:18px;color:var(--g6)">2</strong></div>
-                    <div class="pw">
-                        <div class="pb gr" style="width:80%"></div>
-                    </div>
-                </div>
-                <div class="card" style="padding:12px">
-                    <div class="fl jb ic mb8"><span class="ap a2">🏃 Fisik Motorik</span><strong
-                            style="font-size:18px;color:var(--g6)">3</strong></div>
-                    <div class="pw">
-                        <div class="pb bl" style="width:100%"></div>
-                    </div>
-                </div>
-                <div class="card" style="padding:12px">
-                    <div class="fl jb ic mb8"><span class="ap a3">🧠 Kognitif</span><strong
-                            style="font-size:18px;color:var(--g6)">2</strong></div>
-                    <div class="pw">
-                        <div class="pb ye" style="width:60%"></div>
-                    </div>
-                </div>
-                <div class="card" style="padding:12px">
-                    <div class="fl jb ic mb8"><span class="ap a4">💬 Bahasa</span><strong
-                            style="font-size:18px;color:var(--g6)">1</strong></div>
-                    <div class="pw">
-                        <div class="pb gr" style="width:40%"></div>
-                    </div>
-                </div>
-                <div class="card" style="padding:12px;border-color:#fecaca">
-                    <div class="fl jb ic mb8"><span class="ap a5">❤️ Sosial Emosional</span><strong
-                            style="font-size:18px;color:var(--red)">0</strong></div>
-                    <div class="pw">
-                        <div class="pb pk" style="width:0%"></div>
-                    </div>
-                    <div class="fs11 mt8" style="color:var(--red)">⚠️ Belum ada</div>
-                </div>
-                <div class="card" style="padding:12px;border-color:#fecaca">
-                    <div class="fl jb ic mb8"><span class="ap a6">🎨 Seni</span><strong
-                            style="font-size:18px;color:var(--red)">0</strong></div>
-                    <div class="pw">
-                        <div class="pb or" style="width:0%"></div>
-                    </div>
-                    <div class="fs11 mt8" style="color:var(--red)">⚠️ Belum ada</div>
-                </div>
-            </div>
-
-            <div class="dv"></div>
-            <div class="fl jb g12">
-                <button class="btn bo">🔄 Reset</button>
-                <div class="fl g12">
-                    <button class="btn bo" onclick="showToast('💾 Draft tersimpan')">💾 Simpan Draft</button>
-                    <button class="btn ba" onclick="showToast('📤 RPPM diajukan ke Kepala Sekolah')">📤 Ajukan ke Kepala
-                        Sekolah</button>
-                </div>
-            </div>
-        </div>
-    </div> --}}
-
     <div id="panel-baru" style="display:none">
         <div class="card">
             <div class="ch mb16">
                 <div class="ct">📝 Form RPPM Baru</div>
+                <div class="cs">Tahun Ajaran: {{ $taAktif?->name }} Semester {{ $taAktif?->semester }}</div>
             </div>
 
             <form id="formBuatRppm">
@@ -333,130 +127,196 @@
                     A. Identitas
                 </div>
 
-                <div class="fr c3">
-                    <div class="ff">
-                        <label>Tahun Ajaran</label>
-                        <select id="inputTaRppm" name="tahun_ajaran_id">
-                            @foreach ($taList as $ta)
-                                <option value="{{ $ta->id }}" {{ $ta->active ? 'selected' : '' }}>
-                                    {{ $ta->name }} - Sem {{ $ta->semester }}
-                                </option>
-                            @endforeach
-                        </select>
+                @if ($prosemValid->isEmpty())
+                    <div class="al alw mb16">
+                        Belum ada PROSEM yang divalidasi kepala sekolah.
+                        RPPM tidak bisa dibuat sebelum PROSEM divalidasi.
                     </div>
-                    <div class="ff">
-                        <label>Tema</label>
-                        <select id="inputTemaRppm">
-                            <option value="">-- Pilih Tema --</option>
-                            @foreach ($temas as $tema)
-                                <option value="{{ $tema->id }}">
-                                    {{ $tema->name }} (Sem {{ $tema->semester }})
-                                </option>
-                            @endforeach
-                        </select>
+                @else
+                    {{-- Grid pilihan minggu --}}
+                    <div
+                        style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+                            gap:10px;margin-bottom:20px">
+                        @foreach ($prosemValid as $prosem)
+                            @php $sudahBuat = in_array($prosem->minggu_ke, $mingguSudahAda); @endphp
+                            <div class="minggu-option {{ $sudahBuat ? 'disabled' : '' }}"
+                                data-minggu="{{ $prosem->minggu_ke }}" data-tema="{{ $prosem->tema->name }}"
+                                data-sub-tema="{{ $prosem->subTema->name }}"
+                                style="border:2px solid {{ $sudahBuat ? '#e2e8f0' : 'var(--g2)' }};
+                                    border-radius:var(--r2);padding:12px 14px;
+                                    cursor:{{ $sudahBuat ? 'not-allowed' : 'pointer' }};
+                                    background:{{ $sudahBuat ? '#f8fafc' : 'var(--white)' }};
+                                    opacity:{{ $sudahBuat ? '0.5' : '1' }};
+                                    transition:.18s;position:relative"
+                                onmouseover="if(!{{ $sudahBuat ? 'true' : 'false' }}) {
+                                        this.style.borderColor='var(--primary)';
+                                        this.style.background='#f1f5f9';
+                                        this.style.transform='translateY(-2px)';
+                                    }"
+                                onmouseout="if(!{{ $sudahBuat ? 'true' : 'false' }}) {
+                                        this.style.borderColor='var(--g2)';
+                                        this.style.background='var(--white)';
+                                        this.style.transform='translateY(0)';
+                                    }">
+                                <div class="fl ic jb mb4">
+                                    <div>Minggu ke- </div>
+                                    <div
+                                        style="width:28px;height:28px;background:{{ $sudahBuat ? '#94a3b8' : 'var(--g6)' }};
+                                            color:white;border-radius:50%;display:flex;
+                                            align-items:center;justify-content:center;
+                                            font-size:11px;font-weight:800;flex-shrink:0">
+                                        {{ $prosem->minggu_ke }}
+                                    </div>
+                                    @if ($sudahBuat)
+                                        <span class="bdg bok" style="font-size:10px">Dibuat</span>
+                                    @endif
+                                </div>
+                                <div
+                                    style="font-size:12px;font-weight:700;color:{{ $sudahBuat ? '#94a3b8' : 'var(--txt)' }};
+                                        margin-bottom:2px;line-height:1.3">
+                                    {{ $prosem->subTema->tema->name }}
+                                </div>
+                                <div
+                                    style="font-size:11px;color:{{ $sudahBuat ? '#94a3b8' : 'var(--g6)' }};
+                                        font-weight:600">
+                                    {{ $prosem->subTema->name }}
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
-                    <div class="ff">
-                        <label>Sub Tema</label>
-                        <select id="inputSubTemaRppm" name="sub_tema_id" disabled>
-                            <option value="">-- Pilih Tema Dulu --</option>
-                        </select>
-                    </div>
-                </div>
 
-                <div class="fr c2">
-                    <div class="ff">
-                        <label>Model Pembelajaran</label>
-                        <select id="inputModelRppm" name="model_pembelajaran">
-                            <option value="">-- Pilih Model --</option>
-                            @foreach ($modelList as $model)
-                                <option value="{{ $model }}">{{ $model }}</option>
-                            @endforeach
-                        </select>
+                    {{-- Info minggu yang dipilih --}}
+                    <input type="hidden" id="inputMingguRppm" name="minggu_ke" />
+                    <div id="infoMingguDipilih" style="display:none" class="al als mb16">
+                        Minggu ke-<span id="labelMingguDipilih"></span> dipilih:
+                        <strong id="labelTemaDipilih"></strong> -
+                        <strong id="labelSubTemaDipilih"></strong>
                     </div>
-                    <div class="ff">
-                        <label>Minggu Ke</label>
-                        <input id="inputMingguRppm" name="minggu_ke" type="number" min="1" max="34"
-                            placeholder="Cth: 1" />
+                    <div id="infoMingguBelum" class="al alw mb16">
+                        Pilih minggu pelaksanaan dari daftar di atas.
                     </div>
-                </div>
 
-                <div class="fr">
-                    <div class="ff">
-                        <label>Tujuan Pembelajaran</label>
-                        <textarea id="inputTujuanRppm" name="tujuan" rows="2" placeholder="Anak dapat mengenal... melalui kegiatan..."></textarea>
+                    {{-- B. Pilih Bulan --}}
+                    <div class="fs11 tc2 mb12" style="text-transform:uppercase;letter-spacing:1px;font-weight:700">
+                        B. Bulan Pelaksanaan
                     </div>
-                </div>
 
-                <div class="fr">
-                    <div class="ff">
-                        <label>Capaian Pembelajaran</label>
-                        <textarea id="inputCapaianRppm" name="capaian" rows="2" placeholder="Anak mampu..."></textarea>
+                    @php
+                        $bulanPenuh = [
+                            1 => 'Januari',
+                            2 => 'Februari',
+                            3 => 'Maret',
+                            4 => 'April',
+                            5 => 'Mei',
+                            6 => 'Juni',
+                            7 => 'Juli',
+                            8 => 'Agustus',
+                            9 => 'September',
+                            10 => 'Oktober',
+                            11 => 'November',
+                            12 => 'Desember',
+                        ];
+                        $tahunSekarang = now()->year;
+                    @endphp
+
+                    <input type="hidden" id="inputBulanRppm" name="bulan" />
+                    <input type="hidden" id="inputTahunRppm" name="tahun" value="{{ $tahunSekarang }}" />
+
+                    {{-- Grid bulan --}}
+                    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:8px">
+                        @foreach ($bulanPenuh as $num => $label)
+                            <div class="bulan-option" data-bulan="{{ $num }}" data-nama="{{ $bulanPenuh[$num] }}"
+                                style="border:2px solid var(--g2);border-radius:var(--r2);
+                                    padding:10px 6px;text-align:center;cursor:pointer;
+                                    transition:.18s;background:var(--white)"
+                                onmouseover="
+                                        this.style.borderColor='var(--primary)';
+                                        this.style.background='#f1f5f9';
+                                        this.style.transform='translateY(-2px)';
+                                    "
+                                onmouseout="
+                                        this.style.borderColor='var(--g2)';
+                                        this.style.background='var(--white)';
+                                        this.style.transform='translateY(0)';
+                                    ">
+                                <div style="font-size:12px;font-weight:700;color:var(--txt)">
+                                    {{ $label }}
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
-                </div>
 
-                <div id="errorBuatRppm" class="al ale" style="display:none"></div>
+                    {{-- Toggle tahun --}}
+                    <div class="fl ic g8 mb12" style="justify-content: center; align-item: center;">
+                        <span class="fs11 tc2">Tahun:</span>
+                        <button type="button" class="btn bo bxs" id="btnTahunMin">−</button>
+                        <span id="labelTahunRppm" class="fw7" style="min-width:50px;text-align:center">
+                            {{ $tahunSekarang }}
+                        </span>
+                        <button type="button" class="btn bo bxs" id="btnTahunPlus">+</button>
+                    </div>
 
-                <div class="dv"></div>
-                <div class="fl jb">
-                    <button type="button" class="btn bo" id="btnResetRppm">🔄 Reset</button>
-                    <button type="submit" class="btn bp">💾 Simpan sebagai Draft</button>
-                </div>
+                    {{-- C. Detail tambahan --}}
+                    <div class="fs11 tc2 mb12" style="text-transform:uppercase;letter-spacing:1px;font-weight:700">
+                        C. Detail Pembelajaran
+                    </div>
+
+                    <div class="fr c2">
+                        <div class="ff">
+                            <label>Model Pembelajaran</label>
+                            <select id="inputModelRppm" name="model_pembelajaran">
+                                <option value="">-- Pilih Model --</option>
+                                @foreach ($modelList as $model)
+                                    <option value="{{ $model }}">{{ $model }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="ff">
+                            <label>Info Periode</label>
+                            <input disabled id="displayPeriode" placeholder="Pilih minggu & bulan dulu"
+                                style="background:var(--g0)" />
+                        </div>
+                    </div>
+
+                    <div class="fr">
+                        <div class="ff">
+                            <label>Tujuan Pembelajaran</label>
+                            <textarea id="inputTujuanRppm" name="tujuan" rows="2"
+                                placeholder="Anak dapat mengenal... melalui kegiatan..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="fr">
+                        <div class="ff">
+                            <label>Capaian Pembelajaran</label>
+                            <textarea id="inputCapaianRppm" name="capaian" rows="2" placeholder="Anak mampu..."></textarea>
+                        </div>
+                    </div>
+
+                    <div id="errorBuatRppm" class="al ale" style="display:none"></div>
+
+                    <div class="dv"></div>
+                    <div class="fl jb">
+                        <button type="button" class="btn bo" id="btnResetRppm">
+                            Reset
+                        </button>
+                        <button type="submit" class="btn bp" id="btnSimpanRppm">
+                            Simpan sebagai Draft
+                        </button>
+                    </div>
+                @endif
+
             </form>
         </div>
     </div>
 @endsection
 
-{{-- @push('scripts')
-    <script>
-        $(function() {
-            var subTemaData = {
-                aku: ['Allah Tuhanku', 'Identitasku', 'Tubuhku / Aurat', 'Panca Indra'],
-                tanah: ['Identitas Negara', 'Hari Besar Nasional', 'Lambang Negara', 'Elemen Bangsa / Budaya'],
-                lingkungan: ['Rumahku', 'Keluargaku', 'Masjidku', 'Sekolahku'],
-                binatang: ['Binatang Halal/Haram', 'Binatang Qurban', 'Binatang Buas', 'Serangga',
-                    'Binatang Air & Udara'
-                ]
-            };
-
-            $('#selectTema').on('change', function() {
-                var val = $(this).val();
-                var $sel = $('#selectSubTema').empty();
-
-                if (!val) {
-                    $sel.append($('<option>').text('Pilih tema dulu'));
-                    return;
-                }
-
-                $.each(subTemaData[val] || [], function(i, st) {
-                    $sel.append($('<option>').text(st));
-                });
-            });
-
-            function switchRppmTab(tab) {
-                $('#panel-daftar').toggle(tab === 'daftar');
-                $('#panel-baru').toggle(tab === 'baru');
-                $('#tab-btn-daftar').toggleClass('on', tab === 'daftar');
-                $('#tab-btn-baru').toggleClass('on', tab === 'baru');
-            }
-
-            $('#tab-btn-daftar').on('click', function() {
-                switchRppmTab('daftar');
-            });
-            $('#tab-btn-baru').on('click', function() {
-                switchRppmTab('baru');
-            });
-
-            $(document).on('click', '.dt .dtb', function() {
-                $('.dt .dtb').removeClass('on');
-                $(this).addClass('on');
-            });
-
-        });
-    </script>
-@endpush --}}
-
 @push('scripts')
     <script>
+        var tahunRppm = {{ now()->year }};
+        var bulanRppm = null;
+        var mingguRppm = null;
+
         function switchTab(tab) {
             $('#panel-daftar').toggle(tab === 'daftar');
             $('#panel-baru').toggle(tab === 'baru');
@@ -471,57 +331,166 @@
             switchTab('baru');
         });
 
-        var temaData = {
-            @foreach ($temas as $tema)
-                {{ $tema->id }}: [
-                    @foreach ($tema->subTemas as $sub)
-                        {
-                            id: {{ $sub->id }},
-                            name: "{{ $sub->name }}"
-                        },
-                    @endforeach
-                ],
-            @endforeach
-        };
-
-        $('#inputTemaRppm').on('change', function() {
-            var temaId = $(this).val();
-            var $sub = $('#inputSubTemaRppm');
-
-            if (!temaId) {
-                $sub.html('<option value="">-- Pilih Tema Dulu --</option>').prop('disabled', true);
-                return;
-            }
-
-            var subs = temaData[temaId] || [];
-            var options = '<option value="">-- Pilih Sub Tema --</option>';
-            $.each(subs, function(i, s) {
-                options += '<option value="' + s.id + '">' + s.name + '</option>';
-            });
-            $sub.html(options).prop('disabled', false);
-        });
-
         $('#btnResetRppm').on('click', function() {
             $('#formBuatRppm')[0].reset();
-            $('#inputSubTemaRppm').html('<option value="">-- Pilih Tema Dulu --</option>').prop('disabled', true);
-            $('#errorBuatRppm').hide().text('');
+            $('#inputMingguRppm, #inputBulanRppm').val('');
+            $('#inputTahunRppm').val({{ now()->year }});
+            mingguRppm = null;
+            bulanRppm = null;
+            tahunRppm = {{ now()->year }};
+
+            $('.minggu-option').css({
+                'border-color': 'var(--g2)',
+                'background': 'var(--white)'
+            });
+            $('.bulan-option').css({
+                'border-color': 'var(--g2)',
+                'background': 'var(--white)'
+            });
+            $('.bulan-option div').css('color', 'var(--txt)');
+            $('#labelTahunRppm').text({{ now()->year }});
+            $('#infoMingguDipilih').hide();
+            $('#infoMingguBelum').show();
+            $('#displayPeriode').val('');
+            $('#errorBuatRppm').hide();
         });
+
+        $(document).on('click', '.minggu-option:not(.disabled)', function() {
+            $('.minggu-option').css({
+                'border-color': 'var(--g2)',
+                'background': 'var(--white)',
+            });
+
+            $(this).css({
+                'border-color': 'var(--g5)',
+                'background': 'var(--g0)',
+            });
+
+            mingguRppm = $(this).data('minggu');
+            var tema = $(this).data('tema');
+            var subTema = $(this).data('sub-tema');
+
+            $('#inputMingguRppm').val(mingguRppm);
+            $('#labelMingguDipilih').text(mingguRppm);
+            $('#labelTemaDipilih').text(tema);
+            $('#labelSubTemaDipilih').text(subTema);
+            $('#infoMingguDipilih').show();
+            $('#infoMingguBelum').hide();
+
+            updateDisplayPeriode();
+        });
+
+        $(document).on('click', '.btn-hapus-rppm', function() {
+            var id = $(this).data('id');
+            var info = $(this).data('info');
+
+            if (!confirm(
+                    'Hapus RPPM ini?\n\n' + info + '\n\n' +
+                    'Semua kegiatan dan RPPH yang terhubung juga akan ikut terhapus.\n' +
+                    'Kamu bisa membuat RPPM baru untuk minggu yang sama.'
+                )) return;
+
+            $.ajax({
+                    url: '/rppm/' + id,
+                    type: 'DELETE',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                })
+                .done(function(res) {
+                    showToast(res.message);
+                    setTimeout(function() {
+                        location.reload();
+                    }, 800);
+                })
+                .fail(function(xhr) {
+                    showToast('❌ ' + xhr.responseJSON.message);
+                });
+        });
+
+        $(document).on('click', '.bulan-option', function() {
+            $('.bulan-option').css({
+                'border-color': 'var(--g2)',
+                'background': 'var(--white)',
+                'color': 'var(--txt)',
+            });
+            $('.bulan-option div').css('color', 'var(--txt)');
+
+            $(this).css({
+                'border-color': 'var(--g5)',
+                'background': 'var(--g6)',
+            });
+            $(this).find('div').css('color', 'white');
+
+            bulanRppm = $(this).data('bulan');
+            var nama = $(this).data('nama');
+
+            $('#inputBulanRppm').val(bulanRppm);
+
+            updateDisplayPeriode();
+        });
+
+        $('#btnTahunMin').on('click', function() {
+            tahunRppm--;
+            $('#labelTahunRppm').text(tahunRppm);
+            $('#inputTahunRppm').val(tahunRppm);
+            updateDisplayPeriode();
+        });
+
+        $('#btnTahunPlus').on('click', function() {
+            tahunRppm++;
+            $('#labelTahunRppm').text(tahunRppm);
+            $('#inputTahunRppm').val(tahunRppm);
+            updateDisplayPeriode();
+        });
+
+        function updateDisplayPeriode() {
+            var bulanNama = {
+                1: 'Januari',
+                2: 'Februari',
+                3: 'Maret',
+                4: 'April',
+                5: 'Mei',
+                6: 'Juni',
+                7: 'Juli',
+                8: 'Agustus',
+                9: 'September',
+                10: 'Oktober',
+                11: 'November',
+                12: 'Desember'
+            };
+
+            if (mingguRppm && bulanRppm) {
+                $('#displayPeriode').val(
+                    'Minggu ke-' + mingguRppm + ' / ' + bulanNama[bulanRppm] + ' ' + tahunRppm
+                );
+            }
+        }
 
         $('#formBuatRppm').on('submit', function(e) {
             e.preventDefault();
 
+            if (!mingguRppm) {
+                $('#errorBuatRppm').text('Pilih minggu pelaksanaan terlebih dahulu.').show();
+                return;
+            }
+            if (!bulanRppm) {
+                $('#errorBuatRppm').text('Pilih bulan pelaksanaan terlebih dahulu.').show();
+                return;
+            }
+
             $.post('{{ route('rppm.store') }}', {
                     tahun_ajaran_id: $('#inputTaRppm').val(),
-                    sub_tema_id: $('#inputSubTemaRppm').val(),
                     minggu_ke: $('#inputMingguRppm').val(),
+                    bulan: bulanRppm,
+                    tahun: tahunRppm,
                     model_pembelajaran: $('#inputModelRppm').val(),
                     tujuan: $('#inputTujuanRppm').val(),
                     capaian: $('#inputCapaianRppm').val(),
                     _token: '{{ csrf_token() }}',
                 })
                 .done(function(res) {
-                    showToast('💾 RPPM berhasil dibuat sebagai draft');
-                    // Langsung arahkan ke halaman edit kegiatan RPPM
+                    showToast('RPPM berhasil dibuat sebagai draft');
                     setTimeout(function() {
                         window.location.href = '/rppm/' + res.rppm_id;
                     }, 600);

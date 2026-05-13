@@ -16,11 +16,18 @@ class Rppm extends Model
         'tahun_ajaran_id',
         'sub_tema_id',
         'minggu_ke',
+        'bulan',
+        'tahun',
         'model_pembelajaran',
         'tujuan',
         'capaian',
         'status',
         'catatan_kepala',
+    ];
+
+    protected $casts = [
+        'bulan' => 'integer',
+        'tahun' => 'integer',
     ];
 
     public function guru(): BelongsTo
@@ -134,5 +141,38 @@ class Rppm extends Model
             'dikembalikan' => 'brj',
             default        => 'bdr',
         };
+    }
+
+    public function getBulanNamaAttribute(): string
+    {
+        if (!$this->bulan) return '-';
+
+        $bulanList = [
+            1  => 'Januari',
+            2  => 'Februari',
+            3  => 'Maret',
+            4  => 'April',
+            5  => 'Mei',
+            6  => 'Juni',
+            7  => 'Juli',
+            8  => 'Agustus',
+            9  => 'September',
+            10 => 'Oktober',
+            11 => 'November',
+            12 => 'Desember',
+        ];
+
+        return $bulanList[$this->bulan] ?? '-';
+    }
+
+    public function getPeriodeAttribute(): string
+    {
+        if (!$this->bulan || !$this->tahun) return '-';
+        return $this->bulan_nama . ' ' . $this->tahun;
+    }
+    public function tanggalMasukBulan(\Carbon\Carbon $tanggal): bool
+    {
+        if (!$this->bulan || !$this->tahun) return true;
+        return $tanggal->month === $this->bulan && $tanggal->year === $this->tahun;
     }
 }

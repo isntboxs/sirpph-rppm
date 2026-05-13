@@ -16,7 +16,7 @@
                     <div class="rn">Aku, Makhluq Allah</div>
                     <div class="rs">Allah Tuhanku</div>
                 </div>
-                <span class="bdg bok">✅ RPPM Disetujui</span>
+                <span class="bdg bok">RPPM Disetujui</span>
             </div>
 
             {{-- Status per hari --}}

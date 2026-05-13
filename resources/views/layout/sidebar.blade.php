@@ -22,50 +22,48 @@
     </div>
     <nav class="sbn">
         <div class="sns">Menu Utama</div>
-        <a class="ni" href="{{ route('beranda') }}"><span class="nic">🏠</span> Beranda</a>
+        <a class="ni" href="{{ route('beranda') }}">Beranda</a>
 
         {{-- Admin --}}
         @if (Auth::user()->isAdmin())
             <a class="ni" href="{{ route('kelola_pengguna') }}"><span class="nic">👥</span> Kelola Pengguna</a>
-            <a class="ni" href="{{ route('data_siswa') }}"><span class="nic">👶</span> Data Siswa</a>
-            <a class="ni" href="{{ route('tahun_ajaran') }}"><span class="nic">📅</span> Tahun Ajaran</a>
-            <a class="ni" href="{{ route('data_sekolah') }}"><span class="nic">🏫</span> Data Sekolah</a>
-            <a class="ni" href="{{ route('kelola_tema') }}"><span class="nic">📚</span> Kelola Tema</a>
-            <a class="ni" href="{{ route('master_bentuk_alat') }}"><span class="nic">🔧</span> Bentuk & Alat</a>
-            <a class="ni" href="{{ route('prosem') }}"><span class="nic">📊</span> Input Prosem</a>
+            <a class="ni" href="{{ route('data_siswa') }}">Data Siswa</a>
+            <a class="ni" href="{{ route('tahun_ajaran') }}">Tahun Ajaran</a>
+            <a class="ni" href="{{ route('data_sekolah') }}">Data Sekolah</a>
+            <a class="ni" href="{{ route('kelola_tema') }}">Kelola Tema</a>
+            <a class="ni" href="{{ route('master_bentuk_alat') }}">Bentuk & Alat</a>
+            <a class="ni" href="{{ route('prosem') }}">Input Prosem</a>
         @endif
 
         {{-- Kepala Sekolah --}}
         @if (Auth::user()->isKepalaSekolah())
             <div class="sns">Kepala Sekolah</div>
-            <a class="ni" href="{{ route('validasi_prosem') }}"><span class="nic">📊</span>Validasi PROSEM</a>
-            <a class="ni" href="{{ route('validasi_rppm') }}"><span class="nic">✅</span> Validasi RPPM <span
-                    class="nbg" id="bdg-cnt-validasi-rppm" hidden>0</span></a>
-            <a class="ni" href="{{ route('validasi_rpph') }}"><span class="nic">📄</span> Validasi RPPH <span
-                    class="nbg" id="bdg-cnt-validasi-rpph" hidden>0</span></a>
-            <a class="ni" href="{{ route('validasi_kegiatan') }}"><span class="nic">🗂️</span> Validasi Kegiatan
+            <a class="ni" href="{{ route('validasi_prosem') }}">Validasi PROSEM</a>
+            <a class="ni" href="{{ route('validasi_rppm') }}">Validasi RPPM <span class="nbg"
+                    id="bdg-cnt-validasi-rppm" hidden>0</span></a>
+            <a class="ni" href="{{ route('validasi_rpph') }}">Validasi RPPH <span class="nbg"
+                    id="bdg-cnt-validasi-rpph" hidden>0</span></a>
+            <a class="ni" href="{{ route('validasi_kegiatan') }}">Validasi Kegiatan
                 <span class="nbg" id="bdg-cnt-validasi-kegiatan" hidden>0</span></a>
-            <a class="ni" href="{{ route('monitoring_guru') }}"><span class="nic">📈</span> Monitoring Guru</a>
+            <a class="ni" href="{{ route('monitoring_guru') }}">Monitoring Guru</a>
         @endif
 
         {{-- Guru --}}
         @if (Auth::user()->isGuru())
             <div class="sns">Guru</div>
-            <a class="ni" href="{{ route('kumpulan_kegiatan') }}"><span class="nic">🗂️</span> Kumpulan
-                Kegiatan</a>
-            <a class="ni" href="{{ route('rppm') }}"><span class="nic">📋</span> Buat & Kelola RPPM</a>
-            <a class="ni" href="{{ route('rpph') }}"><span class="nic">📅</span> Buat & Kelola RPPH</a>
-            <a class="ni" href="{{ route('portofolio_siswa') }}"><span class="nic">📸</span> Portofolio
-                Siswa</a>
-            <a class="ni" href="{{ route('analisis_aspek') }}"><span class="nic">📊</span> Analisis Aspek</a>
+            <a class="ni" href="{{ route('kumpulan_kegiatan') }}">Kumpulan Kegiatan</a>
+            <a class="ni" href="{{ route('rppm') }}">Buat & Kelola RPPM</a>
+            <a class="ni" href="{{ route('rpph') }}">Buat & Kelola RPPH</a>
+            <a class="ni" href="{{ route('portofolio_siswa') }}">Portofolio Siswa</a>
+            <a class="ni" href="{{ route('analisis_aspek') }}">Analisis Aspek</a>
         @endif
 
         {{-- Orang Tua --}}
         @if (Auth::user()->isOrtu())
             <div class="sns">Orang Tua</div>
-            <a class="ni" href="{{ route('ortu_rppm') }}"><span class="nic">📝</span> Lihat RPPM</a>
-            <a class="ni" href="{{ route('ortu_rpph') }}"><span class="nic">📄</span> Lihat RPPH</a>
-            <a class="ni" href="{{ route('ortu_porto') }}"><span class="nic">📸</span> Portofolio Anak</a>
+            <a class="ni" href="{{ route('ortu_rppm') }}">Lihat RPPM</a>
+            <a class="ni" href="{{ route('ortu_rpph') }}">Lihat RPPH</a>
+            <a class="ni" href="{{ route('ortu_porto') }}">Portofolio Anak</a>
         @endif
     </nav>
     <div class="sbf">

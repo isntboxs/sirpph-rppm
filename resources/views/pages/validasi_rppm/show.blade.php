@@ -36,7 +36,7 @@
                     <div class="ib">
                         <div class="ik">Tujuan Pembelajaran</div>
                         <div class="iv" style="font-size:12px;font-weight:400;line-height:1.5">
-                            {{ $rppm->tujuan }}
+                            <spans style="white-space:pre-line"></span>{{ $rppm->tujuan }}
                         </div>
                     </div>
                 @endif
@@ -44,7 +44,7 @@
                     <div class="ib">
                         <div class="ik">Capaian Pembelajaran</div>
                         <div class="iv" style="font-size:12px;font-weight:400;line-height:1.5">
-                            {{ $rppm->capaian }}
+                            <spans style="white-space:pre-line"></span>{{ $rppm->capaian }}
                         </div>
                     </div>
                 @endif
