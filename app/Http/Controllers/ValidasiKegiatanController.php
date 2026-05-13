@@ -152,4 +152,49 @@ class ValidasiKegiatanController extends Controller
             'message' => '↩️ Kegiatan dikembalikan ke guru.',
         ]);
     }
+
+    public function extend(Request $request, string $id)
+    {
+        $kegiatan = Kegiatan::findOrFail((int) $id);
+
+        $validator = Validator::make($request->all(), [
+            'tambah_semester' => 'required|integer|min:1|max:5',
+        ], [
+            'tambah_semester.required' => 'Jumlah semester wajib diisi.',
+            'tambah_semester.min'      => 'Minimal tambah 1 semester.',
+            'tambah_semester.max'      => 'Maksimal tambah 5 semester sekaligus.',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        if (!$kegiatan->isTerkunci()) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Kegiatan ini belum terkunci, tidak perlu di-extend.',
+            ], 422);
+        }
+
+        $maks_baru = $kegiatan->maks_pemakaian + (int) $request->tambah_semester;
+
+        $kegiatan->update(['maks_pemakaian' => $maks_baru]);
+
+        return response()->json([
+            'status'  => true,
+            'message' => '✅ Kegiatan berhasil di-extend. Batas pemakaian sekarang '
+                . $maks_baru . ' semester.',
+            'data'    => [
+                'maks_pemakaian'      => $maks_baru,
+                'jumlah_tahun_dipakai' => $kegiatan->jumlah_tahun_dipakai,
+                'label_pemakaian'     => $kegiatan->getLabelPemakaianAttribute(),
+                'presentase'          => $kegiatan->presentase_pemakaian,
+                'warna'               => $kegiatan->warna_progress,
+                'is_terkunci'         => $kegiatan->isTerkunci(),
+            ],
+        ]);
+    }
 }

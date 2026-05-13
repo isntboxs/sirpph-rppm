@@ -231,12 +231,11 @@
                                     transition:.18s;background:var(--white)"
                                 onmouseover="
                                         this.style.borderColor='var(--primary)';
-                                        this.style.background='#f1f5f9';
                                         this.style.transform='translateY(-2px)';
                                     "
                                 onmouseout="
                                         this.style.borderColor='var(--g2)';
-                                        this.style.background='var(--white)';
+                                        this.style.color='var(--txt)'
                                         this.style.transform='translateY(0)';
                                     ">
                                 <div style="font-size:12px;font-weight:700;color:var(--txt)">

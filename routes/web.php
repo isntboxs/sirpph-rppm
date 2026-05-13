@@ -123,6 +123,7 @@ Route::middleware(['auth', 'role'])->group(function () {
     Route::get('/validasi-kegiatan', [ValidasiKegiatanController::class, 'index'])->name('validasi_kegiatan');
     Route::put('/validasi-kegiatan/{id}/setujui', [ValidasiKegiatanController::class, 'setujui'])->name('validasi_kegiatan.setujui');
     Route::put('/validasi-kegiatan/{id}/tolak', [ValidasiKegiatanController::class, 'tolak'])->name('validasi_kegiatan.tolak');
+    Route::put('/validasi-kegiatan/{id}/extend', [ValidasiKegiatanController::class, 'extend'])->name('validasi_kegiatan.extend');
 
     Route::get('/monitoring-guru', [MonitoringGuruController::class, 'index'])->name('monitoring_guru');
 

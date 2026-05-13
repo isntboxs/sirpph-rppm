@@ -184,7 +184,7 @@
                                 </div>
                             </div>
 
-                            @if ($terkunci)
+                            {{-- @if ($terkunci)
                                 <div class="al alw mt8" style="font-size:11.5px">
                                     🔒 Guru perlu usulkan kegiatan baru untuk tema ini.
                                 </div>
@@ -192,8 +192,20 @@
                                 <div class="al ali mt8" style="font-size:11.5px">
                                     ⚠️ Satu tahun ajaran lagi akan terkunci.
                                 </div>
+                            @endif --}}
+                            @if ($terkunci)
+                                <div class="al alw mt8" style="font-size:11.5px">
+                                    Kegiatan ini terkunci. Anda dapat meng-extend batas pemakaiannya.
+                                </div>
+                                <div class="mt8">
+                                    <button type="button" class="btn bpu bsm btn-extend-kegiatan"
+                                        data-id="{{ $kegiatan->id }}" data-nama="{{ $kegiatan->name }}"
+                                        data-jumlah="{{ $kegiatan->jumlah_tahun_dipakai }}"
+                                        data-maks="{{ $kegiatan->maks_pemakaian }}">
+                                        Extend Pemakaian
+                                    </button>
+                                </div>
                             @endif
-                        </div>
                     @endforeach
                 </div>
 
@@ -379,6 +391,74 @@
             </table>
         </div>
     </div> --}}
+
+    {{-- Modal: Extend Kegiatan --}}
+    <div class="mo" id="mExtendKegiatan">
+        <div class="md mmd">
+            <form id="formExtendKegiatan">
+                <input type="hidden" id="inputExtendId" />
+                <div class="mh">
+                    <div>
+                        <div class="mt2">🔓 Extend Pemakaian Kegiatan</div>
+                        <div class="mst" id="labelExtendNama" style="color:var(--txt3)"></div>
+                    </div>
+                    <button type="button" class="mc">✕</button>
+                </div>
+                <div class="mb">
+
+                    <div class="ig mb16">
+                        <div class="ib">
+                            <div class="ik">Pemakaian Saat Ini</div>
+                            <div class="iv" id="labelExtendJumlah">—</div>
+                        </div>
+                        <div class="ib">
+                            <div class="ik">Batas Saat Ini</div>
+                            <div class="iv" id="labelExtendMaks">—</div>
+                        </div>
+                        <div class="ib">
+                            <div class="ik">Setelah Extend</div>
+                            <div class="iv" id="labelExtendSetelah" style="color:var(--g6);font-weight:800">—
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pw mb16">
+                        <div class="pb pk" id="progressExtend" style="width:100%"></div>
+                    </div>
+
+                    <div class="al alw mb16" style="font-size:11.5px">
+                        ⚠️ Kegiatan yang sudah di-extend akan bisa dipakai kembali oleh guru.
+                        Pastikan kegiatan ini masih relevan sebelum meng-extend.
+                    </div>
+
+                    <div class="ff">
+                        <label>Tambah Berapa Semester?</label>
+
+                        <div class="fl g8 mt8" id="pilihanExtend">
+                            @foreach ([1, 2, 3] as $n)
+                                <div class="extend-option" data-nilai="{{ $n }}"
+                                    style="flex:1;border:2px solid var(--g2);border-radius:var(--r2);
+                                        padding:12px;text-align:center;cursor:pointer;transition:.18s">
+                                    <div style="font-size:20px;font-weight:800;color:var(--g6)">
+                                        +{{ $n }}
+                                    </div>
+                                    <div class="fs11 tc2">
+                                        semester
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                        <input type="hidden" id="inputTambahSemester" name="tambah_semester" value="1" />
+                    </div>
+
+                    <div id="errorExtend" class="al ale mt8" style="display:none"></div>
+                </div>
+                <div class="mf">
+                    <button type="submit" class="btn bp btn-submit-form">🔓 Extend</button>
+                </div>
+            </form>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
@@ -467,6 +547,123 @@
                 .fail(function(xhr) {
                     var errors = xhr.responseJSON.errors;
                     $('#errorTolak').text(errors.catatan[0]).show();
+                });
+        });
+
+        $(document).on('click', '.btn-extend-kegiatan', function() {
+            var id = $(this).data('id');
+            var nama = $(this).data('nama');
+            var jumlah = parseInt($(this).data('jumlah'));
+            var maks = parseInt($(this).data('maks'));
+
+            $('#inputExtendId').val(id);
+            $('#labelExtendNama').text(nama);
+            $('#labelExtendJumlah').text(jumlah + ' semester');
+            $('#labelExtendMaks').text(maks + ' semester');
+            $('#errorExtend').hide();
+
+            $('#inputTambahSemester').val(1);
+            updateExtendPreview(jumlah, maks, 1);
+
+            $('.extend-option').css({
+                'border-color': 'var(--g2)',
+                'background': 'var(--white)'
+            });
+            $('.extend-option[data-nilai="1"]').css({
+                'border-color': 'var(--g5)',
+                'background': 'var(--g0)'
+            });
+
+            $('#mExtendKegiatan').addClass('on');
+        });
+
+        $(document).on('click', '.extend-option', function() {
+            var nilai = parseInt($(this).data('nilai'));
+            var jumlah = parseInt($('#labelExtendJumlah').text());
+            var maks = parseInt($('#labelExtendMaks').text());
+
+            $('.extend-option').css({
+                'border-color': 'var(--g2)',
+                'background': 'var(--white)'
+            });
+            $(this).css({
+                'border-color': 'var(--g5)',
+                'background': 'var(--g0)'
+            });
+
+            $('#inputTambahSemester').val(nilai);
+            updateExtendPreview(jumlah, maks, nilai);
+        });
+
+        function updateExtendPreview(jumlah, maks, tambah) {
+            var maksBaru = maks + tambah;
+            var persen = Math.min(100, Math.round((jumlah / maksBaru) * 100));
+            var warna = persen >= 100 ? 'pk' : (persen >= 50 ? 'or' : 'gr');
+
+            $('#labelExtendSetelah').text(maksBaru + ' semester');
+
+            var colorMap = {
+                gr: 'var(--g5)',
+                or: 'var(--acc)',
+                pk: 'var(--red)'
+            };
+            $('#progressExtend')
+                .css('width', persen + '%')
+                .css('background', colorMap[warna]);
+        }
+
+        $('#mExtendKegiatan').on('click', '.mc, .btn.bo', function() {
+            $('#formExtendKegiatan')[0].reset();
+            $('#errorExtend').hide();
+        });
+
+        $('#formExtendKegiatan').on('submit', function(e) {
+            e.preventDefault();
+
+            var id = $('#inputExtendId').val();
+
+            $.ajax({
+                    url: '/validasi-kegiatan/' + id + '/extend',
+                    type: 'PUT',
+                    data: {
+                        tambah_semester: $('#inputTambahSemester').val(),
+                        _token: '{{ csrf_token() }}',
+                    },
+                })
+                .done(function(res) {
+                    $('#mExtendKegiatan').removeClass('on');
+                    showToast(res.message);
+                    var d = res.data;
+                    var colorMap = {
+                        gr: 'var(--g5)',
+                        or: 'var(--acc)',
+                        pk: 'var(--red)'
+                    };
+                    var $card = $('[data-id="' + id + '"]').closest('.kc');
+
+                    $card.find('.pb').css({
+                        'width': d.presentase + '%',
+                        'background': colorMap[d.warna],
+                    });
+
+                    $card.find('.fs11.tc2').filter(':contains("semester")').text(d.label_pemakaian);
+
+                    if (!d.is_terkunci) {
+                        $card.removeClass('lck');
+                        $card.find('.bdg.blk').removeClass('blk').addClass('bok').text('✅ Aktif');
+                        $card.find('.btn-extend-kegiatan').remove();
+                        $card.find('.al.alw').remove();
+                    }
+
+                    $card.find('.btn-extend-kegiatan')
+                        .data('maks', d.maks_pemakaian);
+                })
+                .fail(function(xhr) {
+                    var errors = xhr.responseJSON?.errors;
+                    var msg = xhr.responseJSON?.message ||
+                        Object.values(errors || {}).flat()[0] ||
+                        'Gagal meng-extend kegiatan.';
+                    $('#errorExtend').text(msg).show();
                 });
         });
     </script>

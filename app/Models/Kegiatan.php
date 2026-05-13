@@ -19,6 +19,7 @@ class Kegiatan extends Model
         'deskripsi',
         'foto_icon',
         'status',
+        'maks_pemakaian',
         'diusulkan_oleh',
         'catatan_kepala',
     ];
@@ -117,8 +118,12 @@ class Kegiatan extends Model
         });
     }
 
-    public function jumlahTahunDipakai(): int
+    public function getJumlahTahunDipakaiAttribute(): int
     {
+        if (isset($this->attributes['jumlah_tahun_dipakai'])) {
+            return (int) $this->attributes['jumlah_tahun_dipakai'];
+        }
+
         return RppmKegiatan::where('kegiatan_id', $this->id)
             ->join('rppm', 'rppm.id', '=', 'rppm_kegiatan.rppm_id')
             ->where('rppm.status', 'disetujui')
@@ -144,50 +149,47 @@ class Kegiatan extends Model
 
     public function isTerkunci(): bool
     {
-        return $this->jumlahTahunDipakai() >= 3;
+        return $this->jumlah_tahun_dipakai >= $this->maks_pemakaian;
     }
 
     public function getPresentasePemakaianAttribute(): int
     {
-        return min(100, ($this->jumlahTahunDipakai() / 3) * 100);
+        if ($this->maks_pemakaian === 0) return 100;
+        return min(100, (int) ($this->jumlah_tahun_dipakai / $this->maks_pemakaian * 100));
     }
 
     public function getLabelPemakaianAttribute(): string
     {
-        $n = $this->jumlahTahunDipakai();
-        if ($n >= 3) return '🔒 Terkunci Permanen';
-        return $n . '/3 tahun ajaran';
+        $n    = $this->jumlah_tahun_dipakai;
+        $maks = $this->maks_pemakaian;
+
+        if ($n >= $maks) {
+            return '🔒 Terkunci (' . $n . '/' . $maks . ' semester)';
+        }
+        return $n . '/' . $maks . ' semester';
     }
 
     public function scopeTerkunci(Builder $query): Builder
     {
-        return $query->whereRaw('(
-            SELECT COUNT(DISTINCT r.tahun_ajaran_id)
-            FROM rppm_kegiatan rk
-            JOIN rppm r ON r.id = rk.rppm_id
-            WHERE rk.kegiatan_id = kegiatan.id
-            AND r.status = "disetujui"
-        ) >= 3');
+        return $query->whereRaw(
+            self::subqueryJumlahTahun() . ' >= kegiatan.maks_pemakaian'
+        );
     }
 
     public function scopeBelumTerkunci(Builder $query): Builder
     {
-        return $query->whereRaw('(
-            SELECT COUNT(DISTINCT r.tahun_ajaran_id)
-            FROM rppm_kegiatan rk
-            JOIN rppm r ON r.id = rk.rppm_id
-            WHERE rk.kegiatan_id = kegiatan.id
-            AND r.status = "disetujui"
-        ) < 3');
+        return $query->whereRaw(
+            self::subqueryJumlahTahun() . ' < kegiatan.maks_pemakaian'
+        );
     }
 
     public function getWarnaProgressAttribute(): string
     {
-        return match (true) {
-            $this->jumlah_tahun_dipakai >= 3 => 'pk',
-            $this->jumlah_tahun_dipakai >= 2 => 'or',
-            default                          => 'gr',
-        };
+        $persen = $this->presentase_pemakaian;
+
+        if ($persen >= 100) return 'pk';
+        if ($persen >= 50)  return 'or';
+        return 'gr';
     }
 
     public function getStatusLabelAttribute(): string
@@ -208,5 +210,10 @@ class Kegiatan extends Model
             'ditolak'   => 'brj',
             default     => 'bdr',
         };
+    }
+
+    public function getSisaPemakaianAttribute(): int
+    {
+        return max(0, $this->maks_pemakaian - $this->jumlah_tahun_dipakai);
     }
 }
