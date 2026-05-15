@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - SIPENAQI PAUDQu AL-AULIA</title>
+    <title>Login - SIPENAQI {{ $sekolah->name }}</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700&display=swap"
         rel="stylesheet">
@@ -19,7 +19,7 @@
     <div id="lp">
         <div class="ll">
             <h1>SI<span>PENAQI</span></h1>
-            <p>Sistem Perencanaan Qurani Integratif<br>PAUDQu AL-AULIA - Kota Tangerang, Banten</p>
+            <p>Sistem Perencanaan Qurani Integratif<br>{{ $sekolah->name }} - Kota Tangerang, Banten</p>
         </div>
         <div class="lr">
             <div class="lc">
@@ -29,7 +29,7 @@
                             style="width:100px; height:100px; object-fit:cover;">
                     </div>
                     <h2 style="text-align:center;">Masuk ke SIPENAQI</h2>
-                    <p style="text-align:center;">PAUDQu AL-AULIA - Tahun Ajaran {{ \App\Models\TahunAjaran::getActive()?->name }}</p>
+                    <p style="text-align:center;">{{ $sekolah->name }} - Tahun Ajaran {{ \App\Models\TahunAjaran::getActive()?->name }}</p>
                 </div>
                 <form method="POST" action="{{ route('login') }}">
                     @csrf

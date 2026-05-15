@@ -6,7 +6,7 @@
             </div>
             <div>
                 <h2>SIPENAQI</h2>
-                <p>PAUDQu AL-AULIA</p>
+                <p>{{ \App\Models\DataSekolah::getData()?->name }}</p>
             </div>
         </div>
     </div>
@@ -26,7 +26,7 @@
 
         {{-- Admin --}}
         @if (Auth::user()->isAdmin())
-            <a class="ni" href="{{ route('kelola_pengguna') }}"><span class="nic">👥</span> Kelola Pengguna</a>
+            <a class="ni" href="{{ route('kelola_pengguna') }}">Kelola Pengguna</a>
             <a class="ni" href="{{ route('data_siswa') }}">Data Siswa</a>
             <a class="ni" href="{{ route('tahun_ajaran') }}">Tahun Ajaran</a>
             <a class="ni" href="{{ route('data_sekolah') }}">Data Sekolah</a>
@@ -69,7 +69,7 @@
     <div class="sbf">
         <form method="POST" action="{{ route('logout') }}">
             @csrf
-            <button type="submit" class="blo">🚪 Keluar</button>
+            <button type="submit" class="blo">Keluar</button>
         </form>
     </div>
 </aside>

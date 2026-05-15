@@ -1,7 +1,7 @@
 @extends('layout.app')
 
 @section('page-title', 'Kelola Tema')
-@section('page-subtitle', 'PAUDQu AL-AULIA - 2024/2025')
+@section('page-subtitle', \App\Models\DataSekolah::getData()?->name  . ' - ' . \App\Models\TahunAjaran::getActive()?->name)
 
 @section('content')
     <div class="card">

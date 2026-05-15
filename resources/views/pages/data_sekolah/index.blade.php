@@ -1,7 +1,7 @@
 @extends('layout.app')
 
 @section('page-title', 'Data Sekolah')
-@section('page-subtitle', $taAktif->name)
+@section('page-subtitle', \App\Models\DataSekolah::getData()?->name  . ' - ' . \App\Models\TahunAjaran::getActive()?->name)
 
 @section('content')
     <div class="card">

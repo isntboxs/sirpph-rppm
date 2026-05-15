@@ -1,7 +1,7 @@
 <div class="tb">
     <div class="tbt">
         <h2 data-page-title>@yield('page-title', 'Beranda')</h2>
-        <p data-page-subtitle>@yield('page-subtitle', 'PAUDQu AL-AULIA - 2024/2025')</p>
+        <p data-page-subtitle>@yield('page-subtitle', \App\Models\DataSekolah::getData()?->name . ' - ' . \App\Models\TahunAjaran::getActive()?->name)</p>
     </div>
     <div class="tbr">
         <div style="position:relative">

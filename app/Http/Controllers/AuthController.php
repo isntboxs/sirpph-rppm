@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DataSekolah;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -12,7 +13,8 @@ class AuthController extends Controller
         if (Auth::check()) {
             return redirect()->route('beranda');
         }
-        return view('auth.login');
+        $sekolah = DataSekolah::getData();
+        return view('auth.login', compact('sekolah'));
     }
 
     public function login(Request $request)
@@ -33,7 +35,13 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
-            return redirect()->intended(route('beranda'));
+            return match (Auth::user()->role) {
+                'admin'  => redirect()->route('beranda'),
+                'kepala' => redirect()->route('beranda'),
+                'guru'   => redirect()->route('beranda'),
+                'ortu'   => redirect()->route('beranda'),
+                default  => redirect()->route('beranda'),
+            };
         }
 
         return back()
