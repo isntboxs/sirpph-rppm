@@ -52,7 +52,7 @@ class BerandaController extends Controller
         $sekolah = (object)[
             'name'     => $dataSekolah->name ?? '-',
             'npsn'     => $dataSekolah->npsn ?? '-',
-            'kepala'   => $penggunaSummary["kepala"],
+            'kepala'   => User::kepalaSekolah()->value('name') ?? '-',
             'alamat'   => $dataSekolah->alamat ?? '-',
             'ta'       => $taAktif?->name ?? '—',
             'semester' => $taAktif?->semester ?? '—',
