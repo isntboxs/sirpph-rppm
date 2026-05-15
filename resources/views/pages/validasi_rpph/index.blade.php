@@ -136,8 +136,7 @@
                     <div class="mb">
                         <div class="ff">
                             <label>Catatan untuk Guru</label>
-                            <textarea id="inputCatatanKembalikanRpph" rows="4"
-                                placeholder="Penjelasan apa yang perlu diperbaiki..."></textarea>
+                            <textarea id="inputCatatanKembalikanRpph" rows="4" placeholder="Penjelasan apa yang perlu diperbaiki..."></textarea>
                         </div>
                         <div id="errorKembalikanRpph" class="al ale mt8" style="display:none"></div>
                     </div>
@@ -175,9 +174,16 @@
                         </div>
                     </div>
 
-                    <div class="ib mb16">
-                        <div class="ik">Sub-Sub Tema</div>
-                        <div class="iv" id="mDetailSubTema">-</div>
+                    <div class="fr c2 mb16">
+                        <div class="ib">
+                            <div class="ik">Sub Tema</div>
+                            <div class="iv" id="mDetailSubTema">-</div>
+                        </div>
+
+                        <div class="ib">
+                            <div class="ik">Sub-Sub Tema</div>
+                            <div class="iv" id="mDetailSubSubTema">-</div>
+                        </div>
                     </div>
 
                     <div id="mDetailKegiatan" class="mb16"></div>
@@ -189,7 +195,8 @@
                                 style="font-weight:700;letter-spacing:.5px;text-transform:uppercase">
                                 Pembuka
                             </div>
-                            <div id="mDetailPembuka" style="font-size:13px;color:var(--txt2);line-height:1.6;white-space:pre-line"></div>
+                            <div id="mDetailPembuka"
+                                style="font-size:13px;color:var(--txt2);line-height:1.6;white-space:pre-line"></div>
                         </div>
                     </div>
 
@@ -205,6 +212,18 @@
                         </div>
                     </div>
 
+                    <div class="mb12" id="mDetailRecallingWrap" style="display:none">
+                        <div
+                            style="background:var(--g0);border-radius:var(--r2);padding:14px 16px;border:1px solid var(--g1)">
+                            <div class="fs11 tc2 mb4"
+                                style="font-weight:700;letter-spacing:.5px;text-transform:uppercase">
+                                Recalling
+                            </div>
+                            <div id="mDetailRecalling"
+                                style="font-size:13px;color:var(--txt2);line-height:1.6;white-space:pre-line"></div>
+                        </div>
+                    </div>
+
                     <div class="mb12" id="mDetailPenutupWrap" style="display:none">
                         <div
                             style="background:var(--g0);border-radius:var(--r2);padding:14px 16px;border:1px solid var(--g1)">
@@ -212,7 +231,19 @@
                                 style="font-weight:700;letter-spacing:.5px;text-transform:uppercase">
                                 Penutup
                             </div>
-                            <div id="mDetailPenutup" style="font-size:13px;color:var(--txt2);line-height:1.6;white-space:pre-line"></div>
+                            <div id="mDetailPenutup"
+                                style="font-size:13px;color:var(--txt2);line-height:1.6;white-space:pre-line"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb12" id="mDetailPenilaianWrap" style="display:none">
+                        <div
+                            style="background:var(--g0);border-radius:var(--r2);padding:14px 16px;border:1px solid var(--g1)">
+                            <div class="fs11 tc2 mb8"
+                                style="font-weight:700;letter-spacing:.5px;text-transform:uppercase">
+                                Rencana Penilaian
+                            </div>
+                            <div id="mDetailPenilaian"></div>
                         </div>
                     </div>
 
@@ -271,12 +302,14 @@
                 var isPending = $(this).data('pending') === true;
 
                 $('#mDetailLoading').show();
-                $('#mDetailPembukaWrap, #mDetailIntiWrap, #mDetailPenutupWrap').hide();
+                $('#mDetailPembukaWrap, #mDetailIntiWrap, #mDetailPenutupWrap, #mDetailRecallingWrap').hide();
                 $('#mDetailFooter').hide();
                 $('#mDetailKegiatan').empty();
+                $('#mDetailPenilaianWrap').hide();
+                $('#mDetailPenilaian').empty();
                 $('#mDetailRpphTitle').text('✏️ Detail RPPH');
                 $('#mDetailRpphSubtitle').text('');
-                $('#mDetailHari, #mDetailTanggal, #mDetailKelas, #mDetailSubTema').text('-');
+                $('#mDetailHari, #mDetailTanggal, #mDetailKelas, #mDetailSubTema, #mDetailSubSubTema').text('-');
 
                 $('#mDetailRpph').addClass('on');
 
@@ -286,12 +319,13 @@
 
                         $('#mDetailLoading').hide();
 
-                        $('#mDetailRpphTitle').text('✏️ RPPH - ' + d.hari);
+                        $('#mDetailRpphTitle').text('RPPH - ' + d.hari);
                         $('#mDetailRpphSubtitle').text(d.hari + ' - ' + d.tema + ' | ' + d.sub_tema);
                         $('#mDetailHari').text(d.hari);
                         $('#mDetailTanggal').text(d.tanggal || '-');
                         $('#mDetailKelas').text(d.kelas || '-');
                         $('#mDetailSubTema').text(d.sub_tema);
+                        $('#mDetailSubSubTema').text(d.sub_sub_tema);
 
                         if (d.kegiatan.length > 0) {
                             var kegHtml = '<div class="ib mb8"><div class="ik">Kegiatan</div></div>';
@@ -319,9 +353,41 @@
                             $('#mDetailInti').text(d.inti);
                             $('#mDetailIntiWrap').show();
                         }
+                        if (d.recalling) {
+                            $('#mDetailRecalling').text(d.recalling);
+                            $('#mDetailRecallingWrap').show();
+                        }
                         if (d.penutup) {
                             $('#mDetailPenutup').text(d.penutup);
                             $('#mDetailPenutupWrap').show();
+                        }
+                        if (d.penilaians && d.penilaians.length > 0) {
+                            var penilaianHtml = '';
+
+                            $.each(d.penilaians, function(i, p) {
+                                penilaianHtml += '<div class="mb10">' +
+                                    '<div style="font-size:12px;font-weight:700;color:var(--txt2);margin-bottom:5px">' + p.nama +
+                                    '</div>';
+
+                                if (p.poins && p.poins.length > 0) {
+                                    penilaianHtml += '<div style="padding-left:10px">';
+                                    $.each(p.poins, function(j, poin) {
+                                        penilaianHtml +=
+                                            '<div style="font-size:12px;color:var(--txt2);' +
+                                            'line-height:1.6;display:flex;gap:6px;margin-bottom:2px">' +
+                                            '<span style="flex-shrink:0;color:var(--txt3)">' + (j +
+                                                1) + '.</span>' +
+                                            '<span>' + poin + '</span>' +
+                                            '</div>';
+                                    });
+                                    penilaianHtml += '</div>';
+                                }
+
+                                penilaianHtml += '</div>';
+                            });
+
+                            $('#mDetailPenilaian').html(penilaianHtml);
+                            $('#mDetailPenilaianWrap').show();
                         }
 
                         if (isPending && d.status === 'pending') {

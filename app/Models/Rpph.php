@@ -68,10 +68,10 @@ class Rpph extends Model
     public function getStatusLabelAttribute(): string
     {
         return match ($this->status) {
-            'draft'        => '📝 Draft',
-            'pending'      => '⏳ Menunggu',
-            'disetujui'    => '✅ Disetujui',
-            'dikembalikan' => '↩️ Dikembalikan',
+            'draft'        => 'Draft',
+            'pending'      => 'Menunggu',
+            'disetujui'    => 'Disetujui',
+            'dikembalikan' => 'Dikembalikan',
             default        => '-',
         };
     }

@@ -101,6 +101,7 @@ class ValidasiRpphController extends Controller
             'rppm.rppmKegiatans.kegiatan.aspeks:id,name,emote,warna',
             'rppm.rppmKegiatans.kegiatan.bentukKegiatan:id,name',
             'rppm.guru.kelas:guru_id,name',
+            'penilaians.poins',
         ])->findOrFail($id);
 
         return response()->json([
@@ -111,10 +112,12 @@ class ValidasiRpphController extends Controller
                 'tanggal'  => $rpph->tanggal_format,
                 'kelas'    => $rpph->rppm->guru->kelas?->name ?? '-',
                 'sub_tema' => $rpph->rppm->subTema->name,
+                'sub_sub_tema' => $rpph->sub_sub_tema,
                 'tema'     => $rpph->rppm->subTema->tema->name,
                 'guru'     => $rpph->rppm->guru->name,
                 'pembuka'  => $rpph->pembuka,
                 'inti'     => $rpph->inti,
+                'recalling'     => $rpph->recalling,
                 'penutup'  => $rpph->penutup,
                 'catatan'  => $rpph->catatan,
                 'status'   => $rpph->status,
@@ -127,6 +130,10 @@ class ValidasiRpphController extends Controller
                         'name'  => $a->name,
                         'warna' => $a->warna,
                     ]),
+                ]),
+                'penilaians'  => $rpph->penilaians->map(fn($p) => [
+                    'nama'  => $p->nama,
+                    'poins' => $p->poins->pluck('poin'),
                 ]),
             ],
         ]);
