@@ -9,6 +9,8 @@ use App\Models\Kegiatan;
 use App\Models\TahunAjaran;
 use App\Models\Tema;
 use App\Models\AspekPerkembangan;
+use App\Notifications\KegiatanDisetujui;
+use App\Notifications\KegiatanDitolak;
 
 class ValidasiKegiatanController extends Controller
 {
@@ -111,6 +113,8 @@ class ValidasiKegiatanController extends Controller
             'catatan_kepala' => null,
         ]);
 
+        $kegiatan->diusulkanOleh->notify(new KegiatanDisetujui($kegiatan));
+
         return response()->json([
             'status'  => true,
             'message' => '✅ Kegiatan disetujui dan masuk ke kumpulan kegiatan.',
@@ -146,6 +150,8 @@ class ValidasiKegiatanController extends Controller
             'status'         => 'ditolak',
             'catatan_kepala' => $request->catatan,
         ]);
+
+        $kegiatan->diusulkanOleh->notify(new KegiatanDitolak($kegiatan));
 
         return response()->json([
             'status'  => true,

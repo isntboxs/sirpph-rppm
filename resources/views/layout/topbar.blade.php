@@ -4,7 +4,7 @@
         <p data-page-subtitle>@yield('page-subtitle', \App\Models\DataSekolah::getData()?->name . ' - ' . \App\Models\TahunAjaran::getActive()?->name)</p>
     </div>
     <div class="tbr">
-        <div style="position:relative">
+        {{-- <div style="position:relative">
             <div class="notif-bell">🔔 <span class="notif-count">3</span></div>
             <div class="notif-dropdown">
                 <div class="nd-head">
@@ -26,6 +26,23 @@
                         <div class="nd-title">RPPM Disetujui</div>
                         <div class="nd-msg">RPPM "Tanah Airku" telah disetujui</div>
                         <div class="nd-time">🕐 Kemarin</div>
+                    </div>
+                </div>
+            </div>
+        </div> --}}
+        <div style="position:relative">
+            <div class="notif-bell" id="notifBell">
+                🔔
+                <span class="notif-count" id="notifCount" style="display:none">0</span>
+            </div>
+            <div class="notif-dropdown" id="notifDropdown">
+                <div class="nd-head">
+                    <span>Notifikasi</span>
+                    <button class="btn bo bxs" id="btnBacaSemua">Tandai semua dibaca</button>
+                </div>
+                <div id="notifList">
+                    <div style="padding:20px;text-align:center;color:var(--txt3);font-size:12px">
+                        ⏳ Memuat...
                     </div>
                 </div>
             </div>

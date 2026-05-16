@@ -46,6 +46,7 @@ class RoleMiddleware
     protected array $publicRoutes = [
         'beranda',
         'logout',
+        'notifikasi',
     ];
 
     public function handle(Request $request, Closure $next)

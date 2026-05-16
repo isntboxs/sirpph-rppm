@@ -11,6 +11,8 @@ use App\Models\Tema;
 use App\Models\BentukKegiatan;
 use App\Models\AlatBahan;
 use App\Models\AspekPerkembangan;
+use App\Models\User;
+use App\Notifications\KegiatanDiusulkan;
 
 class KumpulanKegiatanController extends Controller
 {
@@ -119,6 +121,8 @@ class KumpulanKegiatanController extends Controller
 
         // Simpan relasi aspek (pivot)
         $kegiatan->aspeks()->attach($request->aspek_ids);
+
+        User::kepala()->active()->each(fn($k) => $k->notify(new KegiatanDiusulkan($kegiatan)));
 
         // Simpan relasi alat (pivot) jika ada
         if ($request->filled('alat_ids')) {

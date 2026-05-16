@@ -13,6 +13,8 @@ use App\Models\Kelas;
 use App\Models\AspekPerkembangan;
 use App\Models\Rpph;
 use App\Models\RppmKegiatan;
+use App\Notifications\KomentarBaru;
+use App\Notifications\PortofolioBaru;
 
 class PortofolioSiswaController extends Controller
 {
@@ -174,6 +176,10 @@ class PortofolioSiswaController extends Controller
         ]);
 
         $portofolio->aspeks()->attach($request->aspek_ids);
+
+        if ($portofolio->siswa->ortu_id) {
+            $portofolio->siswa->ortu->notify(new PortofolioBaru($portofolio));
+        }
 
         return response()->json([
             'status'  => true,

@@ -15,6 +15,8 @@ use App\Models\Tema;
 use App\Models\TahunAjaran;
 use App\Models\AspekPerkembangan;
 use App\Models\Prosem;
+use App\Models\User;
+use App\Notifications\RppmDiajukan;
 
 class RppmController extends Controller
 {
@@ -230,6 +232,10 @@ class RppmController extends Controller
         }
 
         $rppm->update(['status' => 'pending', 'catatan_kepala' => null]);
+
+        User::KepalaSekolah()->active()->each(function ($kepala) use ($rppm) {
+            $kepala->notify(new RppmDiajukan($rppm));
+        });
 
         return response()->json([
             'status'  => true,

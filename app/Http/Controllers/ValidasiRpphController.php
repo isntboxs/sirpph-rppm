@@ -6,9 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Rpph;
-use App\Models\Rppm;
 use App\Models\TahunAjaran;
 use App\Models\User;
+use App\Notifications\RpphDikembalikan;
+use App\Notifications\RpphDisetujui;
 
 class ValidasiRpphController extends Controller
 {
@@ -81,6 +82,8 @@ class ValidasiRpphController extends Controller
             'status'         => 'disetujui',
             'catatan_kepala' => null,
         ]);
+
+        $rpph->rppm->guru->notify(new RpphDisetujui($rpph));
 
         return response()->json([
             'status'  => true,
@@ -168,6 +171,8 @@ class ValidasiRpphController extends Controller
             'status'         => 'dikembalikan',
             'catatan_kepala' => $request->catatan,
         ]);
+
+        $rpph->rppm->guru->notify(new RpphDikembalikan($rpph));
 
         return response()->json([
             'status'  => true,

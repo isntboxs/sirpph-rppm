@@ -4,12 +4,11 @@ function setActiveSidebar(path) {
         var linkPath = new URL($(this).attr('href'), window.location.origin).pathname;
         if (linkPath === path) {
             $(this).addClass('on');
-            return false; // break loop
+            return false;
         }
     });
 }
 
-// Helper update topbar
 function updateTopbar($html) {
     var newPageTitle = $html.filter('meta[name="page-title"]').attr('content');
     var newPageSubtitle = $html.filter('meta[name="page-subtitle"]').attr('content');
@@ -20,37 +19,9 @@ function updateTopbar($html) {
     if (newDocTitle) document.title = newDocTitle;
 }
 
-// Helper jalankan scripts di dalam #main-content
 function evalPageScripts() {
     $('#main-content').each(function () {
         $.globalEval($(this).text());
         console.log($(this).text())
-    });
-}
-
-// Helper load halaman via AJAX
-function loadPage(url, pushState) {
-    var $content = $('#main-content');
-
-    $content.fadeTo(150, 0, function () {
-        $.get(url, function (html) {
-            var $html = $($.parseHTML(html, document, true));
-
-            $content.html($html.find('#main-content').html());
-
-            setActiveSidebar(new URL(url, window.location.origin).pathname);
-            updateTopbar($html);
-
-            if (pushState) {
-                window.history.pushState({ url: url }, '', url);
-            }
-
-            $content.fadeTo(150, 1);
-
-            evalPageScripts();
-
-        }).fail(function () {
-            window.location.href = url;
-        });
     });
 }

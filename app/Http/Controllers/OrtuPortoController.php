@@ -10,6 +10,7 @@ use App\Models\Siswa;
 use App\Models\AspekPerkembangan;
 use App\Models\KomentarPortofolio;
 use App\Models\TahunAjaran;
+use App\Notifications\KomentarBaru;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -165,6 +166,11 @@ class OrtuPortoController extends Controller
         ]);
 
         $komentar->load('user:id,name,role');
+
+        $porto = Portofolio::find($portofolioId);
+        if (Auth::user()->role === "ortu") {
+            $porto->guru->notify(new KomentarBaru($komentar));
+        }
 
         return response()->json([
             'status'  => true,

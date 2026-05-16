@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Rppm;
 use App\Models\TahunAjaran;
+use App\Notifications\RppmDikembalikan;
+use App\Notifications\RppmDisetujui;
 
 class ValidasiRppmController extends Controller
 {
@@ -102,6 +104,8 @@ class ValidasiRppmController extends Controller
             'catatan_kepala' => null,
         ]);
 
+        $rppm->guru->notify(new RppmDisetujui($rppm));
+
         return response()->json([
             'status'  => true,
             'message' => '✅ RPPM berhasil disetujui. Guru dapat membuat RPPH.',
@@ -137,6 +141,8 @@ class ValidasiRppmController extends Controller
             'status'         => 'dikembalikan',
             'catatan_kepala' => $request->catatan,
         ]);
+
+        $rppm->guru->notify(new RppmDikembalikan($rppm));
 
         return response()->json([
             'status'  => true,

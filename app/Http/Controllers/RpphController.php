@@ -11,6 +11,8 @@ use App\Models\RpphPenilaian;
 use App\Models\RpphPenilaianPoin;
 use App\Models\Rppm;
 use App\Models\TahunAjaran;
+use App\Models\User;
+use App\Notifications\RpphDiajukan;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -159,6 +161,8 @@ class RpphController extends Controller
         }
 
         $rpph->update(['status' => 'pending', 'catatan_kepala' => null]);
+
+        User::kepala()->active()->each(fn($k) => $k->notify(new RpphDiajukan($rpph)));
 
         return response()->json([
             'status'  => true,

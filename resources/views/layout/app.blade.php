@@ -8,7 +8,7 @@
     <title>@yield('page-title', 'Beranda') - SIPENAQI</title>
 
     <meta name="page-title" content="@yield('page-title', 'Beranda')">
-    <meta name="page-subtitle" content="@yield('page-subtitle',  'PAUDQu AL-AULIA - 2024/2025')">
+    <meta name="page-subtitle" content="@yield('page-subtitle', 'PAUDQu AL-AULIA - 2024/2025')">
     <link
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700&display=swap"
         rel="stylesheet">
@@ -115,6 +115,112 @@
             $(document).on('click', '.mf .bp:not(.btn-submit-form)', function() {
                 $(this).closest('.mo').removeClass('on');
                 window.showToast();
+            });
+
+
+            // ---------------- Notification Field ----------------
+
+            $(document).on('click', '.notif-bell', function(e) {
+                e.stopPropagation();
+                var $dropdown = $('#notifDropdown');
+                $dropdown.show();
+
+                if ($dropdown.hasClass('show')) {
+                    loadNotifikasi();
+                }
+            });
+
+            $(document).on('click', function() {
+                $('#notifDropdown').removeClass('show');
+            });
+
+            function loadNotifikasi() {
+                $.get('/notifikasi')
+                    .done(function(res) {
+                        var count = res.unread_count;
+                        if (count > 0) {
+                            $('#notifCount').text(count > 99 ? '99+' : count).show();
+                        } else {
+                            $('#notifCount').hide();
+                        }
+
+                        if (res.notifikasis.length === 0) {
+                            $('#notifList').html(
+                                '<div style="padding:20px;text-align:center;color:var(--txt3);font-size:12px">' +
+                                '✅ Tidak ada notifikasi' +
+                                '</div>'
+                            );
+                            return;
+                        }
+
+                        var html = '';
+                        $.each(res.notifikasis, function(i, n) {
+                            html += '<div class="nd-item ' + (n.dibaca ? '' : 'unread') + '"' +
+                                ' data-id="' + n.id + '"' +
+                                ' data-url="' + n.url + '"' +
+                                ' style="cursor:pointer">' +
+                                '<div class="nd-title">' + n.icon + ' ' + n.judul + '</div>' +
+                                '<div class="nd-msg">' + n.pesan + '</div>' +
+                                '<div class="nd-time">🕐 ' + n.waktu + '</div>' +
+                                '</div>';
+                        });
+                        $('#notifList').html(html);
+                    });
+            }
+
+            $(document).on('click', '.nd-item[data-id]', function() {
+                var id = $(this).data('id');
+                var url = $(this).data('url');
+                var $el = $(this);
+
+                $.ajax({
+                        url: '/notifikasi/' + id + '/baca',
+                        type: 'PUT',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                    })
+                    .done(function() {
+                        $el.removeClass('unread');
+                        if (url && url !== '#') {
+                            $('#notifDropdown').removeClass('show');
+                            // loadPage(url, true);
+                            location.href = url;
+                        }
+                    });
+            });
+
+            $('#btnBacaSemua').on('click', function(e) {
+                e.stopPropagation();
+
+                $.ajax({
+                        url: '/notifikasi/baca-semua',
+                        type: 'PUT',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                    })
+                    .done(function() {
+                        $('#notifList .nd-item').removeClass('unread');
+                        $('#notifCount').hide();
+                    });
+            });
+
+            $.get('/notifikasi')
+                .done(function(res) {
+                    var count = res.unread_count;
+                    if (count > 0) {
+                        $('#notifCount').text(count > 99 ? '99+' : count).show();
+                    }
+                });
+
+            $(document).on('ajaxNavigationComplete', function() {
+                $.get('/notifikasi').done(function(res) {
+                    var count = res.unread_count;
+                    count > 0 ?
+                        $('#notifCount').text(count > 99 ? '99+' : count).show() :
+                        $('#notifCount').hide();
+                });
             });
         });
     </script>

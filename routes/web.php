@@ -35,16 +35,11 @@ use App\Http\Controllers\PortofolioSiswaController;
 use App\Http\Controllers\AnalisisAspekController;
 use App\Http\Controllers\BadgeController;
 use App\Http\Controllers\KelasController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OrtuRppmController;
 use App\Http\Controllers\OrtuRpphController;
 use App\Http\Controllers\OrtuPortoController;
 use App\Http\Controllers\ValidasiProsemController;
-
-/*
-|--------------------------------------------------------------------------
-| Authentication Routes
-|--------------------------------------------------------------------------
-*/
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
@@ -182,4 +177,13 @@ Route::middleware(['auth', 'role'])->group(function () {
     Route::get('/sekolah/data', [KelasController::class, 'data'])->name('kelas.data');
     Route::get('/siswa/data', [DataSiswaController::class, 'data'])->name('siswa.data');
     Route::get('/badge/update', [BadgeController::class, 'update'])->name('badge.update');
+
+    /*
+    |----------------------------------------------------------------------
+    | Notif Controller
+    |----------------------------------------------------------------------
+    */
+    Route::get('/notifikasi', [NotificationController::class, 'index'])->name('notifikasi.index');
+    Route::put('/notifikasi/{id}/baca', [NotificationController::class, 'baca'])->name('notifikasi.baca');
+    Route::put('/notifikasi/baca-semua', [NotificationController::class, 'bacaSemua'])->name('notifikasi.baca_semua');
 });
