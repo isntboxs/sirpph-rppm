@@ -91,7 +91,7 @@
             });
 
             $.ajax({
-                url: '/notifikasi/web-push',
+                url: '{{ route('notifikasi.web_push') }}',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(subscription),
