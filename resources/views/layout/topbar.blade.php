@@ -59,34 +59,6 @@
 
 <script>
     async function enableNotification() {
-        const permission = await Notification.requestPermission();
-
-        if (permission !== 'granted') {
-            alert('Notifikasi ditolak');
-            return;
-        }
-
-        const registration = await navigator.serviceWorker.ready;
-
-        const subscription = await registration.pushManager.subscribe({
-            userVisibleOnly: true,
-            applicationServerKey: '{{ config('webpush.vapid.public_key') }}'
-        });
-
-
-        await fetch('/notifikasi/web-push', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify(subscription)
-        });
-
-        alert('Notifikasi berhasil diaktifkan');
-    }
-
-    async function enableNotification() {
 
         try {
             if (!('Notification' in window)) {
