@@ -233,7 +233,7 @@ class RppmController extends Controller
 
         $rppm->update(['status' => 'pending', 'catatan_kepala' => null]);
 
-        User::KepalaSekolah()->active()->each(function ($kepala) use ($rppm) {
+        User::kepalaSekolah()->active()->each(function ($kepala) use ($rppm) {
             $kepala->notify(new RppmDiajukan($rppm));
         });
 

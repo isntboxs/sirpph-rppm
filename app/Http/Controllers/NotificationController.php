@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class NotificationController extends Controller
@@ -46,6 +47,19 @@ class NotificationController extends Controller
         return response()->json([
             'status'  => true,
             'message' => 'Semua notifikasi telah ditandai dibaca.',
+        ]);
+    }
+
+    public function webPush(Request $request)
+    {
+        Auth::user()->updatePushSubscription(
+            $request->endpoint,
+            $request->keys['p256dh'],
+            $request->keys['auth']
+        );
+
+        return response()->json([
+            'success' => true
         ]);
     }
 }

@@ -162,7 +162,7 @@ class RpphController extends Controller
 
         $rpph->update(['status' => 'pending', 'catatan_kepala' => null]);
 
-        User::kepala()->active()->each(fn($k) => $k->notify(new RpphDiajukan($rpph)));
+        User::kepalaSekolah()->active()->each(fn($k) => $k->notify(new RpphDiajukan($rpph)));
 
         return response()->json([
             'status'  => true,

@@ -222,6 +222,10 @@
                         $('#notifCount').hide();
                 });
             });
+
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/webpush-sw.js');
+            }
         });
     </script>
     @stack('scripts')

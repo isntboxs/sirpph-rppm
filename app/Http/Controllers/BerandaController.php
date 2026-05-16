@@ -44,7 +44,7 @@ class BerandaController extends Controller
 
         $penggunaSummary = [
             'admin'  => User::admin()->count(),
-            'kepala' => User::KepalaSekolah()->count(),
+            'kepala' => User::kepalaSekolah()->count(),
             'guru'   => User::guru()->count(),
             'ortu'   => User::ortu()->count(),
         ];
@@ -54,8 +54,8 @@ class BerandaController extends Controller
             'npsn'     => $dataSekolah->npsn ?? '-',
             'kepala'   => User::kepalaSekolah()->value('name') ?? '-',
             'alamat'   => $dataSekolah->alamat ?? '-',
-            'ta'       => $taAktif?->name ?? '—',
-            'semester' => $taAktif?->semester ?? '—',
+            'ta'       => $taAktif?->name ?? '-',
+            'semester' => $taAktif?->semester ?? '-',
         ];
 
         return view('pages.beranda.admin', compact(

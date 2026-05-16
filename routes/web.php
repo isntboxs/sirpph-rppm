@@ -186,4 +186,5 @@ Route::middleware(['auth', 'role'])->group(function () {
     Route::get('/notifikasi', [NotificationController::class, 'index'])->name('notifikasi.index');
     Route::put('/notifikasi/{id}/baca', [NotificationController::class, 'baca'])->name('notifikasi.baca');
     Route::put('/notifikasi/baca-semua', [NotificationController::class, 'bacaSemua'])->name('notifikasi.baca_semua');
+    Route::post('/notifikasi/web-push', [NotificationController::class, 'webPush'])->name('notifikasi.web_push');
 });

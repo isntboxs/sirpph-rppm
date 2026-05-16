@@ -30,6 +30,9 @@
                 </div>
             </div>
         </div> --}}
+        <button class="btn bo bxs" onclick="enableNotification()">
+            Aktifkan Notifikasi
+        </button>
         <div style="position:relative">
             <div class="notif-bell" id="notifBell">
                 🔔
@@ -53,3 +56,98 @@
         <span style="font-size:11.5px;color:var(--txt3)">{{ now()->format('d/m/Y') }}</span>
     </div>
 </div>
+
+<script>
+    async function enableNotification() {
+        const permission = await Notification.requestPermission();
+
+        if (permission !== 'granted') {
+            alert('Notifikasi ditolak');
+            return;
+        }
+
+        const registration = await navigator.serviceWorker.ready;
+
+        const subscription = await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: '{{ config('webpush.vapid.public_key') }}'
+        });
+
+
+        await fetch('/notifikasi/web-push', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify(subscription)
+        });
+
+        alert('Notifikasi berhasil diaktifkan');
+    }
+
+    async function enableNotification() {
+
+        try {
+            if (!('Notification' in window)) {
+                alert('Browser tidak mendukung notification');
+                return;
+            }
+
+            if (!('serviceWorker' in navigator)) {
+                alert('Browser tidak mendukung service worker');
+                return;
+            }
+
+            if (!('PushManager' in window)) {
+                alert('Browser tidak mendukung web push');
+                return;
+            }
+
+            const permission = await Notification.requestPermission();
+
+            if (permission !== 'granted') {
+                alert('Notifikasi ditolak');
+                return;
+            }
+
+            const registration = await navigator.serviceWorker.ready;
+
+            const subscription = await registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: '{{ config('webpush.vapid.public_key') }}',
+            });
+
+            $.ajax({
+                url: '/notifikasi/web-push',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(subscription),
+
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+
+                success: function(response) {
+
+                    console.log('Subscription saved', response);
+
+                    alert('Notifikasi berhasil diaktifkan');
+                },
+
+                error: function(xhr) {
+
+                    console.error('Gagal simpan subscription', xhr);
+
+                    alert('Gagal menyimpan subscription');
+                }
+            });
+
+        } catch (error) {
+
+            console.error('Enable notification error:', error);
+
+            alert('Terjadi kesalahan saat mengaktifkan notifikasi');
+        }
+    }
+</script>
