@@ -27,6 +27,8 @@ class RoleMiddleware
             'monitoring_guru',
             'validasi_prosem',
             'badge',
+            'cetak',
+            'notifikasi',
         ],
         'guru' => [
             'kumpulan_kegiatan',
@@ -34,11 +36,15 @@ class RoleMiddleware
             'rpph',
             'portofolio_siswa',
             'analisis_aspek',
+            'cetak',
+            'notifikasi',
         ],
         'ortu' => [
             'ortu_rppm',
             'ortu_rpph',
             'ortu_porto',
+            'cetak',
+            'notifikasi',
         ],
     ];
 
@@ -46,7 +52,6 @@ class RoleMiddleware
     protected array $publicRoutes = [
         'beranda',
         'logout',
-        'notifikasi',
     ];
 
     public function handle(Request $request, Closure $next)

@@ -116,14 +116,17 @@
                 $(this).closest('.mo').removeClass('on');
                 window.showToast();
             });
-
-
+        });
+    </script>
+    @if (Auth::user()->role !== 'admin')
+        <script>
             // ---------------- Notification Field ----------------
-
             $(document).on('click', '.notif-bell', function(e) {
                 e.stopPropagation();
+
                 var $dropdown = $('#notifDropdown');
-                $dropdown.show();
+
+                $dropdown.toggleClass('show');
 
                 if ($dropdown.hasClass('show')) {
                     loadNotifikasi();
@@ -138,8 +141,11 @@
                 $.get('/notifikasi')
                     .done(function(res) {
                         var count = res.unread_count;
+
                         if (count > 0) {
-                            $('#notifCount').text(count > 99 ? '99+' : count).show();
+                            $('#notifCount')
+                                .text(count > 99 ? '99+' : count)
+                                .show();
                         } else {
                             $('#notifCount').hide();
                         }
@@ -154,8 +160,10 @@
                         }
 
                         var html = '';
+
                         $.each(res.notifikasis, function(i, n) {
-                            html += '<div class="nd-item ' + (n.dibaca ? '' : 'unread') + '"' +
+                            html +=
+                                '<div class="nd-item ' + (n.dibaca ? '' : 'unread') + '"' +
                                 ' data-id="' + n.id + '"' +
                                 ' data-url="' + n.url + '"' +
                                 ' style="cursor:pointer">' +
@@ -164,6 +172,7 @@
                                 '<div class="nd-time">🕐 ' + n.waktu + '</div>' +
                                 '</div>';
                         });
+
                         $('#notifList').html(html);
                     });
             }
@@ -182,8 +191,10 @@
                     })
                     .done(function() {
                         $el.removeClass('unread');
+
                         if (url && url !== '#') {
                             $('#notifDropdown').removeClass('show');
+
                             // loadPage(url, true);
                             location.href = url;
                         }
@@ -209,25 +220,32 @@
             $.get('/notifikasi')
                 .done(function(res) {
                     var count = res.unread_count;
+
                     if (count > 0) {
-                        $('#notifCount').text(count > 99 ? '99+' : count).show();
+                        $('#notifCount')
+                            .text(count > 99 ? '99+' : count)
+                            .show();
                     }
                 });
 
             $(document).on('ajaxNavigationComplete', function() {
-                $.get('/notifikasi').done(function(res) {
-                    var count = res.unread_count;
-                    count > 0 ?
-                        $('#notifCount').text(count > 99 ? '99+' : count).show() :
-                        $('#notifCount').hide();
-                });
+                $.get('/notifikasi')
+                    .done(function(res) {
+                        var count = res.unread_count;
+
+                        count > 0 ?
+                            $('#notifCount')
+                            .text(count > 99 ? '99+' : count)
+                            .show() :
+                            $('#notifCount').hide();
+                    });
             });
 
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('/webpush-sw.js');
             }
-        });
-    </script>
+        </script>
+    @endif
     @stack('scripts')
 </body>
 

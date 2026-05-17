@@ -30,26 +30,28 @@
                 </div>
             </div>
         </div> --}}
-        <button class="btn bo bxs" onclick="enableNotification()">
-            Aktifkan Notifikasi
-        </button>
-        <div style="position:relative">
-            <div class="notif-bell" id="notifBell">
-                🔔
-                <span class="notif-count" id="notifCount" style="display:none">0</span>
-            </div>
-            <div class="notif-dropdown" id="notifDropdown">
-                <div class="nd-head">
-                    <span>Notifikasi</span>
-                    <button class="btn bo bxs" id="btnBacaSemua">Tandai semua dibaca</button>
+        @if (Auth::user()->role !== 'admin')
+            <button class="btn bo bxs" onclick="enableNotification()">
+                Aktifkan Notifikasi
+            </button>
+            <div style="position:relative">
+                <div class="notif-bell" id="notifBell">
+                    🔔
+                    <span class="notif-count" id="notifCount" style="display:none">0</span>
                 </div>
-                <div id="notifList">
-                    <div style="padding:20px;text-align:center;color:var(--txt3);font-size:12px">
-                        ⏳ Memuat...
+                <div class="notif-dropdown" id="notifDropdown">
+                    <div class="nd-head">
+                        <span>Notifikasi</span>
+                        <button class="btn bo bxs" id="btnBacaSemua">Tandai semua dibaca</button>
+                    </div>
+                    <div id="notifList">
+                        <div style="padding:20px;text-align:center;color:var(--txt3);font-size:12px">
+                            ⏳ Memuat...
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        @endif
         <span class="rbdg {{ Auth::user()->roleBadge() }}">
             {{ Auth::user()->roleText() }}
         </span>
@@ -101,16 +103,10 @@
                 },
 
                 success: function(response) {
-
-                    console.log('Subscription saved', response);
-
                     alert('Notifikasi berhasil diaktifkan');
                 },
 
                 error: function(xhr) {
-
-                    console.error('Gagal simpan subscription', xhr);
-
                     alert('Gagal menyimpan subscription');
                 }
             });

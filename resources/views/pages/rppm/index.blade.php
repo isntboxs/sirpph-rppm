@@ -98,7 +98,7 @@
                     @endif
 
                     <button type="button" class="btn bo bsm"
-                        onclick="window.open('/rppm/{{ $rppm->id }}/cetak', '_blank')">
+                        onclick="window.open('{{ route('cetak.rppm', $rppm->id) }}', '_blank')">
                         🖨️
                     </button>
                 </div>

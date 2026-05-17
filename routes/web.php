@@ -1,19 +1,5 @@
 <?php
 
-// use Illuminate\Support\Facades\Route;
-
-// Route::get('/', function () {
-//     return redirect()->route('login');
-// });
-
-// Route::get('/login', function () {
-//     return view('auth.login');
-// })->name('login');
-
-// Route::get('/raw', function () {
-//     return view('raw');
-// });
-
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BerandaController;
@@ -34,6 +20,7 @@ use App\Http\Controllers\RpphController;
 use App\Http\Controllers\PortofolioSiswaController;
 use App\Http\Controllers\AnalisisAspekController;
 use App\Http\Controllers\BadgeController;
+use App\Http\Controllers\CetakController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OrtuRppmController;
@@ -52,7 +39,6 @@ Route::get('/', fn() => redirect()->route('login'));
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'role'])->group(function () {
-
     /*
     |----------------------------------------------------------------------
     | Menu Utama (Admin / Semua Role)
@@ -180,11 +166,18 @@ Route::middleware(['auth', 'role'])->group(function () {
 
     /*
     |----------------------------------------------------------------------
-    | Notif Controller
+    | Notification Route
     |----------------------------------------------------------------------
     */
     Route::get('/notifikasi', [NotificationController::class, 'index'])->name('notifikasi.index');
     Route::put('/notifikasi/{id}/baca', [NotificationController::class, 'baca'])->name('notifikasi.baca');
     Route::put('/notifikasi/baca-semua', [NotificationController::class, 'bacaSemua'])->name('notifikasi.baca_semua');
     Route::post('/notifikasi/web-push', [NotificationController::class, 'webPush'])->name('notifikasi.web_push');
+
+    /*
+    |----------------------------------------------------------------------
+    | Cetak Route
+    |----------------------------------------------------------------------
+    */
+    Route::get('/cetak/rppm/{id}', [CetakController::class, 'rppm'])->name('cetak.rppm');
 });

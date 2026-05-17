@@ -141,6 +141,10 @@
                             data-info="Minggu {{ $rppm->minggu_ke }} - {{ $rppm->subTema->name }}">
                             ↩️ Kembalikan
                         </button>
+                        <button type="button" class="btn bo bsm"
+                            onclick="window.open('{{ route('cetak.rppm', $rppm->id) }}', '_blank')">
+                            🖨️
+                        </button>
                     </div>
                 </div>
             @empty
