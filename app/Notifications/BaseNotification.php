@@ -36,7 +36,7 @@ abstract class BaseNotification extends Notification implements ShouldQueue
 
         return (new WebPushMessage)
             ->title($data['judul'])
-            ->icon($data['icon'])
+            ->icon('/logo.jpeg') // Gunakan URL gambar nyata
             ->body($data['pesan'])
             ->data([
                 'url' => $data['url'],
