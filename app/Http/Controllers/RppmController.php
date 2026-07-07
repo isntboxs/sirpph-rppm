@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use App\Models\Rppm;
 use App\Models\RppmKegiatan;
@@ -14,7 +15,6 @@ use App\Models\Kegiatan;
 use App\Models\Tema;
 use App\Models\TahunAjaran;
 use App\Models\AspekPerkembangan;
-use App\Models\Prosem;
 use App\Models\User;
 use App\Notifications\RppmDiajukan;
 
@@ -22,212 +22,199 @@ class RppmController extends Controller
 {
     public function index()
     {
-        $guru    = Auth::user();
+        $user    = Auth::user();
         $taAktif = TahunAjaran::getActive();
 
-        $rppms = Rppm::with(['subTema.tema', 'tahunAjaran', 'rppmKegiatans.kegiatan.aspeks'])
-            ->olehGuru($guru->id)
-            ->where('tahun_ajaran_id', $taAktif?->id)
-            ->latest()
-            ->get();
 
-        $prosemValid = Prosem::with(['tema', 'subTema'])
-            ->where('tahun_ajaran_id', $taAktif?->id)
-            ->valid()
-            ->orderBy('minggu_ke')
-            ->get();
 
-        $mingguSudahAda = $rppms->pluck('minggu_ke')->toArray();
+        // Simulasi minggu berjalan berdasarkan bulan saat ini
+        $bulanMulai = $taAktif?->semester == 1 ? 7 : 1;
+        $tahunMulai = $taAktif?->semester == 1 ? (int) substr($taAktif->name, 0, 4) : (int) substr($taAktif->name, 5, 4);
+        
+        $tanggalMulai = \Carbon\Carbon::create($tahunMulai, $bulanMulai, 1);
+        $mingguBerjalan = max(1, min(17, $tanggalMulai->diffInWeeks(now()) + 1));
+        $semesterLabel = $taAktif?->semester == 1 ? 'Ganjil' : 'Genap';
 
-        $modelList   = [
-            'Berbasis Proyek',
-            'Kelompok dengan Sudut',
-            'Sentra',
-            'Area',
-            'STEM',
-        ];
+        if ($user->isAdmin()) {
+            $gurus = User::guru()->active()->with('kelas')->get();
+            $rppmsGrouped = [];
+            foreach ($gurus as $g) {
+                if ($taAktif) {
+                    Rppm::syncDraftsForGuru($g->id, $taAktif->id);
+                }
+                $rppmsGrouped[$g->id] = Rppm::with(['subTema.tema', 'tahunAjaran'])
+                    ->where('guru_id', $g->id)
+                    ->where('tahun_ajaran_id', $taAktif?->id)
+                    ->get();
+            }
+            return view('pages.rppm.index', compact(
+                'gurus',
+                'rppmsGrouped',
+                'taAktif',
+                'mingguBerjalan',
+                'semesterLabel'
+            ));
+        } else {
+            if ($taAktif) {
+                Rppm::syncDraftsForGuru($user->id, $taAktif->id);
+            }
+            $rppms = Rppm::with(['subTema.tema', 'tahunAjaran'])
+                ->olehGuru($user->id)
+                ->where('tahun_ajaran_id', $taAktif?->id)
+                ->get();
+            $rppmTerisi = $rppms->count();
 
-        return view('pages.rppm.index', compact(
-            'rppms',
-            'prosemValid',
-            'mingguSudahAda',
-            'taAktif',
-            'modelList'
-        ));
+            return view('pages.rppm.index', compact(
+                'rppms',
+                'taAktif',
+                'mingguBerjalan',
+                'semesterLabel',
+                'rppmTerisi'
+            ));
+        }
+    }
+
+    public function create(Request $request)
+    {
+        $taAktif = TahunAjaran::getActive();
+        $gurus = User::guru()->active()->with('kelas')->get();
+        $temas = Tema::with('subTemas')->get();
+        
+        // Kalau tidak ada RPPM, buat instance baru agar tidak error di view
+        $rppm = new Rppm([
+            'tahun_ajaran_id' => $taAktif?->id,
+            'tanggal_dibuat' => now()->toDateString(),
+        ]);
+        
+        return view('pages.rppm.form', compact('rppm', 'taAktif', 'gurus', 'temas'));
     }
 
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'minggu_ke'          => 'required|integer|min:1|max:34',
-            'bulan'              => 'required|integer|min:1|max:12',
-            'tahun'              => 'required|integer',
-            'model_pembelajaran' => 'nullable|string|max:100',
-            'tujuan'             => 'nullable|string',
-            'capaian'            => 'nullable|string',
+        $guruId = Auth::user()->isAdmin() ? $request->guru_id : Auth::id();
+
+        $request->validate([
+            'guru_id'         => Auth::user()->isAdmin() ? 'required|exists:users,id' : 'nullable',
+            'tahun_ajaran_id' => 'required',
+            'minggu_ke'       => 'required|integer|min:1|max:17',
+            'sub_tema_id'     => [
+                'required',
+                \Illuminate\Validation\Rule::unique('rppm')->where(function ($query) use ($guruId, $request) {
+                    return $query->where('guru_id', $guruId)
+                                 ->where('tahun_ajaran_id', $request->tahun_ajaran_id);
+                })
+            ],
+            'tanggal_dibuat'  => 'required|date',
+            'tujuan'          => 'nullable|string',
+            'capaian'         => 'nullable|string',
+            'kegiatan_pembuka'=> 'nullable|string',
+            'kegiatan_inti'   => 'nullable|string',
+            'recalling'       => 'nullable|string',
+            'kegiatan_penutup'=> 'nullable|string',
+            'rencana_penilaian'=> 'nullable|string',
         ], [
-            'minggu_ke.required' => 'Minggu ke wajib diisi.',
-            'bulan.required'     => 'Bulan pelaksanaan wajib dipilih.',
+            'sub_tema_id.unique' => 'RPP untuk Sub Tema ini sudah pernah dibuat sebelumnya! Silakan pilih Sub Tema lain atau edit RPP yang sudah ada.',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => false,
-                'errors' => $validator->errors(),
-            ], 422);
+        $rppm = Rppm::create([
+            'guru_id'         => Auth::user()->isAdmin() ? $request->guru_id : Auth::id(),
+            'tahun_ajaran_id' => $request->tahun_ajaran_id,
+            'sub_tema_id'     => $request->sub_tema_id,
+            'minggu_ke'       => $request->minggu_ke,
+            'tanggal_dibuat'  => $request->tanggal_dibuat,
+            'tujuan'          => $request->tujuan,
+            'capaian'         => $request->capaian,
+            'kegiatan_pembuka'=> $request->kegiatan_pembuka,
+            'kegiatan_inti'   => $request->kegiatan_inti,
+            'recalling'       => $request->recalling,
+            'kegiatan_penutup'=> $request->kegiatan_penutup,
+            'rencana_penilaian'=> $request->rencana_penilaian,
+            'status'          => $request->input('action') === 'ajukan' ? 'pending' : 'draft',
+        ]);
+        
+        if ($request->input('action') === 'ajukan') {
+            User::kepalaSekolah()->active()->each(function ($kepala) use ($rppm) {
+                $kepala->notify(new RppmDiajukan($rppm));
+            });
+            return redirect()->route('rppm')->with('success', 'RPP berhasil dibuat dan diajukan ke Kepala Sekolah!');
+        }
+
+        return redirect()->route('rppm')->with('success', 'RPP berhasil dibuat (Disimpan sebagai Draft)!');
+    }
+
+    public function show($id)
+    {
+        $rppm = Rppm::with(['subTema.tema', 'tahunAjaran'])->findOrFail($id);
+        
+        // Cek akses
+        if (Auth::user()->role === 'guru') {
+            abort_if($rppm->guru_id !== Auth::id(), 403);
         }
 
         $taAktif = TahunAjaran::getActive();
-        $prosem = \App\Models\Prosem::with(['subTema'])
-            ->where('tahun_ajaran_id', $taAktif?->id)
-            ->where('minggu_ke', $request->minggu_ke)
-            ->valid()
-            ->first();
+        $gurus = User::guru()->active()->with('kelas')->get();
+        $temas = Tema::with('subTemas')->get();
+        $subTemas = \App\Models\SubTema::where('tema_id', $rppm->subTema->tema_id ?? 0)->get();
 
-        if (!$prosem) {
-            return response()->json([
-                'status' => false,
-                'errors' => ['minggu_ke' => ['PROSEM untuk minggu ini belum divalidasi atau tidak ditemukan.']],
-            ], 422);
-        }
-
-        $sudahAda = Rppm::where('guru_id', Auth::id())
-            ->where('tahun_ajaran_id', $taAktif?->id)
-            ->where('minggu_ke', $request->minggu_ke)
-            ->exists();
-
-        if ($sudahAda) {
-            return response()->json([
-                'status' => false,
-                'errors' => ['minggu_ke' => ['RPPM untuk minggu ke-' . $request->minggu_ke . ' sudah pernah dibuat.']],
-            ], 422);
-        }
-
-        $rppm = Rppm::create([
-            'guru_id'            => Auth::id(),
-            'tahun_ajaran_id'    => $taAktif->id,
-            'sub_tema_id'        => $prosem->sub_tema_id,
-            'minggu_ke'          => $request->minggu_ke,
-            'bulan'              => $request->bulan,
-            'tahun'              => $request->tahun,
-            'model_pembelajaran' => $request->model_pembelajaran,
-            'tujuan'             => $request->tujuan,
-            'capaian'            => $request->capaian,
-            'status'             => 'draft',
-        ]);
-
-        return response()->json([
-            'status'  => true,
-            'message' => 'RPPM berhasil dibuat sebagai draft.',
-            'rppm_id' => $rppm->id,
-            'tema'    => $prosem->subTema->tema->name ?? '-',
-            'sub_tema' => $prosem->subTema->name ?? '-',
-        ]);
+        return view('pages.rppm.form', compact('rppm', 'taAktif', 'gurus', 'temas', 'subTemas'));
     }
 
-    public function show(int $id)
+    public function update(Request $request, $id)
     {
-        $rppm = Rppm::with([
-            'subTema.tema',
-            'tahunAjaran',
-            'guru',
-            'rppmKegiatans.kegiatan.aspeks',
-            'rppmKegiatans.kegiatan.bentukKegiatan',
-            'rppmKegiatans.kegiatan.alatBahans',
-        ])->findOrFail($id);
-
-        abort_if($rppm->guru_id !== Auth::id(), 403);
-
-        $kegiatanTersedia = Kegiatan::with(['aspeks', 'bentukKegiatan'])
-            ->disetujui()
-            ->belumTerkunci()
-            ->get();
-
-        $aspeks = AspekPerkembangan::all();
-
-        return view('pages.rppm.show', compact('rppm', 'kegiatanTersedia', 'aspeks'));
-    }
-
-    public function tambahKegiatan(Request $request, int $rppmId)
-    {
-        $rppm = Rppm::findOrFail($rppmId);
-
-        abort_if($rppm->guru_id !== Auth::id(), 403);
-        abort_if(!in_array($rppm->status, ['draft', 'dikembalikan']), 422);
-
-        $validator = Validator::make($request->all(), [
-            'kegiatan_id' => 'required|exists:kegiatan,id',
-            'hari'        => 'required|in:Senin,Selasa,Rabu,Kamis,Jumat',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => false,
-                'errors' => $validator->errors(),
-            ], 422);
+        $rppm = Rppm::findOrFail($id);
+        if (Auth::user()->role === 'guru') {
+            abort_if($rppm->guru_id !== Auth::id(), 403);
         }
 
-        $kegiatan = Kegiatan::findOrFail($request->kegiatan_id);
+        $request->validate([
+            'tanggal_dibuat'  => 'required|date',
+            'tujuan'          => 'nullable|string',
+            'capaian'         => 'nullable|string',
+            'kegiatan_pembuka'=> 'nullable|string',
+            'kegiatan_inti'   => 'nullable|string',
+            'recalling'       => 'nullable|string',
+            'kegiatan_penutup'=> 'nullable|string',
+            'rencana_penilaian'=> 'nullable|string',
+        ]);
 
-        if ($kegiatan->isTerkunci()) {
-            return response()->json([
-                'status'  => false,
-                'message' => 'Kegiatan ini sudah terkunci karena dipakai di 3 tahun ajaran berbeda.',
-            ], 422);
+        $rppm->update([
+            'tanggal_dibuat'  => $request->tanggal_dibuat,
+            'tujuan'          => $request->tujuan,
+            'capaian'         => $request->capaian,
+            'kegiatan_pembuka'=> $request->kegiatan_pembuka,
+            'kegiatan_inti'   => $request->kegiatan_inti,
+            'recalling'       => $request->recalling,
+            'kegiatan_penutup'=> $request->kegiatan_penutup,
+            'rencana_penilaian'=> $request->rencana_penilaian,
+        ]);
+        
+        if ($request->input('action') === 'ajukan') {
+            $rppm->update(['status' => 'pending', 'catatan_kepala' => null]);
+            User::kepalaSekolah()->active()->each(function ($kepala) use ($rppm) {
+                $kepala->notify(new RppmDiajukan($rppm));
+            });
+            return redirect()->route('rppm')->with('success', 'RPP berhasil diperbarui dan diajukan ke Kepala Sekolah!');
+        }
+        
+        // Kalau admin mengedit RPPM yang sudah disetujui (bukan mengubah ke draft), kembalikan status ke pending
+        if (Auth::user()->role === 'admin' && $rppm->status === 'disetujui' && $request->input('action') !== 'draft') {
+            $rppm->update(['status' => 'pending']);
         }
 
-        $sudahAda = RppmKegiatan::where('rppm_id', $rppmId)
-            ->where('kegiatan_id', $request->kegiatan_id)
-            ->where('hari', $request->hari)
-            ->exists();
-
-        if ($sudahAda) {
-            return response()->json([
-                'status'  => false,
-                'message' => 'Kegiatan ini sudah ada di hari ' . $request->hari . '.',
-            ], 422);
-        }
-
-        $urutan = RppmKegiatan::where('rppm_id', $rppmId)
-            ->where('hari', $request->hari)
-            ->count() + 1;
-
-        RppmKegiatan::create([
-            'rppm_id'     => $rppmId,
-            'kegiatan_id' => $request->kegiatan_id,
-            'hari'        => $request->hari,
-            'urutan'      => $urutan,
-        ]);
-
-        return response()->json([
-            'status'  => true,
-            'message' => 'Kegiatan berhasil ditambahkan ke hari ' . $request->hari . '.',
-        ]);
+        return redirect()->route('rppm')->with('success', 'RPP berhasil diperbarui!');
     }
 
-    public function hapusKegiatan(int $rppmKegiatanId)
-    {
-        $rk   = RppmKegiatan::with('rppm')->findOrFail($rppmKegiatanId);
-        abort_if($rk->rppm->guru_id !== Auth::id(), 403);
-        abort_if(!in_array($rk->rppm->status, ['draft', 'dikembalikan']), 422);
 
-        $rk->delete();
-
-        return response()->json([
-            'status'  => true,
-            'message' => 'Kegiatan berhasil dihapus dari RPPM.',
-        ]);
-    }
 
     public function ajukan(int $id)
     {
-        $rppm = Rppm::with('rppmKegiatans')->findOrFail($id);
-        abort_if($rppm->guru_id !== Auth::id(), 403);
+        $rppm = Rppm::findOrFail($id);
+        abort_if($rppm->guru_id !== Auth::id() && Auth::user()->role !== 'admin', 403);
 
-        if ($rppm->rppmKegiatans->isEmpty()) {
+        if (empty($rppm->kegiatan_inti)) {
             return response()->json([
                 'status'  => false,
-                'message' => 'RPPM harus memiliki minimal 1 kegiatan sebelum diajukan.',
+                'message' => 'Kegiatan Inti belum diisi.',
             ], 422);
         }
 
@@ -243,34 +230,13 @@ class RppmController extends Controller
         ]);
     }
 
-    public function generateRpph(int $id)
-    {
-        $rppm = Rppm::with('rppmKegiatans')->findOrFail($id);
-        abort_if($rppm->guru_id !== Auth::id(), 403);
-        abort_if($rppm->status !== 'disetujui', 422);
 
-        $hariAda = $rppm->rppmKegiatans->pluck('hari')->unique()->values();
-
-        DB::transaction(function () use ($rppm, $hariAda) {
-            foreach ($hariAda as $hari) {
-                Rpph::firstOrCreate(
-                    ['rppm_id' => $rppm->id, 'hari' => $hari],
-                    ['status' => 'draft']
-                );
-            }
-        });
-
-        return response()->json([
-            'status'  => true,
-            'message' => '⚡ RPPH berhasil di-generate untuk ' . $hariAda->count() . ' hari.',
-        ]);
-    }
 
     public function destroy(string $id)
     {
-        $rppm = Rppm::with('rpphs')->findOrFail((int) $id);
+        $rppm = Rppm::findOrFail((int) $id);
 
-        abort_if($rppm->guru_id !== Auth::id(), 403);
+        abort_if($rppm->guru_id !== Auth::id() && Auth::user()->role !== 'admin', 403);
 
         if ($rppm->status === 'disetujui') {
             return response()->json([
@@ -285,5 +251,16 @@ class RppmController extends Controller
             'status'  => true,
             'message' => '🗑️ RPPM berhasil dihapus. Kamu bisa membuat RPPM baru untuk minggu tersebut.',
         ]);
+    }
+
+    public function cetakPdf($id)
+    {
+        $rppm = Rppm::with(['guru', 'subTema.tema', 'tahunAjaran', 'laporanRpp'])->findOrFail($id);
+
+        $pdf = Pdf::loadView('pages.rppm.pdf', compact('rppm'));
+        
+        $filename = 'RPP_Mingguan_' . ($rppm->guru?->name ?? 'Guru') . '_Minggu_' . ($rppm->subTema?->minggu_ke ?? '') . '.pdf';
+        
+        return $pdf->stream($filename);
     }
 }

@@ -17,6 +17,9 @@
             </div>
             <div class="fl ic g8">
                 <span class="bdg {{ $rppm->status_badge_class }}">{{ $rppm->status_label }}</span>
+                @if(in_array($rppm->status, ['disetujui']))
+                    <a href="{{ route('rppm.cetak_pdf', $rppm->id) }}" target="_blank" class="btn bp bsm">🖨️ Cetak PDF</a>
+                @endif
                 <a href="{{ route('rppm') }}" class="btn bo bsm">← Kembali</a>
             </div>
         </div>

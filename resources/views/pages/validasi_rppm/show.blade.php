@@ -16,11 +16,6 @@
                     {{ $rppm->subTema->tema->name }}
                 </h3>
                 <div style="color:var(--g6);font-weight:600">{{ $rppm->subTema->name }}</div>
-                @if ($rppm->model_pembelajaran)
-                    <div class="fs11 tc2 mt4" style="margin-bottom: 10px">
-                        📐 Model: {{ $rppm->model_pembelajaran }}
-                    </div>
-                @endif
             </div>
             <div class="fl ic g8">
                 <span class="bdg {{ $rppm->status_badge_class }}">
@@ -63,94 +58,57 @@
     <div class="g2" style="gap:14px">
         <div>
             <div class="card">
-                <div class="ct mb12">📅 Kegiatan Per Hari</div>
-                @foreach (['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'] as $hari)
-                    @php
-                        $kegiatanHari = $rppm->rppmKegiatans->where('hari', $hari);
-                    @endphp
-                    <div class="ds mb8">
-                        <div class="dsh">
-                            <span class="dn">{{ $hari }}</span>
-                            <span class="fs11 tc2">
-                                {{ $kegiatanHari->count() }} kegiatan
-                            </span>
-                        </div>
-                        @forelse ($kegiatanHari as $rk)
-                            <div class="dki">
-                                <div>
-                                    <div style="font-weight:700;font-size:12.5px">
-                                        {{ $rk->kegiatan->foto_icon }}
-                                        {{ $rk->kegiatan->name }}
-                                    </div>
-                                    <div class="fs11 tc2 mt4">
-                                        🎭 {{ $rk->kegiatan->bentukKegiatan->name }}
-                                        @if ($rk->kegiatan->alatBahans->isNotEmpty())
-                                            &nbsp;|&nbsp;
-                                            🔧 {{ $rk->kegiatan->alatBahans->pluck('name')->join(', ') }}
-                                        @endif
-                                    </div>
-                                    <div class="fl fw g8 mt4">
-                                        @foreach ($rk->kegiatan->aspeks as $aspek)
-                                            <span class="ap {{ $aspek->warna }}">
-                                                {{ $aspek->emote }} {{ $aspek->name }}
-                                            </span>
-                                        @endforeach
-                                    </div>
-                                </div>
-                            </div>
-                        @empty
-                            <div style="font-size:12px;color:var(--txt3);padding:8px 0">
-                                Tidak ada kegiatan
-                            </div>
-                        @endforelse
-                    </div>
-                @endforeach
-            </div>
-        </div>
-
-        <div>
-            <div class="card" style="position:sticky;top:80px">
-                <div class="ct mb12">📊 Analisis Aspek</div>
-
-                @foreach ($aspekTerstimulasi as $aspek)
-                    <div class="card mb8"
-                        style="padding:10px 13px;
-                    border-color:{{ $aspek->dipakai > 0 ? 'var(--g2)' : '#fecaca' }}">
-                        <div class="fl jb ic">
-                            <span class="ap {{ $aspek->warna }}">
-                                {{ $aspek->emote }} {{ $aspek->name }}
-                            </span>
-                            @if ($aspek->dipakai > 0)
-                                <span style="color:var(--g6);font-weight:700;font-size:12px">
-                                    ✅ Ada
-                                </span>
-                            @else
-                                <span style="color:var(--red);font-weight:700;font-size:12px">
-                                    ⚠️ Belum
-                                </span>
-                            @endif
+                <div class="ct mb16">📝 Isi Kegiatan Pembelajaran</div>
+                
+                <div class="g2 mt12" style="gap:20px; grid-template-columns: 1fr;">
+                    <div class="ib">
+                        <div class="ik" style="font-weight:bold; color:var(--g6); font-size:14px; margin-bottom: 6px;">A. Kegiatan Pembuka (SOP Pembukaan, Doa)</div>
+                        <div class="iv" style="font-size:13px; font-weight:400; line-height:1.6; background: #f9fafb; padding: 15px; border-radius: 6px; border: 1px solid #e5e7eb; white-space: pre-line;">
+                            {{ $rppm->kegiatan_pembuka ?? '-' }}
                         </div>
                     </div>
-                @endforeach
-
-                @php $belumCount = $aspekTerstimulasi->where('dipakai', 0)->count(); @endphp
-                @if ($belumCount > 0)
-                    <div class="al alw mt8" style="font-size:11.5px">
-                        ⚠️ {{ $belumCount }} aspek belum terstimulasi.
-                        Pertimbangkan untuk dikembalikan agar guru menambah kegiatan.
+                    
+                    <div class="ib">
+                        <div class="ik" style="font-weight:bold; color:var(--g6); font-size:14px; margin-bottom: 6px;">B. Kegiatan Inti</div>
+                        <div class="iv" style="font-size:13px; font-weight:400; line-height:1.6; background: #f9fafb; padding: 15px; border-radius: 6px; border: 1px solid #e5e7eb; white-space: pre-line;">
+                            {{ $rppm->kegiatan_inti ?? '-' }}
+                        </div>
                     </div>
-                @endif
+                    
+                    <div class="ib">
+                        <div class="ik" style="font-weight:bold; color:var(--g6); font-size:14px; margin-bottom: 6px;">C. Recalling</div>
+                        <div class="iv" style="font-size:13px; font-weight:400; line-height:1.6; background: #f9fafb; padding: 15px; border-radius: 6px; border: 1px solid #e5e7eb; white-space: pre-line;">
+                            {{ $rppm->recalling ?? '-' }}
+                        </div>
+                    </div>
+                    
+                    <div class="ib">
+                        <div class="ik" style="font-weight:bold; color:var(--g6); font-size:14px; margin-bottom: 6px;">D. Kegiatan Penutup</div>
+                        <div class="iv" style="font-size:13px; font-weight:400; line-height:1.6; background: #f9fafb; padding: 15px; border-radius: 6px; border: 1px solid #e5e7eb; white-space: pre-line;">
+                            {{ $rppm->kegiatan_penutup ?? '-' }}
+                        </div>
+                    </div>
+                    
+                    <div class="ib">
+                        <div class="ik" style="font-weight:bold; color:var(--g6); font-size:14px; margin-bottom: 6px;">E. Rencana Penilaian</div>
+                        <div class="iv" style="font-size:13px; font-weight:400; line-height:1.6; background: #f9fafb; padding: 15px; border-radius: 6px; border: 1px solid #e5e7eb; white-space: pre-line;">
+                            {{ $rppm->rencana_penilaian ?? '-' }}
+                        </div>
+                    </div>
+                </div>
 
-                {{-- Tombol aksi --}}
                 @if ($rppm->status === 'pending')
-                    <div class="dv"></div>
-                    <button type="button" class="btn bp wf mb8 btn-setujui-rppm-show" data-id="{{ $rppm->id }}">
-                        ✅ Setujui RPPM
-                    </button>
-                    <button type="button" class="btn bd wf btn-buka-kembalikan-show" data-id="{{ $rppm->id }}"
-                        data-info="Mgg {{ $rppm->minggu_ke }} - {{ $rppm->subTema->name }}">
-                        ↩️ Kembalikan ke Guru
-                    </button>
+                    <div class="dv mt16"></div>
+                    <div class="fl jb ic mt16">
+                        <button type="button" class="btn bo btn-buka-kembalikan-show"
+                            data-id="{{ $rppm->id }}"
+                            data-info="RPPM {{ $rppm->subTema->tema->name }} - {{ $rppm->subTema->name }}">
+                            ↩️ Kembalikan (Revisi)
+                        </button>
+                        <button type="button" class="btn bd btn-setujui-rppm-show" data-id="{{ $rppm->id }}">
+                            ✅ Setujui RPPM
+                        </button>
+                    </div>
                 @endif
             </div>
         </div>

@@ -126,11 +126,7 @@
                     </div>
 
                     {{-- Info tambahan --}}
-                    @if ($rppm->model_pembelajaran)
-                        <div class="fs11 tc2 mb8">
-                            📐 Model: {{ $rppm->model_pembelajaran }}
-                        </div>
-                    @endif
+
 
                     <div class="ract">
                         <a href="{{ route('validasi_rppm.show', $rppm->id) }}" class="btn bo bsm">🔍 Lihat Detail</a>
