@@ -34,7 +34,7 @@ return [
      * The Guzzle client options used by Minishlink\WebPush.
      */
     'client_options' => [
-        'verify' => false,
+        'verify' => env('WEBPUSH_VERIFY_TLS', true),
     ],
 
     /**

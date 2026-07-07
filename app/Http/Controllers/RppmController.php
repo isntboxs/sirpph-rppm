@@ -25,15 +25,25 @@ class RppmController extends Controller
         $user    = Auth::user();
         $taAktif = TahunAjaran::getActive();
 
-
+        if (!$taAktif) {
+            return view('pages.rppm.index', [
+                'taAktif' => null,
+                'mingguBerjalan' => 0,
+                'semesterLabel' => '-',
+                'rppms' => collect(),
+                'rppmsGrouped' => [],
+                'gurus' => collect(),
+                'rppmTerisi' => 0
+            ]);
+        }
 
         // Simulasi minggu berjalan berdasarkan bulan saat ini
-        $bulanMulai = $taAktif?->semester == 1 ? 7 : 1;
-        $tahunMulai = $taAktif?->semester == 1 ? (int) substr($taAktif->name, 0, 4) : (int) substr($taAktif->name, 5, 4);
+        $bulanMulai = $taAktif->semester == 1 ? 7 : 1;
+        $tahunMulai = $taAktif->semester == 1 ? (int) substr($taAktif->name, 0, 4) : (int) substr($taAktif->name, 5, 4);
         
         $tanggalMulai = \Carbon\Carbon::create($tahunMulai, $bulanMulai, 1);
         $mingguBerjalan = max(1, min(17, $tanggalMulai->diffInWeeks(now()) + 1));
-        $semesterLabel = $taAktif?->semester == 1 ? 'Ganjil' : 'Genap';
+        $semesterLabel = $taAktif->semester == 1 ? 'Ganjil' : 'Genap';
 
         if ($user->isAdmin()) {
             $gurus = User::guru()->active()->with('kelas')->get();
@@ -77,6 +87,10 @@ class RppmController extends Controller
     public function create(Request $request)
     {
         $taAktif = TahunAjaran::getActive();
+        if (!$taAktif) {
+            return redirect()->route('rppm.index')->with('error', 'Harap atur Tahun Ajaran aktif terlebih dahulu.');
+        }
+
         $gurus = User::guru()->active()->with('kelas')->get();
         $temas = Tema::with('subTemas')->get();
         
@@ -108,7 +122,7 @@ class RppmController extends Controller
             'tujuan'          => 'nullable|string',
             'capaian'         => 'nullable|string',
             'kegiatan_pembuka'=> 'nullable|string',
-            'kegiatan_inti'   => 'nullable|string',
+            'kegiatan_inti'   => $request->input('action') === 'ajukan' ? 'required|string' : 'nullable|string',
             'recalling'       => 'nullable|string',
             'kegiatan_penutup'=> 'nullable|string',
             'rencana_penilaian'=> 'nullable|string',
@@ -171,7 +185,7 @@ class RppmController extends Controller
             'tujuan'          => 'nullable|string',
             'capaian'         => 'nullable|string',
             'kegiatan_pembuka'=> 'nullable|string',
-            'kegiatan_inti'   => 'nullable|string',
+            'kegiatan_inti'   => $request->input('action') === 'ajukan' ? 'required|string' : 'nullable|string',
             'recalling'       => 'nullable|string',
             'kegiatan_penutup'=> 'nullable|string',
             'rencana_penilaian'=> 'nullable|string',

@@ -80,12 +80,16 @@ class BerandaController extends Controller
         })->where('status', 'pending')->count();
 
         // hitung statistik tema
-        $temaTotal = \App\Models\Tema::count();
-        $temaPending = \App\Models\Tema::where('status', 'pending')->count();
+        $temaTotal = \App\Models\Tema::where('tahun_ajaran_id', $taAktif?->id)->count();
+        $temaPending = \App\Models\Tema::where('tahun_ajaran_id', $taAktif?->id)->where('status', 'pending')->count();
 
         // hitung statistik sub tema
-        $subTemaTotal = \App\Models\SubTema::count();
-        $subTemaPending = \App\Models\SubTema::where('status', 'pending')->count();
+        $subTemaTotal = \App\Models\SubTema::whereHas('tema', function($q) use ($taAktif) {
+            $q->where('tahun_ajaran_id', $taAktif?->id);
+        })->count();
+        $subTemaPending = \App\Models\SubTema::whereHas('tema', function($q) use ($taAktif) {
+            $q->where('tahun_ajaran_id', $taAktif?->id);
+        })->where('status', 'pending')->count();
 
         $stats = [
             'rpp' => ['total' => $rppTotal, 'pending' => $rppPending],

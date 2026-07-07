@@ -94,36 +94,7 @@
                         <span class="bdg bpnd">⏳ Pending</span>
                     </div>
 
-                    {{-- Ringkasan kegiatan per hari --}}
-                    <div class="fl fw g8 mt8 mb8">
-                        @foreach (['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'] as $hari)
-                            @php
-                                $count = $rppm->rppmKegiatans->where('hari', $hari)->count();
-                            @endphp
-                            <div
-                                style="
-                                    padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;
-                                    background:{{ $count > 0 ? 'var(--g1)' : 'var(--g0)' }};
-                                    border:1px solid {{ $count > 0 ? 'var(--g4)' : 'var(--g2)' }};
-                                    color:{{ $count > 0 ? 'var(--g7)' : 'var(--txt3)' }}
-                                ">
-                                {{ $hari }}
-                                {{ $count > 0 ? '(' . $count . ')' : '' }}
-                            </div>
-                        @endforeach
-                    </div>
 
-                    {{-- Aspek yang terstimulasi --}}
-                    @php
-                        $aspekAda = $rppm->rppmKegiatans->flatMap(fn($rk) => $rk->kegiatan->aspeks)->unique('id');
-                    @endphp
-                    <div class="fl fw g8 mb8">
-                        @foreach ($aspekAda as $aspek)
-                            <span class="ap {{ $aspek->warna }}">
-                                {{ $aspek->emote }} {{ $aspek->name }}
-                            </span>
-                        @endforeach
-                    </div>
 
                     {{-- Info tambahan --}}
 
@@ -314,7 +285,7 @@
                         decrementBadgeCount('bdg-cnt-validasi-rppm');
                     })
                     .fail(function(xhr) {
-                        var errors = xxzhr.responseJSON.errors;
+                        var errors = xhr.responseJSON.errors;
                         $('#errorKembalikanRppm').text(errors.catatan[0]).show();
                     });
             });

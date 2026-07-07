@@ -16,6 +16,8 @@ class RoleMiddleware
             'kelola_tema',
             'kelas',
             'rppm',
+            'notifikasi',
+            'badge',
         ],
         'kepala' => [
             'validasi_rppm',

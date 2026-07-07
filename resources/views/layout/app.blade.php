@@ -345,7 +345,7 @@
         }
 
         function subscribeUserToPush(registration) {
-            const vapidPublicKey = '{{ env("VAPID_PUBLIC_KEY") }}';
+            const vapidPublicKey = '{{ config("webpush.vapid.public_key") }}';
             if (!vapidPublicKey) {
                 console.warn('VAPID_PUBLIC_KEY kosong! Pastikan .env sudah terbaca.');
                 return;

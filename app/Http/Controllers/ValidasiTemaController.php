@@ -79,6 +79,7 @@ class ValidasiTemaController extends Controller
     public function setujuiSubTema(Request $request, $id)
     {
         $subTema = SubTema::findOrFail($id);
+        abort_if($subTema->tema->status !== 'disetujui', 422, 'Tema induk belum disetujui.');
         $subTema->update(['status' => 'disetujui']);
 
         if ($subTema->edited_by) {

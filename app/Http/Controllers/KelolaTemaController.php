@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Tema;
 use App\Models\SubTema;
+use Illuminate\Support\Facades\DB;
 
 class KelolaTemaController extends Controller
 {
@@ -29,7 +30,7 @@ class KelolaTemaController extends Controller
             'semester'  => 'required|in:1,2',
             'sub_tema'  => 'required|array|min:1',
             'sub_tema.*.name' => 'required|string|max:100',
-            'sub_tema.*.minggu_ke' => 'required|integer|min:1',
+            'sub_tema.*.minggu_ke' => 'required|integer|min:1|max:17',
         ], [
             'name.required'     => 'Nama tema wajib diisi.',
             'name.unique'       => 'Tema sudah ada.',
@@ -51,28 +52,29 @@ class KelolaTemaController extends Controller
             return response()->json(['status' => false, 'errors' => ['name' => ['Tahun Ajaran aktif belum diatur']]], 422);
         }
 
-        $tema = Tema::create([
-            'tahun_ajaran_id' => $taAktif->id,
-            'name'     => $request->name,
-            'semester' => $request->semester,
-            'status'   => 'draft',
-        ]);
+        DB::transaction(function() use ($request, $taAktif) {
+            $tema = Tema::create([
+                'tahun_ajaran_id' => $taAktif->id,
+                'name'     => $request->name,
+                'semester' => $request->semester,
+                'status'   => 'draft',
+            ]);
 
-        foreach ($request->sub_tema as $st) {
-            if (!empty(trim($st['name']))) {
-                SubTema::create([
-                    'tema_id'   => $tema->id,
-                    'name'      => trim($st['name']),
-                    'minggu_ke' => $st['minggu_ke'],
-                    'status'    => 'draft',
-                ]);
+            foreach ($request->sub_tema as $st) {
+                if (!empty(trim($st['name']))) {
+                    SubTema::create([
+                        'tema_id'   => $tema->id,
+                        'name'      => trim($st['name']),
+                        'minggu_ke' => $st['minggu_ke'],
+                        'status'    => 'draft',
+                    ]);
+                }
             }
-        }
 
-        $taAktif = \App\Models\TahunAjaran::getActive();
-        if ($taAktif) {
-            \App\Models\Rppm::syncDraftsForAllGurus($taAktif->id);
-        }
+            if ($taAktif) {
+                \App\Models\Rppm::syncDraftsForAllGurus($taAktif->id);
+            }
+        });
 
         return response()->json([
             'status'  => true,
@@ -83,15 +85,17 @@ class KelolaTemaController extends Controller
     public function destroy(int $id)
     {
         $tema = Tema::findOrFail($id);
-        // hapus semua Rppm dari setiap subtema tersebut
-        foreach ($tema->subTemas as $st) {
-            $rppms = \App\Models\Rppm::where('sub_tema_id', $st->id)->get();
-            foreach ($rppms as $rppm) {
-                \App\Models\LaporanRpp::where('rppm_id', $rppm->id)->delete();
-                $rppm->delete();
+        DB::transaction(function() use ($tema) {
+            // hapus semua Rppm dari setiap subtema tersebut
+            foreach ($tema->subTemas as $st) {
+                $rppms = \App\Models\Rppm::where('sub_tema_id', $st->id)->get();
+                foreach ($rppms as $rppm) {
+                    \App\Models\LaporanRpp::where('rppm_id', $rppm->id)->delete();
+                    $rppm->delete();
+                }
             }
-        }
-        $tema->delete();
+            $tema->delete();
+        });
 
         return response()->json([
             'status'  => true,
@@ -132,7 +136,7 @@ class KelolaTemaController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
-                'errors' => ['name' => ['Terjadi kesalahan server: ' . $e->getMessage() . ' di ' . $e->getFile() . ':' . $e->getLine()]]
+                'errors' => ['name' => ['Terjadi kesalahan server saat menyimpan data.']]
             ], 500);
         }
     }
@@ -173,7 +177,7 @@ class KelolaTemaController extends Controller
 
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:100|unique:sub_tema,name,NULL,id,tema_id,' . $temaId,
-            'minggu_ke' => 'required|integer|min:1',
+            'minggu_ke' => 'required|integer|min:1|max:17',
         ], [
             'name.required' => 'Nama sub tema wajib diisi.',
             'name.unique'   => 'Sub tema sudah ada di tema ini.',
@@ -208,14 +212,15 @@ class KelolaTemaController extends Controller
     public function destroySubTema(int $id)
     {
         $subTema = SubTema::findOrFail($id);
-        
-        $rppms = \App\Models\Rppm::where('sub_tema_id', $subTema->id)->get();
-        foreach ($rppms as $rppm) {
-            \App\Models\LaporanRpp::where('rppm_id', $rppm->id)->delete();
-            $rppm->delete();
-        }
-        
-        $subTema->delete();
+        DB::transaction(function() use ($subTema) {
+            $rppms = \App\Models\Rppm::where('sub_tema_id', $subTema->id)->get();
+            foreach ($rppms as $rppm) {
+                \App\Models\LaporanRpp::where('rppm_id', $rppm->id)->delete();
+                $rppm->delete();
+            }
+            
+            $subTema->delete();
+        });
 
         return response()->json([
             'status'  => true,
@@ -230,7 +235,7 @@ class KelolaTemaController extends Controller
 
             $rules = [
                 'name' => 'required|string|max:100|unique:sub_tema,name,' . $id . ',id,tema_id,' . $subTema->tema_id,
-                'minggu_ke' => 'required|integer|min:1',
+                'minggu_ke' => 'required|integer|min:1|max:17',
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -248,6 +253,8 @@ class KelolaTemaController extends Controller
                 'edited_by' => Auth::id(),
                 'status' => 'draft',
             ]);
+
+            \App\Models\Rppm::where('sub_tema_id', $subTema->id)->update(['minggu_ke' => $request->minggu_ke]);
 
 
 

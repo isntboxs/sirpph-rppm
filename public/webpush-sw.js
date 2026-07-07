@@ -31,6 +31,7 @@ self.addEventListener('push', function(event) {
             const data = event.data.json();
             title = data.title || title;
             options.body = data.body || options.body;
+            options.icon = data.icon || '/logo_baru.png';
             options.data = data.data || null;
         } catch (e) {
             options.body = event.data.text() || options.body;

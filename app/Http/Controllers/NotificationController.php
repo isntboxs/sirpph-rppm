@@ -24,8 +24,8 @@ class NotificationController extends Controller
                 
                 return [
                     'id'       => $n->id,
-                    'judul'    => $n->data['title'] ?? 'Notifikasi',
-                    'pesan'    => $n->data['message'] ?? '',
+                    'judul'    => $n->data['judul'] ?? 'Notifikasi',
+                    'pesan'    => $n->data['pesan'] ?? '',
                     'url'      => $url,
                     'icon'     => $n->data['icon'] ?? '',
                     'dibaca'   => !is_null($n->read_at),
@@ -60,8 +60,7 @@ class NotificationController extends Controller
 
     public function webPush(Request $request)
     {
-        \Illuminate\Support\Facades\Log::info('WebPush endpoint hit', $request->all());
-        
+        // WebPush endpoint hit
         Auth::user()->updatePushSubscription(
             $request->endpoint,
             $request->keys['p256dh'],

@@ -28,6 +28,8 @@ class CetakController extends Controller
             403
         );
 
+        abort_if($rppm->status !== 'disetujui', 403, 'RPPM belum disetujui.');
+
         $pdf = Pdf::loadView('pages.rppm.pdf', compact('rppm'));
         $filename = 'RPP_Mingguan_' . ($rppm->guru?->name ?? 'Guru') . '_Minggu_' . ($rppm->subTema?->minggu_ke ?? '') . '_' . time() . '.pdf';
         
