@@ -34,21 +34,18 @@
 
                             <td>
                                 @if ($user->role == 'admin')
-                                    ⚙️ Admin
+                                    Admin
                                 @elseif($user->role == 'kepala')
-                                    👑 Kepala
+                                    Kepala Sekolah
                                 @elseif($user->role == 'guru')
-                                    🧑‍🏫 Guru
-                                @elseif($user->role == 'ortu')
-                                    👨‍👩‍👧 Orang Tua
+                                    Guru
                                 @endif
                             </td>
 
                             <td>
                                 @if ($user->isGuru())
                                     {{ $user->kelas->name ?? '-' }}
-                                @elseif($user->isOrtu())
-                                    {{ $user->siswas->pluck('name')->join(', ') }}
+
                                 @else
                                     -
                                 @endif
@@ -63,15 +60,13 @@
                             </td>
 
                             <td class="fl g8">
-                                <button class="btn bo bxs btn-edit" data-id="{{ $user->id }}">✏️</button>
+                                <button class="btn bo bxs btn-edit" data-id="{{ $user->id }}">Edit</button>
 
                                 @if (!$user->isAdmin())
                                     @if ($user->isActive())
-                                        <button class="btn bd bxs btn-active" data-id="{{ $user->id }}"
-                                            data-com="del">🚫</button>
+                                        <button class="btn bd bxs btn-delete" data-id="{{ $user->id }}" data-com="del">Hapus Pengguna</button>
                                     @else
-                                        <button class="btn bd bxs btn-active" data-id="{{ $user->id }}"
-                                            data-com="act">✅</button>
+                                        <button class="btn bp bxs btn-delete" data-id="{{ $user->id }}" data-com="act">Aktifkan</button>
                                     @endif
                                 @endif
                             </td>
@@ -104,25 +99,25 @@
                     <div class="ff"><label>Role</label>
                         <select id="role" name="role" required>
                             <option value="">-- Pilih Role --</option>
-                            <option value="guru">Guru</option>
-                            <option value="ortu">Orang Tua</option>
+                            @foreach($roles as $r)
+                                <option value="{{ $r->id }}">{{ $r->name }}</option>
+                            @endforeach
                         </select>
                     </div>
                 </div>
                 <div class="fr c2" style="display: none">
                     <div class="ff"><label>Kelas</label>
                         <select id="kelas" name="kelas">
+                            <option value="">-- Pilih Kelas --</option>
+                            @foreach($kelas as $k)
+                                <option value="{{ $k->id }}">{{ $k->name }}</option>
+                            @endforeach
                         </select>
                     </div>
                     <div class="ff"><label>No. HP</label><input id="no_telp" name="no_telp" placeholder="08xx" />
                     </div>
                 </div>
-                <div class="fr" style="display: none">
-                    <div class="ff"><label>Anak Yang Dipantau</label>
-                        <select id="siswa_dipantau" name="siswa_dipantau[]" multiple>
-                        </select>
-                    </div>
-                </div>
+
             </div>
             <div class="mf">
                 <button id="btn-save" class="btn bp">💾 Simpan</button>
@@ -138,6 +133,7 @@
                 $('#role').trigger('change');
                 $('#btn-save').removeData('id');
                 $('#btn-save').text('Simpan');
+                $('#mUser .mt2').text('Tambah Pengguna');
 
                 $('#role').val('').trigger('change');
             });
@@ -147,43 +143,44 @@
 
                 $('#mUser').addClass('on');
                 $('#btn-save').text('Update');
+                $('#mUser .mt2').text('Edit Pengguna');
 
                 loadUser(id);
             });
 
-            $('.btn-active').on('click', function() {
+            $('.btn-delete').on('click', function() {
                 let id = $(this).data('id');
                 let command = $(this).data('com');
+                let actionText = command === 'del' ? 'menghapus' : 'mengaktifkan';
 
-                $.ajax({
-                    url: `/kelola-pengguna/${id}`,
-                    type: 'DELETE',
-                    data: {
-                        command: command
-                    },
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    success: function(res) {
-                        location.reload();
-                        showToast(res.msg);
-                    },
-                    error: function() {
-                        showToast("Gagal Menonaktifkan User");
-                    }
-                })
-            })
+                window.confirmAction(`Anda yakin untuk ${actionText} Pengguna ini?`, function() {
+                    $.ajax({
+                        url: `/kelola-pengguna/${id}`,
+                        type: 'DELETE',
+                        data: {
+                            command: command
+                        },
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function(res) {
+                            showToast(res.message || 'Berhasil diproses');
+                            setTimeout(() => location.reload(), 1000);
+                        },
+                        error: function() {
+                            showToast(`Gagal ${actionText} User`);
+                        }
+                    });
+                });
+            });
 
             // Trigger on role change different field
             $('#role').on('change', function() {
                 let roleVal = $(this).val();
                 if (roleVal === 'guru') {
-                    loadKelas();
                     $('#siswa_dipantau').closest('.fr').hide();
                     $('#kelas').closest('.fr').show();
-                } else if (roleVal === 'ortu') {
-                    loadSiswa();
-                    $('#siswa_dipantau').closest('.fr').show();
+                } else {
                     $('#kelas').closest('.fr').hide();
                 }
             })
@@ -197,12 +194,12 @@
                 $('#kelas').val('').trigger('change');
                 $('#no_telp').val('');
 
-                $('#siswa_dipantau').val([]).trigger('change');
+
 
                 $('#btn-save').removeData('id');
 
                 $('#kelas').closest('.fr').hide();
-                $('#siswa_dipantau').closest('.fr').hide();
+
             });
 
             $('#btn-save').on('click', function() {
@@ -216,7 +213,7 @@
                     role: $('#role').val(),
                     kelas: $('#kelas').val(),
                     no_telp: $('#no_telp').val(),
-                    siswa_dipantau: $('#siswa_dipantau').val() || [],
+
                 };
 
                 if ($('#password').val()) {
@@ -238,8 +235,13 @@
                         showToast(res.msg);
                         location.reload();
                     },
-                    error: function() {
-                        showToast(id ? "Gagal Update User" : "Gagal Menambahkan User");
+                    error: function(xhr) {
+                        let errorMsg = id ? "Gagal Update User" : "Gagal Menambahkan User";
+                        if (xhr.status === 422 && xhr.responseJSON && xhr.responseJSON.errors) {
+                            let errors = Object.values(xhr.responseJSON.errors).flat();
+                            errorMsg = errors[0];
+                        }
+                        showToast(errorMsg);
                     }
                 })
             })
@@ -247,88 +249,29 @@
     </script>
 
     <script>
-        function loadKelas(user = null) {
-            $.ajax({
-                url: '{{ route('kelas.data') }}',
-                type: 'GET',
-                success: function(res) {
-                    let select = $('#kelas');
-                    select.empty();
-
-                    select.append('<option value="">-- Pilih Kelas --</option>');
-
-                    res.forEach(kelas => {
-                        let isSelected = user && user.kelas_id == kelas.id ? 'selected' : '';
-                        select.append(
-                            `<option value="${kelas.id}" ${isSelected}>${kelas.name}</option>`)
-                    });
-                },
-                error: function() {
-                    showToast("Gagal mendapatkan Data Kelas");
-                }
-            })
-        }
-
-        function loadSiswa(user = null) {
-            $.ajax({
-                url: '{{ route('siswa.data') }}',
-                type: 'GET',
-                data: {
-                    user_id: user ? user.id : null,
-                },
-                success: function(res) {
-                    let select = $('#siswa_dipantau');
-                    select.empty();
-
-                    select.append('<option value="">-- Pilih Siswa --</option>');
-
-                    res.forEach(siswa => {
-                        let isSelected = user && siswa.ortu_id == user.id ? 'selected' : '';
-                        select.append(
-                            `<option value="${siswa.id}" ${isSelected}>${siswa.name}</option>`)
-                    });
-                },
-                error: function() {
-                    showToast("Gagal mendapatkan Data Siswa");
-                }
-            })
-        }
-
         function loadUser(id) {
             $.ajax({
                 url: `/kelola-pengguna/edit/${id}`,
                 type: 'GET',
                 success: function(res) {
-
                     let user = res.user;
-
                     $('#name').val(user.name);
                     $('#username').val(user.username);
+                    $('#role').val(user.role).trigger('change');
                     $('#no_telp').val(user.no_telp);
-
-                    $('#role').val(user.role);
-
+                    
                     if (user.role === 'guru') {
+                        $('#kelas').val(user.kelas_id);
                         $('#kelas').closest('.fr').show();
-                        $('#no_telp').closest('.fr').show();
-
-                        $('#no_telp').empty();
-                        $('#no_telp').val(user.no_telp);
-
-                        loadKelas(user)
+                        $('#siswa_dipantau').closest('.fr').hide();
                     }
-
-                    if (user.role === 'ortu') {
-                        $('#siswa_dipantau').closest('.fr').show();
-                        $('#siswa_dipantau').empty();
-
-                        loadSiswa(user);
-                    }
-
+                    
                     $('#btn-save').data('id', user.id);
-                    $('#btn-save').text('Update');
+                },
+                error: function() {
+                    showToast("Gagal mengambil data user");
                 }
-            });
+            })
         }
     </script>
 @endpush

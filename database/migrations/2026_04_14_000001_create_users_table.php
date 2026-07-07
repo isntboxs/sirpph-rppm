@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('name', 100);
             $table->string('username', 50)->unique();
             $table->string('password', 255);
-            $table->enum('role', ['admin', 'kepala', 'guru', 'ortu']);
+            $table->enum('role', ['admin', 'kepala', 'guru']);
             $table->tinyInteger('active')->default(1);
             $table->string('no_telp', 20)->nullable();
             $table->rememberToken();

@@ -11,12 +11,6 @@ return new class extends Migration
         Schema::create('siswa', function (Blueprint $table) {
             $table->id();
             $table->unsignedInteger('kelas_id');
-            // $table->unsignedInteger('ortu_id')->nullable();
-            $table->foreignId('ortu_id')
-                ->nullable()
-                ->constrained('users')
-                ->cascadeOnUpdate()
-                ->nullOnDelete();
             $table->string('name', 100);
             $table->date('tanggal_lahir');
             $table->enum('jenis_kelamin', ['L', 'P']);

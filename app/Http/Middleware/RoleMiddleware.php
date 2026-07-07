@@ -11,41 +11,31 @@ class RoleMiddleware
     protected array $roleRoutes = [
         'admin' => [
             'kelola_pengguna',
-            'data_siswa',
             'tahun_ajaran',
             'data_sekolah',
             'kelola_tema',
-            'master_bentuk_alat',
-            'prosem',
             'kelas',
-            'siswa',
+            'rppm',
         ],
         'kepala' => [
             'validasi_rppm',
-            'validasi_rpph',
-            'validasi_kegiatan',
+            'validasi_laporan',
+            'validasi_tema',
             'monitoring_guru',
-            'validasi_prosem',
             'badge',
             'cetak',
             'notifikasi',
+            'rppm.show',
+            'laporan_rpp.show',
         ],
         'guru' => [
-            'kumpulan_kegiatan',
             'rppm',
-            'rpph',
-            'portofolio_siswa',
-            'analisis_aspek',
+            'laporan_rpp',
+            'kelola_tema',
             'cetak',
             'notifikasi',
         ],
-        'ortu' => [
-            'ortu_rppm',
-            'ortu_rpph',
-            'ortu_porto',
-            'cetak',
-            'notifikasi',
-        ],
+
     ];
 
     // Route yang bisa diakses semua role
