@@ -4,112 +4,129 @@
 @section('page-subtitle', ($sekolah->name ?? '-') . ' - ' . ($taAktif?->name ?? '-'))
 
 @section('content')
+<style>
+@keyframes pulse-red {
+    0% { opacity: 1; }
+    50% { opacity: 0.3; }
+    100% { opacity: 1; }
+}
+.pulse-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background-color: #ef4444;
+    border-radius: 50%;
+    margin-right: 5px;
+    animation: pulse-red 2s infinite ease-in-out;
+}
+.stat-box {
+    background: var(--white);
+    border: 1px solid var(--g2);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: var(--sh);
+}
+.stat-title {
+    font-size: 14px;
+    color: var(--txt2);
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+.stat-value {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--txt);
+    margin-bottom: 10px;
+}
+.stat-pending {
+    font-size: 12px;
+    color: #ef4444;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+.stat-clickable {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.stat-clickable:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+</style>
 
-    <div class="sg mb16">
-        <div class="sc">
-            <div class="sico or">⏳</div>
-            <div>
-                <div class="sv">{{ $stats['rppm_menunggu'] }}</div>
-                <div class="sl">RPPM Menunggu</div>
-            </div>
-        </div>
-        <div class="sc">
-            <div class="sico bl">📄</div>
-            <div>
-                <div class="sv">{{ $stats['rpph_menunggu'] }}</div>
-                <div class="sl">RPPH Menunggu</div>
-            </div>
-        </div>
-        <div class="sc">
-            <div class="sico pu">🗂️</div>
-            <div>
-                <div class="sv">{{ $stats['kegiatan_menunggu'] }}</div>
-                <div class="sl">Kegiatan Menunggu</div>
-            </div>
-        </div>
-        <div class="sc">
-            <div class="sico pk" style="background:#fce7f3">🔒</div>
-            <div>
-                <div class="sv">{{ $stats['kegiatan_terkunci'] }}</div>
-                <div class="sl">Kegiatan Terkunci</div>
-            </div>
-        </div>
-        <div class="sc">
-            <div class="sico gr">✅</div>
-            <div>
-                <div class="sv">{{ $stats['rppm_disetujui'] }}</div>
-                <div class="sl">RPPM Disetujui</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="g2" style="gap:14px;align-items:start">
-
-        {{-- RPPM Perlu Validasi --}}
-        <div class="card">
-            <div class="ch mb12">
-                <div class="ct">📋 RPPM Perlu Validasi</div>
-                <a href="{{ route('validasi_rppm') }}" class="btn bp bsm">Lihat Semua</a>
-            </div>
-
-            @forelse ($rppmMenunggu as $rppm)
-                <div class="rc2 mb8">
-                    <div class="rh">
-                        <div>
-                            <div class="rw">
-                                Mgg ke-{{ $rppm->minggu_ke }} • {{ $rppm->guru->name }}
-                            </div>
-                            <div class="rn">{{ $rppm->subTema->tema->name }}</div>
-                            <div class="rs">{{ $rppm->subTema->name }}</div>
-                        </div>
-                        <span class="bdg bpnd">⏳ Menunggu</span>
-                    </div>
+    <div class="g4 mb16" style="gap:16px; display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+        
+        {{-- RPP --}}
+        @if($stats['rpp']['pending'] > 0)
+        <a href="{{ route('validasi_rppm') }}" class="stat-box stat-clickable" style="text-decoration:none;">
+        @else
+        <div class="stat-box">
+        @endif
+            <div class="stat-title">Total RPP</div>
+            <div class="stat-value">{{ $stats['rpp']['total'] }} RPP</div>
+            @if($stats['rpp']['pending'] > 0)
+                <div class="stat-pending mb4">
+                    <span class="pulse-dot"></span> {{ $stats['rpp']['pending'] }} RPP Menunggu Validasi
                 </div>
-            @empty
-                <div class="emp" style="padding:24px 0">
-                    <div class="ei" style="font-size:28px">✅</div>
-                    <div class="fs11 tc2">Tidak ada RPPM yang menunggu</div>
-                </div>
-            @endforelse
-
-            @if ($rppmMenunggu->hasPages())
-                {{ $rppmMenunggu->links() }}
+                <div style="font-size:11px; color:var(--blue); font-weight:600;">👉 Klik untuk tinjau</div>
+            @else
+                <div style="font-size:12px; color:var(--g6)">Semua RPP tervalidasi</div>
             @endif
-        </div>
+        @if($stats['rpp']['pending'] > 0) </a> @else </div> @endif
 
-        <div class="card">
-            <div class="ch mb12">
-                <div class="ct">🔒 Kegiatan Terkunci ({{ $kegiatanTerkunci->count() }})</div>
-                <a href="{{ route('validasi_kegiatan') }}" class="btn bp bsm">Lihat Semua</a>
-            </div>
+        {{-- Laporan --}}
+        @if($stats['laporan']['pending'] > 0)
+        <a href="{{ route('validasi_laporan') }}" class="stat-box stat-clickable" style="text-decoration:none;">
+        @else
+        <div class="stat-box">
+        @endif
+            <div class="stat-title">Total Laporan RPP</div>
+            <div class="stat-value">{{ $stats['laporan']['total'] }} Laporan</div>
+            @if($stats['laporan']['pending'] > 0)
+                <div class="stat-pending mb4">
+                    <span class="pulse-dot"></span> {{ $stats['laporan']['pending'] }} Laporan Menunggu Validasi
+                </div>
+                <div style="font-size:11px; color:var(--blue); font-weight:600;">👉 Klik untuk tinjau</div>
+            @else
+                <div style="font-size:12px; color:var(--g6)">Semua Laporan tervalidasi</div>
+            @endif
+        @if($stats['laporan']['pending'] > 0) </a> @else </div> @endif
 
-            @forelse ($kegiatanTerkunci as $kegiatan)
-                <div class="kc lck mb8">
-                    <div class="fl jb ic mb4">
-                        <div class="kn" style="font-size:12.5px">
-                            🔒 {{ $kegiatan->name }}
-                        </div>
-                        <span class="bdg blk">Terkunci</span>
-                    </div>
-                    <div class="fs11 tc2 mb4">
-                        📚 {{ $kegiatan->tema->name }}
-                    </div>
-                    <div class="fs11 mb4" style="color:var(--red)">
-                        📅 Dipakai di: {{ ($tahunPerKegiatan[$kegiatan->id] ?? collect())->join(', ') }}
-                    </div>
-                    <div class="al ali" style="font-size:11px;padding:6px 10px">
-                        ℹ️ Kegiatan terkunci karena sudah dipakai di
-                        <strong>{{ $kegiatan->jumlah_tahun_dipakai }} tahun ajaran berbeda</strong>.
-                        Guru perlu membuat kegiatan baru.
-                    </div>
+        {{-- Tema --}}
+        @if($stats['tema']['pending'] > 0)
+        <a href="{{ route('validasi_tema') }}" class="stat-box stat-clickable" style="text-decoration:none;">
+        @else
+        <div class="stat-box">
+        @endif
+            <div class="stat-title">Total Tema</div>
+            <div class="stat-value">{{ $stats['tema']['total'] }} Tema</div>
+            @if($stats['tema']['pending'] > 0)
+                <div class="stat-pending mb4">
+                    <span class="pulse-dot"></span> {{ $stats['tema']['pending'] }} Tema Menunggu Validasi
                 </div>
-            @empty
-                <div class="emp" style="padding:24px 0">
-                    <div class="ei" style="font-size:28px">🎉</div>
-                    <div class="fs11 tc2">Tidak ada kegiatan yang terkunci</div>
+                <div style="font-size:11px; color:var(--blue); font-weight:600;">👉 Klik untuk tinjau</div>
+            @else
+                <div style="font-size:12px; color:var(--g6)">Semua Tema tervalidasi</div>
+            @endif
+        @if($stats['tema']['pending'] > 0) </a> @else </div> @endif
+
+        {{-- Sub Tema --}}
+        @if($stats['sub_tema']['pending'] > 0)
+        <a href="{{ route('validasi_tema') }}" class="stat-box stat-clickable" style="text-decoration:none;">
+        @else
+        <div class="stat-box">
+        @endif
+            <div class="stat-title">Total Sub Tema</div>
+            <div class="stat-value">{{ $stats['sub_tema']['total'] }} Sub Tema</div>
+            @if($stats['sub_tema']['pending'] > 0)
+                <div class="stat-pending mb4">
+                    <span class="pulse-dot"></span> {{ $stats['sub_tema']['pending'] }} Sub Tema Menunggu Validasi
                 </div>
-            @endforelse
-        </div>
+                <div style="font-size:11px; color:var(--blue); font-weight:600;">👉 Klik untuk tinjau</div>
+            @else
+                <div style="font-size:12px; color:var(--g6)">Semua Sub Tema tervalidasi</div>
+            @endif
+        @if($stats['sub_tema']['pending'] > 0) </a> @else </div> @endif
 
     </div>
 

@@ -476,34 +476,31 @@
             var id = $(this).data('id');
             var $row = $('#row-kegiatan-' + id);
 
-            // if (!confirm('Setujui kegiatan ini?')) return;
+            window.confirmAction('Setujui kegiatan ini?', function() {
+                $.ajax({
+                        url: '/validasi-kegiatan/' + id + '/setujui',
+                        type: 'PUT',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                    })
+                    .done(function(res) {
+                        $('#row-kegiatan-' + id).fadeOut(150, function() {
+                            $(this).remove();
+                        });
 
-            $.ajax({
-                    url: '/validasi-kegiatan/' + id + '/setujui',
-                    type: 'PUT',
-                    data: {
-                        _token: '{{ csrf_token() }}'
-                    },
-                })
-                .done(function(res) {
-                    $('#row-kegiatan-' + id).fadeOut(150, function() {
-                        $(this).remove();
+                        showToast(res.message);
+
+                        decrementBadgeCount('bdg-cnt-validasi-kegiatan');
+
+                        var $badge = $('.tabs .nbg').first();
+                        var count = parseInt($badge.text()) - 1;
+                        count <= 0 ? $badge.remove() : $badge.text(count);
+                    })
+                    .fail(function(xhr) {
+                        showToast('❌ ' + xhr.responseJSON.message);
                     });
-
-                    showToast(res.message);
-
-                    // setTimeout(function() {
-                    //     window.location.href = '{{ route('validasi_kegiatan') }}';
-                    // }, 800);
-                    decrementBadgeCount('bdg-cnt-validasi-kegiatan');
-
-                    var $badge = $('.tabs .nbg').first();
-                    var count = parseInt($badge.text()) - 1;
-                    count <= 0 ? $badge.remove() : $badge.text(count);
-                })
-                .fail(function(xhr) {
-                    showToast('❌ ' + xhr.responseJSON.message);
-                });
+            });
         });
 
         // $(document).on('click', '.btn-buka-tolak', function() {
@@ -521,34 +518,39 @@
         $(document).on('click', '.btn-tolak', function() {
             var id = $(this).data('id');
 
-            $.ajax({
-                    url: '/validasi-kegiatan/' + id + '/tolak',
-                    type: 'PUT',
-                    data: {
-                        // catatan: $('#inputCatatanTolak').val(),
-                        _token: '{{ csrf_token() }}',
-                    },
-                })
-                .done(function(res) {
-                    $('#row-kegiatan-' + id).fadeOut(150, function() {
-                        $(this).remove();
+            window.confirmAction('Tolak kegiatan ini?', function() {
+                $.ajax({
+                        url: '/validasi-kegiatan/' + id + '/tolak',
+                        type: 'PUT',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                        },
+                    })
+                    .done(function(res) {
+                        $('#row-kegiatan-' + id).fadeOut(150, function() {
+                            $(this).remove();
+                        });
+
+                        showToast(res.message);
+
+                        setTimeout(function() {
+                            window.location.href = '{{ route('validasi_kegiatan') }}';
+                        }, 800);
+                        decrementBadgeCount('bdg-cnt-validasi-kegiatan');
+
+                        var $badge = $('.tabs .nbg').first();
+                        var count = parseInt($badge.text()) - 1;
+                        count <= 0 ? $badge.remove() : $badge.text(count);
+                    })
+                    .fail(function(xhr) {
+                        var errors = xhr.responseJSON.errors;
+                        if (errors && errors.catatan) {
+                            $('#errorTolak').text(errors.catatan[0]).show();
+                        } else {
+                            showToast('❌ Gagal menolak kegiatan');
+                        }
                     });
-
-                    showToast(res.message);
-
-                    setTimeout(function() {
-                        window.location.href = '{{ route('validasi_kegiatan') }}';
-                    }, 800);
-                    decrementBadgeCount('bdg-cnt-validasi-kegiatan');
-
-                    var $badge = $('.tabs .nbg').first();
-                    var count = parseInt($badge.text()) - 1;
-                    count <= 0 ? $badge.remove() : $badge.text(count);
-                })
-                .fail(function(xhr) {
-                    var errors = xhr.responseJSON.errors;
-                    $('#errorTolak').text(errors.catatan[0]).show();
-                });
+            });
         });
 
         $(document).on('click', '.btn-extend-kegiatan', function() {

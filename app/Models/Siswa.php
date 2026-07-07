@@ -12,7 +12,6 @@ class Siswa extends Model
 
     protected $fillable = [
         'kelas_id',
-        'ortu_id',
         'name',
         'tanggal_lahir',
         'jenis_kelamin',
@@ -30,11 +29,6 @@ class Siswa extends Model
     public function portofolios()
     {
         return $this->hasMany(Portofolio::class);
-    }
-
-    public function ortu(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'ortu_id');
     }
 
     public function getUmurAttribute(): int
@@ -55,10 +49,5 @@ class Siswa extends Model
     public function scopeKelas($query, int $kelasId)
     {
         return $query->where('kelas_id', $kelasId);
-    }
-
-    public function scopeOrtu($query, int $ortuId)
-    {
-        return $query->where('ortu_id', $ortuId);
     }
 }
