@@ -25,7 +25,7 @@ class ValidasiTemaController extends Controller
         return view('pages.validasi_tema.index', compact('temaPending', 'taAktif'));
     }
 
-    public function setujuiTema(Request $request, $id)
+    public function setujuiTema($id)
     {
         $tema = Tema::findOrFail($id);
         $tema->update(['status' => 'disetujui']);
@@ -76,7 +76,7 @@ class ValidasiTemaController extends Controller
         ]);
     }
 
-    public function setujuiSubTema(Request $request, $id)
+    public function setujuiSubTema($id)
     {
         $subTema = SubTema::findOrFail($id);
         abort_if($subTema->tema->status !== 'disetujui', 422, 'Tema induk belum disetujui.');

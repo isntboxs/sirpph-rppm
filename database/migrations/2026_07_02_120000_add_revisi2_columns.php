@@ -19,7 +19,7 @@ return new class extends Migration
 
         Schema::create('laporan_rpp', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('guru_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('guru_id')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('rppm_id')->constrained('rppm')->onDelete('cascade');
             $table->date('tanggal')->nullable();
             $table->text('keterangan_singkat')->nullable();

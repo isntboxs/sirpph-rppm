@@ -47,16 +47,11 @@ class RppmController extends Controller
 
         if ($user->isAdmin()) {
             $gurus = User::guru()->active()->with('kelas')->get();
-            $rppmsGrouped = [];
-            foreach ($gurus as $g) {
-                if ($taAktif) {
-                    Rppm::syncDraftsForGuru($g->id, $taAktif->id);
-                }
-                $rppmsGrouped[$g->id] = Rppm::with(['subTema.tema', 'tahunAjaran'])
-                    ->where('guru_id', $g->id)
-                    ->where('tahun_ajaran_id', $taAktif?->id)
-                    ->get();
-            }
+            $allRppms = Rppm::with(['subTema.tema', 'tahunAjaran'])
+                ->whereIn('guru_id', $gurus->pluck('id'))
+                ->where('tahun_ajaran_id', $taAktif?->id)
+                ->get();
+            $rppmsGrouped = $allRppms->groupBy('guru_id');
             return view('pages.rppm.index', compact(
                 'gurus',
                 'rppmsGrouped',
@@ -180,6 +175,10 @@ class RppmController extends Controller
             abort_if($rppm->guru_id !== Auth::id(), 403);
         }
 
+        if ($rppm->status === 'disetujui' && !in_array($request->input('action'), ['ajukan', 'draft'])) {
+            return redirect()->route('rppm')->with('error', 'RPP sudah disetujui dan tidak dapat diubah tanpa diajukan ulang.');
+        }
+
         $request->validate([
             'tanggal_dibuat'  => 'required|date',
             'tujuan'          => 'nullable|string',
@@ -270,6 +269,13 @@ class RppmController extends Controller
     public function cetakPdf($id)
     {
         $rppm = Rppm::with(['guru', 'subTema.tema', 'tahunAjaran', 'laporanRpp'])->findOrFail($id);
+        
+        $user = Auth::user();
+        abort_if(
+            !in_array($user->role, ['admin', 'kepala'])
+            && $rppm->guru_id !== $user->id,
+            403
+        );
 
         $pdf = Pdf::loadView('pages.rppm.pdf', compact('rppm'));
         

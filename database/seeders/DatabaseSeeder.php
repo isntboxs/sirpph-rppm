@@ -12,6 +12,12 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+        \App\Models\Role::insert([
+            ['id' => 'admin', 'name' => 'Administrator'],
+            ['id' => 'kepala', 'name' => 'Kepala Sekolah'],
+            ['id' => 'guru', 'name' => 'Guru Kelas'],
+        ]);
+
         $admin = User::create([
             'name'     => 'Administrator',
             'username' => 'admin',
@@ -59,6 +65,9 @@ class DatabaseSeeder extends Seeder
             'name'    => 'Kelas B',
             'guru_id' => $guruB->id,
         ]);
+
+        Kelas::create(['name' => 'Kelas C']);
+        Kelas::create(['name' => 'Kelas D']);
 
         Siswa::create([
             'kelas_id'      => $kelasA->id,

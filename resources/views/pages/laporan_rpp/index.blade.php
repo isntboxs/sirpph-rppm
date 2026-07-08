@@ -89,11 +89,12 @@
                                     <td style="display:flex; gap:5px;">
                                         @if (in_array($laporan->status, ['draft', 'dikembalikan']))
                                             <a href="{{ route('laporan_rpp.show', $laporan->id) }}" class="btn bp bsm">✏️ Edit</a>
+                                            <button class="btn bo bsm btn-hapus" data-id="{{ $laporan->id }}">🗑️ Hapus</button>
                                         @else
                                             <a href="{{ route('laporan_rpp.show', $laporan->id) }}" class="btn bo bsm">👁️ Lihat</a>
                                         @endif
                                         @if ($laporan->status === 'disetujui')
-                                            <button class="btn bo bsm">🖨️ Cetak</button>
+                                            <button class="btn bo bsm" onclick="window.print()">🖨️ Cetak</button>
                                         @endif
                                     </td>
                                 </tr>

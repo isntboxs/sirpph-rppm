@@ -90,7 +90,15 @@ class KelolaTemaController extends Controller
             foreach ($tema->subTemas as $st) {
                 $rppms = \App\Models\Rppm::where('sub_tema_id', $st->id)->get();
                 foreach ($rppms as $rppm) {
-                    \App\Models\LaporanRpp::where('rppm_id', $rppm->id)->delete();
+                    $laporans = \App\Models\LaporanRpp::where('rppm_id', $rppm->id)->get();
+                    foreach ($laporans as $laporan) {
+                        $fotos = \App\Models\LaporanRppFoto::where('laporan_rpp_id', $laporan->id)->get();
+                        foreach ($fotos as $foto) {
+                            \Illuminate\Support\Facades\Storage::disk('public')->delete($foto->path);
+                        }
+                        \App\Models\LaporanRppFoto::where('laporan_rpp_id', $laporan->id)->delete();
+                        $laporan->delete();
+                    }
                     $rppm->delete();
                 }
             }

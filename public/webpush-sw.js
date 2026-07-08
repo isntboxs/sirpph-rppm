@@ -31,7 +31,7 @@ self.addEventListener('push', function(event) {
             const data = event.data.json();
             title = data.title || title;
             options.body = data.body || options.body;
-            options.icon = data.icon || '/logo_baru.png';
+            options.icon = data.icon || '/logo.jpeg';
             options.data = data.data || null;
         } catch (e) {
             options.body = event.data.text() || options.body;
@@ -47,7 +47,7 @@ self.addEventListener('notificationclick', function(event) {
 
     event.notification.close();
 
-    if (event.notification.data.url) {
+    if (event.notification.data && event.notification.data.url) {
         event.waitUntil(
             clients.openWindow(event.notification.data.url)
         );

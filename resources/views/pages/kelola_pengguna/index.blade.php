@@ -44,7 +44,7 @@
 
                             <td>
                                 @if ($user->isGuru())
-                                    {{ $user->kelas->name ?? '-' }}
+                                    {{ $user->kelas?->name ?? '-' }}
 
                                 @else
                                     -
@@ -178,7 +178,6 @@
             $('#role').on('change', function() {
                 let roleVal = $(this).val();
                 if (roleVal === 'guru') {
-                    $('#siswa_dipantau').closest('.fr').hide();
                     $('#kelas').closest('.fr').show();
                 } else {
                     $('#kelas').closest('.fr').hide();

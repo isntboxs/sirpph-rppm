@@ -56,7 +56,7 @@
                                                     {{ $rppm->status_label }}
                                                 </span>
                                                 @if ($rppm->status === 'dikembalikan')
-                                                    <span class="btn-catatan-kepala blink-warning" data-catatan="{{ htmlspecialchars($rppm->catatan_kepala) }}" title="Lihat Alasan Revisi">⚠️</span>
+                                                    <span class="btn-catatan-kepala blink-warning" data-catatan="{{ $rppm->catatan_kepala }}" title="Lihat Alasan Revisi">⚠️</span>
                                                 @endif
                                             </td>
                                             <td>
@@ -117,7 +117,7 @@
                                                     {{ $rppm->status_label }}
                                                 </span>
                                                 @if ($rppm->status === 'dikembalikan')
-                                                    <span class="btn-catatan-kepala blink-warning" data-catatan="{{ htmlspecialchars($rppm->catatan_kepala) }}" title="Lihat Alasan Revisi">⚠️</span>
+                                                    <span class="btn-catatan-kepala blink-warning" data-catatan="{{ $rppm->catatan_kepala }}" title="Lihat Alasan Revisi">⚠️</span>
                                                 @endif
                                             </td>
                                             <td>
@@ -206,7 +206,7 @@
             </div>
             @endif
             
-            <button class="btn bo" style="width:100%; justify-content:center;">Cetak Semua RPP</button>
+            <button class="btn bo" style="width:100%; justify-content:center;" onclick="window.print()">Cetak Semua RPP</button>
         </div>
     </div>
 

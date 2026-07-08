@@ -285,6 +285,10 @@
                     }
                 });
 
+                var $btn = $(this).find('button[type="submit"]');
+                var originalText = $btn.text();
+                $btn.prop('disabled', true).text('Menyimpan...');
+
                 var payload = {
                     name: $('#inputNamaTema').val(),
                     semester: $('#inputSemesterTema').val(),
@@ -300,8 +304,15 @@
                         location.reload();
                     })
                     .fail(function(xhr) {
-                        var errors = xhr.responseJSON.errors;
-                        var pesan = Object.values(errors).flat().join('<br>');
+                        $btn.prop('disabled', false).text(originalText);
+                        var pesan = 'Gagal menyimpan tema.';
+                        if (xhr.responseJSON) {
+                            if (xhr.responseJSON.errors) {
+                                pesan = Object.values(xhr.responseJSON.errors).flat().join('<br>');
+                            } else if (xhr.responseJSON.message) {
+                                pesan = xhr.responseJSON.message;
+                            }
+                        }
                         $('#errorTema').html(pesan).show();
                     });
             });

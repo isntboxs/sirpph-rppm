@@ -199,7 +199,7 @@
             <div class="rpp-group">
                 <label class="rpp-label">Nama Guru</label>
                 <input type="text" class="rpp-input readonly" value="{{ $rppm->guru->name ?? Auth::user()->name }}" readonly>
-                <input type="hidden" name="guru_id" value="{{ $rppm->guru_id }}">
+                <input type="hidden" name="guru_id" value="{{ $guruId }}">
             </div>
             <div class="rpp-group">
                 <label class="rpp-label">Kelas</label>
@@ -297,6 +297,4 @@
         </div>
     </form>
 </div>
-
-</script>
 @endsection

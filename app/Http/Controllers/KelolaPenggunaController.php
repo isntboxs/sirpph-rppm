@@ -169,22 +169,34 @@ class KelolaPenggunaController extends Controller
         }
     }
 
-    public function softDelete(Request $request, $id)
+    public function destroy(Request $request, $id)
     {
         try {
-            DB::transaction(function () use ($id) {
+            $user = User::findOrFail($id);
+
+            DB::transaction(function () use ($id, $user) {
                 // hapus ikatan guru di kelas (jadiin null)
                 Kelas::where('guru_id', $id)->update(['guru_id' => null]);
                 
+                // hapus foto laporan
+                $laporanIds = \App\Models\LaporanRpp::where('guru_id', $id)->pluck('id');
+                $fotos = \App\Models\LaporanRppFoto::whereIn('laporan_rpp_id', $laporanIds)->get();
+                foreach ($fotos as $f) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($f->path);
+                }
+                \App\Models\LaporanRppFoto::whereIn('laporan_rpp_id', $laporanIds)->delete();
+
                 // hapus data terkait laporan dan rppm
                 \App\Models\LaporanRpp::where('guru_id', $id)->delete();
                 \App\Models\Rppm::where('guru_id', $id)->delete();
                 
                 // hapus user-nya
-                User::where('id', $id)->delete();
+                $user->delete();
             });
             
             return response()->json(['message' => 'User berhasil dihapus permanen']);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['message' => 'User tidak ditemukan'], 404);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Gagal menghapus user: ' . $e->getMessage()], 500);
         }

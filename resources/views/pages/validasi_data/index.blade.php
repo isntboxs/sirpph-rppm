@@ -26,14 +26,14 @@
                 @forelse ($temaPending as $idx => $t)
                     <tr>
                         <td>{{ $idx + 1 }}</td>
-                        <td>{{ $t->nama ?? $t->name }}</td>
+                        <td>{{ $t->name }}</td>
                         <td>⏳ Menunggu</td>
                         <td>
                             <form action="{{ route('validasi_rppm.tema.setujui', $t->id) }}" method="POST" style="display:inline">
                                 @csrf @method('PUT')
                                 <button type="submit" class="btn bp bsm">Setujui</button>
                             </form>
-                            <form action="{{ route('validasi_rppm.tema.tolak', $t->id) }}" method="POST" style="display:inline">
+                            <form action="{{ route('validasi_rppm.tema.tolak', $t->id) }}" method="POST" style="display:inline" class="form-tolak">
                                 @csrf @method('PUT')
                                 <button type="submit" class="btn bd bsm">Tolak</button>
                             </form>
@@ -68,15 +68,15 @@
                 @forelse ($subTemaPending as $idx => $s)
                     <tr>
                         <td>{{ $idx + 1 }}</td>
-                        <td>{{ $s->tema->nama ?? $s->tema->name }}</td>
-                        <td>{{ $s->nama ?? $s->name }}</td>
+                        <td>{{ $s->tema->name }}</td>
+                        <td>{{ $s->name }}</td>
                         <td>⏳ Menunggu</td>
                         <td>
                             <form action="{{ route('validasi_rppm.sub_tema.setujui', $s->id) }}" method="POST" style="display:inline">
                                 @csrf @method('PUT')
                                 <button type="submit" class="btn bp bsm">Setujui</button>
                             </form>
-                            <form action="{{ route('validasi_rppm.sub_tema.tolak', $s->id) }}" method="POST" style="display:inline">
+                            <form action="{{ route('validasi_rppm.sub_tema.tolak', $s->id) }}" method="POST" style="display:inline" class="form-tolak">
                                 @csrf @method('PUT')
                                 <button type="submit" class="btn bd bsm">Tolak</button>
                             </form>
@@ -114,14 +114,14 @@
                         <td>{{ $idx + 1 }}</td>
                         <td>{{ $r->guru->name ?? '-' }}</td>
                         <td>{{ $r->minggu_ke }}</td>
-                        <td>{{ $r->subTema->nama ?? $r->subTema->name ?? '-' }}</td>
+                        <td>{{ $r->subTema->name ?? '-' }}</td>
                         <td>⏳ Menunggu</td>
                         <td>
                             <form action="{{ route('validasi_rppm.rppm.setujui', $r->id) }}" method="POST" style="display:inline">
                                 @csrf @method('PUT')
                                 <button type="submit" class="btn bp bsm">Setujui</button>
                             </form>
-                            <form action="{{ route('validasi_rppm.rppm.tolak', $r->id) }}" method="POST" style="display:inline">
+                            <form action="{{ route('validasi_rppm.rppm.tolak', $r->id) }}" method="POST" style="display:inline" class="form-tolak">
                                 @csrf @method('PUT')
                                 <button type="submit" class="btn bd bsm">Tolak</button>
                             </form>
@@ -137,3 +137,34 @@
     </div>
 </div>
 @endsection
+@push('scripts')
+<script>
+    $('.form-tolak').on('submit', function(e) {
+        e.preventDefault();
+        var form = this;
+        Swal.fire({
+            title: 'Tolak Pengajuan',
+            text: 'Masukkan catatan/alasan penolakan:',
+            input: 'textarea',
+            inputPlaceholder: 'Tulis catatan di sini...',
+            showCancelButton: true,
+            confirmButtonText: 'Submit Penolakan',
+            cancelButtonText: 'Batal',
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'Catatan tidak boleh kosong!'
+                }
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'catatan',
+                    value: result.value
+                }).appendTo(form);
+                form.submit();
+            }
+        });
+    });
+</script>
+@endpush

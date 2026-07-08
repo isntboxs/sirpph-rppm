@@ -9,7 +9,7 @@
             Selamat datang, {{ Auth::user()->name }}!
         </div>
         <div style="font-size: 14px; color: var(--g5); margin-top: 4px;">
-            Anda adalah Guru Kelas: <strong style="color: var(--p1);">{{ Auth::user()->kelas->name ?? 'Belum ada kelas' }}</strong>
+            Anda adalah Guru Kelas: <strong style="color: var(--p1);">{{ Auth::user()->kelas?->name ?? 'Belum ada kelas' }}</strong>
         </div>
     </div>
     <div class="sg mb16">

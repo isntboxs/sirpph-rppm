@@ -118,34 +118,58 @@ class Rppm extends Model
     public static function syncDraftsForGuru(int $guruId, int $taId)
     {
         $subTemas = SubTema::whereHas('tema', function ($q) use ($taId) {
-            $q->where('tahun_ajaran_id', $taId);
+            $q->where('tahun_ajaran_id', $taId)->where('status', 'disetujui');
         })->get();
 
+        if ($subTemas->isEmpty()) return;
+
+        $existingRppms = self::where('guru_id', $guruId)
+            ->where('tahun_ajaran_id', $taId)
+            ->pluck('sub_tema_id')
+            ->toArray();
+
+        $newRppmData = [];
+        $now = now()->toDateString();
+        $nowTime = now();
+
         foreach ($subTemas as $st) {
-            $rppm = self::firstOrCreate(
-                [
+            if (!in_array($st->id, $existingRppms)) {
+                $newRppmData[] = [
                     'guru_id' => $guruId,
                     'sub_tema_id' => $st->id,
                     'tahun_ajaran_id' => $taId,
-                ],
-                [
                     'minggu_ke' => $st->minggu_ke,
                     'status' => 'draft',
-                    'tanggal_dibuat' => now()->toDateString(),
-                ]
-            );
+                    'tanggal_dibuat' => $now,
+                    'created_at' => $nowTime,
+                    'updated_at' => $nowTime,
+                ];
+            }
+        }
 
-            // Buat laporan RPP draft jika belum ada
-            LaporanRpp::firstOrCreate(
-                [
+        if (!empty($newRppmData)) {
+            self::insert($newRppmData);
+        }
+
+        $rppms = self::where('guru_id', $guruId)->where('tahun_ajaran_id', $taId)->get();
+        $existingLaporans = LaporanRpp::where('guru_id', $guruId)->pluck('rppm_id')->toArray();
+        $newLaporanData = [];
+
+        foreach ($rppms as $rppm) {
+            if (!in_array($rppm->id, $existingLaporans)) {
+                $newLaporanData[] = [
                     'rppm_id' => $rppm->id,
                     'guru_id' => $guruId,
-                ],
-                [
-                    'tanggal' => now()->toDateString(),
+                    'tanggal' => $now,
                     'status' => 'draft',
-                ]
-            );
+                    'created_at' => $nowTime,
+                    'updated_at' => $nowTime,
+                ];
+            }
+        }
+
+        if (!empty($newLaporanData)) {
+            LaporanRpp::insert($newLaporanData);
         }
     }
 

@@ -37,6 +37,7 @@
         <link rel="stylesheet"
             href="{{ asset('assets/custom-app.css') }}?v={{ filemtime(public_path('assets/custom-app.css')) }}">
     @endif
+    @stack('styles')
 </head>
 
 {{-- Jquery --}}

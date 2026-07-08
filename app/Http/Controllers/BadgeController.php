@@ -18,7 +18,9 @@ class BadgeController extends Controller
         return response()->json([
             'rppm_count'     => Rppm::pendingValidasi()
                 ->where('tahun_ajaran_id', $taAktif?->id)
-                ->count()
+                ->count(),
+            'rpph_count'     => 0,
+            'kegiatan_count' => 0
         ]);
     }
 }

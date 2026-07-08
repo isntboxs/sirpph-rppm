@@ -25,10 +25,10 @@ class ValidasiDataController extends Controller
     {
         $rppm = Rppm::findOrFail($id);
         
-        if ($rppm->status === 'dikembalikan') {
+        if ($rppm->status !== 'pending') {
             return response()->json([
                 'status' => false,
-                'message' => 'RPP sudah dikembalikan untuk revisi.'
+                'message' => 'Hanya RPP berstatus pending yang dapat diproses.'
             ], 422);
         }
         
@@ -53,6 +53,13 @@ class ValidasiDataController extends Controller
         ]);
 
         $rppm = Rppm::findOrFail($id);
+        
+        if ($rppm->status !== 'pending') {
+            return response()->json([
+                'status' => false,
+                'message' => 'Hanya RPP berstatus pending yang dapat diproses.'
+            ], 422);
+        }
         $rppm->update([
             'status' => 'dikembalikan',
             'catatan_kepala' => $request->catatan

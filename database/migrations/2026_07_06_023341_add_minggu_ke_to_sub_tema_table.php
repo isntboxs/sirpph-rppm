@@ -14,6 +14,17 @@ return new class extends Migration
         Schema::table('sub_tema', function (Blueprint $table) {
             $table->integer('minggu_ke')->default(1)->after('name');
         });
+
+        // Backfill minggu_ke
+        $temas = \Illuminate\Support\Facades\DB::table('sub_tema')->select('tema_id')->distinct()->pluck('tema_id');
+        foreach ($temas as $temaId) {
+            $subTemas = \Illuminate\Support\Facades\DB::table('sub_tema')->where('tema_id', $temaId)->orderBy('id')->get();
+            $mingguKe = 1;
+            foreach ($subTemas as $st) {
+                \Illuminate\Support\Facades\DB::table('sub_tema')->where('id', $st->id)->update(['minggu_ke' => $mingguKe]);
+                $mingguKe++;
+            }
+        }
     }
 
     /**

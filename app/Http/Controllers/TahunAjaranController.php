@@ -10,7 +10,7 @@ class TahunAjaranController extends Controller
 {
     public function index()
     {
-        $datas = TahunAjaran::latest()->get();
+        $datas = TahunAjaran::orderByDesc('active')->latest()->get();
 
         return view('pages.tahun_ajaran.index', compact('datas'));
     }

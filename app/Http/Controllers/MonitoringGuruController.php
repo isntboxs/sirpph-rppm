@@ -28,9 +28,7 @@ class MonitoringGuruController extends Controller
             ->get()
             ->groupBy('guru_id');
 
-        $totalMinggu = Rppm::where('tahun_ajaran_id', $taAktif?->id)
-            ->disetujui()
-            ->max('minggu_ke') ?? 17;
+        $totalMinggu = 17;
 
         $guruData = $gurus->map(function ($guru) use (
             $rppmStats, $totalMinggu

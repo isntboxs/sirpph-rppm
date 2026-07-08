@@ -74,6 +74,7 @@ class LaporanRppController extends Controller
             'keterangan_singkat' => 'required|string',
             'foto_bersama.*' => 'image|mimes:jpeg,png,jpg,gif|max:5120',
             'foto_karya.*' => 'image|mimes:jpeg,png,jpg,gif|max:5120',
+            'hapus_foto' => 'nullable|array',
         ]);
 
         $laporan->update([

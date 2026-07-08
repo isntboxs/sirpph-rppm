@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('tema', function (Blueprint $table) {
-            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->enum('status', ['draft', 'pending', 'disetujui', 'dikembalikan'])->default('draft');
         });
         Schema::table('sub_tema', function (Blueprint $table) {
-            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->enum('status', ['draft', 'pending', 'disetujui', 'dikembalikan'])->default('draft');
         });
     }
 
