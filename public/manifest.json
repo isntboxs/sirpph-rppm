@@ -1,0 +1,22 @@
+{
+    "name": "SipenaQi",
+    "short_name": "SipenaQi",
+    "description": "Sistem Informasi Penilaian Al-Quran dan RPP",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#ffffff",
+    "orientation": "portrait-primary",
+    "icons": [
+        {
+            "src": "/logo.jpeg",
+            "type": "image/jpeg",
+            "sizes": "192x192"
+        },
+        {
+            "src": "/logo.jpeg",
+            "type": "image/jpeg",
+            "sizes": "512x512"
+        }
+    ]
+}

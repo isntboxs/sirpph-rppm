@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Role;
 use App\Models\Kelas;
-use App\Models\Siswa;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -14,32 +14,28 @@ class KelolaPenggunaController extends Controller
 {
     public function index()
     {
-        $users = User::with(['kelas', 'siswas'])->get();
+        $users = User::with(['kelas'])->get();
+        $kelas = Kelas::all();
+        $roles = Role::all();
 
-        return view('pages.kelola_pengguna.index', compact('users'));
+        return view('pages.kelola_pengguna.index', compact('users', 'kelas', 'roles'));
     }
 
     public function store(Request $request)
     {
-        // dd($request->all());
         $rules = [
             'name'     => 'required|string|max:100',
             'username' => 'required|string|max:50|unique:users,username',
             'password' => 'required|string|min:6',
-            'role'     => 'required|in:guru,ortu',
-            'no_telp'    => 'nullable|string|max:20',
+            'role'     => 'required|exists:roles,id',
+            'no_telp'  => 'nullable|string|max:20',
         ];
 
-        // Rule if Guru
+        // kalo dia guru, wajib pilih kelas
         if ($request->role === 'guru') {
             $rules['kelas'] = 'required|exists:kelas,id';
         }
 
-        // Rule if Ortu
-        if ($request->role === 'ortu') {
-            $rules['siswa_dipantau'] = 'required|array|min:1';
-            $rules['siswa_dipantau.*'] = 'exists:siswa,id';
-        }
 
         $validator = Validator::make($request->all(), $rules);
 
@@ -52,7 +48,7 @@ class KelolaPenggunaController extends Controller
 
         try {
             DB::transaction(function () use ($request, &$user) {
-                // Create new User
+                // bikin user baru
                 $user_data = [
                     'name'     => $request->name,
                     'username' => $request->username,
@@ -64,17 +60,14 @@ class KelolaPenggunaController extends Controller
 
                 $user = User::create($user_data);
 
-                // Update kelas if role guru 
+                // set kelasnya kalo dia guru
                 if ($request->role === 'guru') {
+                    Kelas::where('guru_id', $user->id)->update(['guru_id' => null]);
                     Kelas::where('id', $request->kelas)
                         ->update(['guru_id' => $user->id]);
                 }
 
-                // Update siswa if role ortu 
-                if ($request->role === 'ortu') {
-                    Siswa::whereIn('id', $request->siswa_dipantau)
-                        ->update(['ortu_id' => $user->id]);
-                }
+
             });
 
             return response()->json([
@@ -105,19 +98,6 @@ class KelolaPenggunaController extends Controller
             ->where('users.id', $id)
             ->first();
 
-        // if ($user->role === 'ortu') {
-        //     $siswas = Siswa::select(
-        //         'id',
-        //         'name',
-        //         'ortu_id',
-        //     )
-        //         ->where(function ($query) use ($user) {
-        //             $query->where('ortu_id', $user->id)
-        //                 ->orWhereNull('ortu_id');
-        //         })
-        //         ->get();
-        // }
-
         return response()->json([
             'user' => $user,
         ]);
@@ -130,7 +110,7 @@ class KelolaPenggunaController extends Controller
         $rules = [
             'name'     => 'required|string|max:100',
             'username' => 'required|string|max:50|unique:users,username,' . $id,
-            'role'     => 'required|in:admin,kepala,guru,ortu',
+            'role'     => 'required|exists:roles,id',
             'no_telp'    => 'nullable|string|max:20',
         ];
 
@@ -142,10 +122,6 @@ class KelolaPenggunaController extends Controller
             $rules['kelas'] = 'required|exists:kelas,id';
         }
 
-        if ($request->role === 'ortu') {
-            $rules['siswa_dipantau'] = 'required|array|min:1';
-            $rules['siswa_dipantau.*'] = 'exists:siswa,id';
-        }
 
         $validator = Validator::make($request->all(), $rules);
 
@@ -172,20 +148,12 @@ class KelolaPenggunaController extends Controller
                 $user->update($data);
 
                 if ($request->role === 'guru') {
+                    Kelas::where('guru_id', $user->id)->update(['guru_id' => null]);
                     Kelas::where('id', $request->kelas)
                         ->update(['guru_id' => $user->id]);
                 }
 
-                if ($request->role === 'ortu') {
-                    Siswa::where('ortu_id', $user->id)
-                        ->whereNotIn('id', $request->siswa_dipantau)
-                        ->update(['ortu_id' => null]);
 
-                    if (!empty($request->siswa_dipantau)) {
-                        Siswa::whereIn('id', $request->siswa_dipantau)
-                            ->update(['ortu_id' => $user->id]);
-                    }
-                }
             });
 
             return response()->json([
@@ -201,13 +169,42 @@ class KelolaPenggunaController extends Controller
         }
     }
 
-    public function softDelete(Request $request, $id)
+    public function destroy(Request $request, $id)
     {
-        $command = $request->command == "del" ? 0 : 1;
+        try {
+            $user = User::findOrFail($id);
 
-        $user = User::findOrFail($id);
-        $user->update(['active' => $command]);
+            if ($request->command === 'activate') {
+                $user->active = 1;
+                $user->save();
+                return response()->json(['message' => 'User berhasil diaktifkan']);
+            }
 
-        return response()->json(['message' => 'User berhasil dinonaktifkan']);
+            DB::transaction(function () use ($id, $user) {
+                // hapus ikatan guru di kelas (jadiin null)
+                Kelas::where('guru_id', $id)->update(['guru_id' => null]);
+                
+                // hapus foto laporan
+                $laporanIds = \App\Models\LaporanRpp::where('guru_id', $id)->pluck('id');
+                $fotos = \App\Models\LaporanRppFoto::whereIn('laporan_rpp_id', $laporanIds)->get();
+                foreach ($fotos as $f) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($f->path);
+                }
+                \App\Models\LaporanRppFoto::whereIn('laporan_rpp_id', $laporanIds)->delete();
+
+                // hapus data terkait laporan dan rppm
+                \App\Models\LaporanRpp::where('guru_id', $id)->delete();
+                \App\Models\Rppm::where('guru_id', $id)->delete();
+                
+                // hapus user-nya
+                $user->delete();
+            });
+            
+            return response()->json(['message' => 'User berhasil dihapus permanen']);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['message' => 'User tidak ditemukan'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Gagal menghapus user: ' . $e->getMessage()], 500);
+        }
     }
 }

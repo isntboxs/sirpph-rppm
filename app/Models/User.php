@@ -57,10 +57,7 @@ class User extends Authenticatable
         return $this->role === 'guru';
     }
 
-    public function isOrtu(): bool
-    {
-        return $this->role === 'ortu';
-    }
+
 
     public function isActive(): bool
     {
@@ -72,10 +69,7 @@ class User extends Authenticatable
         return $this->hasOne(Kelas::class, 'guru_id');
     }
 
-    public function siswas(): HasMany
-    {
-        return $this->hasMany(Siswa::class, 'ortu_id');
-    }
+
 
     public function scopeAdmin($query)
     {
@@ -92,10 +86,7 @@ class User extends Authenticatable
         return $query->where('role', 'guru');
     }
 
-    public function scopeOrtu($query)
-    {
-        return $query->where('role', 'ortu');
-    }
+
 
     public function scopeActive($query)
     {
@@ -107,9 +98,8 @@ class User extends Authenticatable
         return match ($this->role) {
             'admin'  => 'Admin',
             'kepala' => 'Kepala Sekolah',
-            'guru'   => 'Guru',
-            'ortu'   => 'Orang Tua',
-            default  => 'Tidak Diketahui',
+            'guru'   => $this->kelas ? 'Guru ' . $this->kelas->name : 'Guru',
+            default  => 'Unknown',
         };
     }
 
@@ -119,7 +109,6 @@ class User extends Authenticatable
             'admin'  => 'ra',
             'kepala' => 'rk',
             'guru'   => 'rg',
-            'ortu'   => 'ro',
             default  => 'ro',
         };
     }

@@ -1,0 +1,34 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('tema', function (Blueprint $table) {
+            $table->enum('status', ['draft', 'pending', 'disetujui', 'dikembalikan'])->default('draft');
+        });
+        Schema::table('sub_tema', function (Blueprint $table) {
+            $table->enum('status', ['draft', 'pending', 'disetujui', 'dikembalikan'])->default('draft');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('tema', function (Blueprint $table) {
+            $table->dropColumn('status');
+        });
+        Schema::table('sub_tema', function (Blueprint $table) {
+            $table->dropColumn('status');
+        });
+    }
+};

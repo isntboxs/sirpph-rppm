@@ -21,49 +21,37 @@
         </div>
     </div>
     <nav class="sbn">
-        <div class="sns">Menu Utama</div>
+        <div class="sns">Navigasi Utama</div>
         <a class="ni" href="{{ route('beranda') }}">Beranda</a>
+        @if (Auth::user()->isAdmin())
+            <a class="ni" href="{{ route('kelola_pengguna') }}">Kelola Pengguna</a>
+        @endif
 
         {{-- Admin --}}
         @if (Auth::user()->isAdmin())
-            <a class="ni" href="{{ route('kelola_pengguna') }}">Kelola Pengguna</a>
-            <a class="ni" href="{{ route('data_siswa') }}">Data Siswa</a>
+            <div class="sns">Konten Sistem</div>
+            <a class="ni" href="{{ route('kelola_tema') }}">Tema & Subtema</a>
+            <a class="ni" href="{{ route('rppm') }}">Input RPP</a>
+
+            <div class="sns">Administrasi Sekolah</div>
             <a class="ni" href="{{ route('tahun_ajaran') }}">Tahun Ajaran</a>
             <a class="ni" href="{{ route('data_sekolah') }}">Data Sekolah</a>
-            <a class="ni" href="{{ route('kelola_tema') }}">Kelola Tema</a>
-            <a class="ni" href="{{ route('master_bentuk_alat') }}">Bentuk & Alat</a>
-            <a class="ni" href="{{ route('prosem') }}">Input Prosem</a>
         @endif
 
         {{-- Kepala Sekolah --}}
         @if (Auth::user()->isKepalaSekolah())
-            <div class="sns">Kepala Sekolah</div>
-            <a class="ni" href="{{ route('validasi_prosem') }}">Validasi PROSEM</a>
-            <a class="ni" href="{{ route('validasi_rppm') }}">Validasi RPPM <span class="nbg"
-                    id="bdg-cnt-validasi-rppm" hidden>0</span></a>
-            <a class="ni" href="{{ route('validasi_rpph') }}">Validasi RPPH <span class="nbg"
-                    id="bdg-cnt-validasi-rpph" hidden>0</span></a>
-            <a class="ni" href="{{ route('validasi_kegiatan') }}">Validasi Kegiatan
-                <span class="nbg" id="bdg-cnt-validasi-kegiatan" hidden>0</span></a>
-            <a class="ni" href="{{ route('monitoring_guru') }}">Monitoring Guru</a>
+            <div class="sns">Validasi Dokumen</div>
+            <a class="ni" href="{{ route('validasi_rppm') }}">Validasi RPP</a>
+            <a class="ni" href="{{ route('validasi_laporan') }}">Validasi Laporan RPP</a>
+            <a class="ni" href="{{ route('validasi_tema') }}">Validasi Tema & Subtema</a>
         @endif
 
         {{-- Guru --}}
         @if (Auth::user()->isGuru())
-            <div class="sns">Guru</div>
-            <a class="ni" href="{{ route('kumpulan_kegiatan') }}">Kumpulan Kegiatan</a>
-            <a class="ni" href="{{ route('rppm') }}">Buat & Kelola RPPM</a>
-            <a class="ni" href="{{ route('rpph') }}">Buat & Kelola RPPH</a>
-            <a class="ni" href="{{ route('portofolio_siswa') }}">Portofolio Siswa</a>
-            <a class="ni" href="{{ route('analisis_aspek') }}">Analisis Aspek</a>
-        @endif
-
-        {{-- Orang Tua --}}
-        @if (Auth::user()->isOrtu())
-            <div class="sns">Orang Tua</div>
-            <a class="ni" href="{{ route('ortu_rppm') }}">Lihat RPPM</a>
-            <a class="ni" href="{{ route('ortu_rpph') }}">Lihat RPPH</a>
-            <a class="ni" href="{{ route('ortu_porto') }}">Portofolio Anak</a>
+            <div class="sns">Pembelajaran</div>
+            <a class="ni" href="{{ route('rppm') }}">Buat RPP</a>
+            <a class="ni" href="{{ route('laporan_rpp') }}">Laporan RPP</a>
+            <a class="ni" href="{{ route('kelola_tema') }}">Tema & Subtema</a>
         @endif
     </nav>
     <div class="sbf">

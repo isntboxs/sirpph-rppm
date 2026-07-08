@@ -16,18 +16,22 @@ class Rppm extends Model
         'tahun_ajaran_id',
         'sub_tema_id',
         'minggu_ke',
-        'bulan',
-        'tahun',
-        'model_pembelajaran',
+        'tanggal_dibuat',
         'tujuan',
         'capaian',
+        'kegiatan_pembuka',
+        'kegiatan_inti',
+        'recalling',
+        'kegiatan_penutup',
+        'rencana_penilaian',
         'status',
-        'catatan_kepala',
+        'catatan_kepala'
     ];
 
     protected $casts = [
-        'bulan' => 'integer',
-        'tahun' => 'integer',
+        'tanggal_dibuat' => 'date',
+        'minggu_ke'      => 'integer',
+        'tahun_ajaran_id' => 'integer',
     ];
 
     public function guru(): BelongsTo
@@ -55,6 +59,10 @@ class Rppm extends Model
         return $this->hasMany(Rpph::class, 'rppm_id');
     }
 
+    public function laporanRpp()
+    {
+        return $this->hasOne(LaporanRpp::class, 'rppm_id');
+    }
     public function scopeDraft(Builder $q): Builder
     {
         return $q->where('status', 'draft');
@@ -85,42 +93,6 @@ class Rppm extends Model
         return $q->where('status', 'pending');
     }
 
-    public function getJumlahAspekAttribute(): int
-    {
-        return AspekPerkembangan::whereHas('kegiatans', function ($q) {
-            $q->whereHas('rppmKegiatans', function ($q2) {
-                $q2->where('rppm_id', $this->id);
-            });
-        })->count();
-    }
-
-    public function kegiatanPerHari(): array
-    {
-        $hari = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'];
-        $result = [];
-
-        foreach ($hari as $h) {
-            $result[$h] = $this->rppmKegiatans
-                ->where('hari', $h)
-                ->values();
-        }
-
-        return $result;
-    }
-
-    public function aspekTerstimulasi(): \Illuminate\Support\Collection
-    {
-        return $this->rppmKegiatans
-            ->flatMap(fn($rk) => $rk->kegiatan->aspeks)
-            ->unique('id');
-    }
-
-    public function aspekBelumTerstimulasi(): \Illuminate\Support\Collection
-    {
-        $sudahAda = $this->aspekTerstimulasi()->pluck('id');
-        return AspekPerkembangan::whereNotIn('id', $sudahAda)->get();
-    }
-
     public function getStatusLabelAttribute(): string
     {
         return match ($this->status) {
@@ -143,36 +115,69 @@ class Rppm extends Model
         };
     }
 
-    public function getBulanNamaAttribute(): string
+    public static function syncDraftsForGuru(int $guruId, int $taId)
     {
-        if (!$this->bulan) return '-';
+        $subTemas = SubTema::whereHas('tema', function ($q) use ($taId) {
+            $q->where('tahun_ajaran_id', $taId)->where('status', 'disetujui');
+        })->get();
 
-        $bulanList = [
-            1  => 'Januari',
-            2  => 'Februari',
-            3  => 'Maret',
-            4  => 'April',
-            5  => 'Mei',
-            6  => 'Juni',
-            7  => 'Juli',
-            8  => 'Agustus',
-            9  => 'September',
-            10 => 'Oktober',
-            11 => 'November',
-            12 => 'Desember',
-        ];
+        if ($subTemas->isEmpty()) return;
 
-        return $bulanList[$this->bulan] ?? '-';
+        $existingRppms = self::where('guru_id', $guruId)
+            ->where('tahun_ajaran_id', $taId)
+            ->pluck('sub_tema_id')
+            ->toArray();
+
+        $newRppmData = [];
+        $now = now()->toDateString();
+        $nowTime = now();
+
+        foreach ($subTemas as $st) {
+            if (!in_array($st->id, $existingRppms)) {
+                $newRppmData[] = [
+                    'guru_id' => $guruId,
+                    'sub_tema_id' => $st->id,
+                    'tahun_ajaran_id' => $taId,
+                    'minggu_ke' => $st->minggu_ke,
+                    'status' => 'draft',
+                    'tanggal_dibuat' => $now,
+                    'created_at' => $nowTime,
+                    'updated_at' => $nowTime,
+                ];
+            }
+        }
+
+        if (!empty($newRppmData)) {
+            self::insert($newRppmData);
+        }
+
+        $rppms = self::where('guru_id', $guruId)->where('tahun_ajaran_id', $taId)->get();
+        $existingLaporans = LaporanRpp::where('guru_id', $guruId)->pluck('rppm_id')->toArray();
+        $newLaporanData = [];
+
+        foreach ($rppms as $rppm) {
+            if (!in_array($rppm->id, $existingLaporans)) {
+                $newLaporanData[] = [
+                    'rppm_id' => $rppm->id,
+                    'guru_id' => $guruId,
+                    'tanggal' => $now,
+                    'status' => 'draft',
+                    'created_at' => $nowTime,
+                    'updated_at' => $nowTime,
+                ];
+            }
+        }
+
+        if (!empty($newLaporanData)) {
+            LaporanRpp::insert($newLaporanData);
+        }
     }
 
-    public function getPeriodeAttribute(): string
+    public static function syncDraftsForAllGurus(int $taId)
     {
-        if (!$this->bulan || !$this->tahun) return '-';
-        return $this->bulan_nama . ' ' . $this->tahun;
-    }
-    public function tanggalMasukBulan(\Carbon\Carbon $tanggal): bool
-    {
-        if (!$this->bulan || !$this->tahun) return true;
-        return $tanggal->month === $this->bulan && $tanggal->year === $this->tahun;
+        $gurus = User::guru()->active()->get();
+        foreach ($gurus as $guru) {
+            self::syncDraftsForGuru($guru->id, $taId);
+        }
     }
 }

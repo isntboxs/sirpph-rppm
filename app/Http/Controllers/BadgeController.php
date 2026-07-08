@@ -19,15 +19,8 @@ class BadgeController extends Controller
             'rppm_count'     => Rppm::pendingValidasi()
                 ->where('tahun_ajaran_id', $taAktif?->id)
                 ->count(),
-            'rpph_count'     => Rpph::pendingValidasi()
-                ->whereHas(
-                    'rppm',
-                    fn($q) =>
-                    $q->where('tahun_ajaran_id', $taAktif?->id)
-                        ->where('status', 'disetujui')
-                )
-                ->count(),
-            'kegiatan_count' => Kegiatan::pending()->count(),
+            'rpph_count'     => 0,
+            'kegiatan_count' => 0
         ]);
     }
 }

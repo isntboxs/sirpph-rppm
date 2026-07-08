@@ -5,6 +5,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - SIPENAQI {{ $sekolah->name }}</title>
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="white">
+    <meta name="apple-mobile-web-app-title" content="SipenaQi">
+    <link rel="apple-touch-icon" href="{{ asset('logo.jpeg') }}">
+
+    <!-- Open Graph / Link Preview Meta Tags -->
+    <meta property="og:title" content="Login - SIPENAQI {{ $sekolah->name }}">
+    <meta property="og:description" content="Aplikasi Raport dan RPP terpadu untuk PAUDQu AL-AULIA">
+    <meta property="og:image" content="{{ asset('logo.jpeg') }}">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:type" content="website">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Login - SIPENAQI {{ $sekolah->name }}">
+    <meta name="twitter:description" content="Aplikasi Raport dan RPP terpadu untuk PAUDQu AL-AULIA">
+    <meta name="twitter:image" content="{{ asset('logo.jpeg') }}">
     <link
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700&display=swap"
         rel="stylesheet">
@@ -50,6 +69,17 @@
             </div>
         </div>
     </div>
+    <!-- PWA Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/webpush-sw.js').then(function(registration) {
+                    console.log('PWA ServiceWorker registration successful');
+                }).catch(function(err) {
+                    console.log('PWA ServiceWorker registration failed: ', err);
+                });
+            });
+        }
+    </script>
 </body>
-
 </html>

@@ -45,14 +45,6 @@
                             <div class="iv" style="color:var(--g6)">{{ $data['rppm_disetujui'] }}</div>
                         </div>
                         <div class="ib">
-                            <div class="ik">Total RPPH</div>
-                            <div class="iv">{{ $data['rpph_total'] }}</div>
-                        </div>
-                        <div class="ib">
-                            <div class="ik">Portofolio</div>
-                            <div class="iv">{{ $data['porto_total'] }}</div>
-                        </div>
-                        <div class="ib">
                             <div class="ik">RPPM Pending</div>
                             <div class="iv" style="color:var(--acc2)">{{ $data['rppm_pending'] }}</div>
                         </div>

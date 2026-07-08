@@ -17,14 +17,11 @@ class ValidasiRppmController extends Controller
     {
         $taAktif = TahunAjaran::getActive();
 
-        $pending = Rppm::with([
+            $pending = Rppm::with([
                 'guru:id,name',
                 'tahunAjaran:id,name,semester',
                 'subTema:id,name,tema_id',
-                'subTema.tema:id,name',
-                'rppmKegiatans.kegiatan.aspeks:id,name,emote,warna',
-                'rppmKegiatans.kegiatan.bentukKegiatan:id,name',
-                'rppmKegiatans.kegiatan.alatBahans:id,name',
+                'subTema.tema:id,name'
             ])
             ->pendingValidasi()
             ->where('tahun_ajaran_id', $taAktif?->id)
@@ -66,26 +63,11 @@ class ValidasiRppmController extends Controller
                 'guru.kelas:guru_id,name',
                 'tahunAjaran:id,name,semester',
                 'subTema:id,name,tema_id',
-                'subTema.tema:id,name',
-                'rppmKegiatans' => function ($q) {
-                    $q->orderBy('hari')->orderBy('urutan');
-                },
-                'rppmKegiatans.kegiatan.aspeks:id,name,emote,warna',
-                'rppmKegiatans.kegiatan.bentukKegiatan:id,name',
-                'rppmKegiatans.kegiatan.alatBahans:id,name',
+                'subTema.tema:id,name'
             ])
             ->findOrFail($id);
 
-        $aspekTerstimulasi = AspekPerkembangan::withCount([
-                'kegiatans as dipakai' => function ($q) use ($rppm) {
-                    $q->whereHas('rppmKegiatans', function ($q2) use ($rppm) {
-                        $q2->where('rppm_id', $rppm->id);
-                    });
-                }
-            ])
-            ->get();
-
-        return view('pages.validasi_rppm.show', compact('rppm', 'aspekTerstimulasi'));
+        return view('pages.validasi_rppm.show', compact('rppm'));
     }
 
     public function setujui(int $id)

@@ -9,7 +9,7 @@ class Tema extends Model
 {
     protected $table = 'tema';
 
-    protected $fillable = ['name', 'semester'];
+    protected $fillable = ['tahun_ajaran_id', 'name', 'status', 'semester', 'alasan_edit', 'edited_by'];
 
     public function subTemas(): HasMany
     {
@@ -19,5 +19,10 @@ class Tema extends Model
     public function getSemesterLabelAttribute(): string
     {
         return 'Semester ' . $this->semester;
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'edited_by');
     }
 }
