@@ -29,11 +29,11 @@
                         <td>{{ $t->name }}</td>
                         <td>⏳ Menunggu</td>
                         <td>
-                            <form action="{{ route('validasi_rppm.tema.setujui', $t->id) }}" method="POST" style="display:inline">
+                            <form action="{{ route('validasi_tema.tema.setujui', $t->id) }}" method="POST" style="display:inline">
                                 @csrf @method('PUT')
                                 <button type="submit" class="btn bp bsm">Setujui</button>
                             </form>
-                            <form action="{{ route('validasi_rppm.tema.tolak', $t->id) }}" method="POST" style="display:inline" class="form-tolak">
+                            <form action="{{ route('validasi_tema.tema.kembalikan', $t->id) }}" method="POST" style="display:inline" class="form-tolak">
                                 @csrf @method('PUT')
                                 <button type="submit" class="btn bd bsm">Tolak</button>
                             </form>
@@ -72,11 +72,11 @@
                         <td>{{ $s->name }}</td>
                         <td>⏳ Menunggu</td>
                         <td>
-                            <form action="{{ route('validasi_rppm.sub_tema.setujui', $s->id) }}" method="POST" style="display:inline">
+                            <form action="{{ route('validasi_tema.sub_tema.setujui', $s->id) }}" method="POST" style="display:inline">
                                 @csrf @method('PUT')
                                 <button type="submit" class="btn bp bsm">Setujui</button>
                             </form>
-                            <form action="{{ route('validasi_rppm.sub_tema.tolak', $s->id) }}" method="POST" style="display:inline" class="form-tolak">
+                            <form action="{{ route('validasi_tema.sub_tema.kembalikan', $s->id) }}" method="POST" style="display:inline" class="form-tolak">
                                 @csrf @method('PUT')
                                 <button type="submit" class="btn bd bsm">Tolak</button>
                             </form>
@@ -117,11 +117,11 @@
                         <td>{{ $r->subTema->name ?? '-' }}</td>
                         <td>⏳ Menunggu</td>
                         <td>
-                            <form action="{{ route('validasi_rppm.rppm.setujui', $r->id) }}" method="POST" style="display:inline">
+                            <form action="{{ route('validasi_rppm.setujui', $r->id) }}" method="POST" style="display:inline">
                                 @csrf @method('PUT')
                                 <button type="submit" class="btn bp bsm">Setujui</button>
                             </form>
-                            <form action="{{ route('validasi_rppm.rppm.tolak', $r->id) }}" method="POST" style="display:inline" class="form-tolak">
+                            <form action="{{ route('validasi_rppm.kembalikan', $r->id) }}" method="POST" style="display:inline" class="form-tolak">
                                 @csrf @method('PUT')
                                 <button type="submit" class="btn bd bsm">Tolak</button>
                             </form>

@@ -174,6 +174,12 @@ class KelolaPenggunaController extends Controller
         try {
             $user = User::findOrFail($id);
 
+            if ($request->command === 'activate') {
+                $user->active = 1;
+                $user->save();
+                return response()->json(['message' => 'User berhasil diaktifkan']);
+            }
+
             DB::transaction(function () use ($id, $user) {
                 // hapus ikatan guru di kelas (jadiin null)
                 Kelas::where('guru_id', $id)->update(['guru_id' => null]);

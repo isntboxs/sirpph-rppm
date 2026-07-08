@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         if (DB::getDriverName() === 'mysql') {
-            DB::statement("ALTER TABLE users MODIFY COLUMN role ENUM('admin', 'guru') NOT NULL DEFAULT 'guru'");
+            DB::statement("ALTER TABLE users MODIFY COLUMN role ENUM('admin', 'kepala', 'guru') NOT NULL DEFAULT 'guru'");
         }
     }
 };

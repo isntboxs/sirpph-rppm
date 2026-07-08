@@ -45,4 +45,4 @@ REM COMMIT 7 (Sisa semua file, keculai node_modules, php.ini dll)
 %GIT% commit -m "ui: update receh tampilan css dan layout web"
 
 REM FORCE PUSH
-%GIT% push --force origin development/mvc
+%GIT% push --force-with-lease origin development/mvc
