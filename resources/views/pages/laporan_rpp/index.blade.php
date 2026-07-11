@@ -89,7 +89,6 @@
                                     <td style="display:flex; gap:5px;">
                                         @if (in_array($laporan->status, ['draft', 'dikembalikan']))
                                             <a href="{{ route('laporan_rpp.show', $laporan->id) }}" class="btn bp bsm">✏️ Edit</a>
-                                            <button class="btn bo bsm btn-hapus" data-id="{{ $laporan->id }}">🗑️ Hapus</button>
                                         @else
                                             <a href="{{ route('laporan_rpp.show', $laporan->id) }}" class="btn bo bsm">👁️ Lihat</a>
                                         @endif
@@ -149,27 +148,6 @@
         }
     }
 </style>
-<script>
-    $('.btn-hapus').on('click', function() {
-        var id = $(this).data('id');
-        if (!confirm('Hapus Laporan ini? Semua foto akan ikut terhapus.')) return;
-
-        $.ajax({
-            url: '/laporan-rpp/' + id,
-            type: 'DELETE',
-            data: { _token: '{{ csrf_token() }}' },
-        })
-        .done(function(res) {
-            showToast(res.message);
-            setTimeout(function() {
-                location.reload();
-            }, 800);
-        })
-        .fail(function(xhr) {
-            showToast('❌ ' + (xhr.responseJSON.message || 'Gagal menghapus'));
-        });
-    });
-</script>
 <script>
     function toggleLaporanAccordion(id, el) {
         var target = $('#laporan-' + id);

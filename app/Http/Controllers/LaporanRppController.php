@@ -24,7 +24,8 @@ class LaporanRppController extends Controller
         }, 'rppm.subTema.tema', 'fotos'])
             ->where('guru_id', $guru->id)
             ->whereHas('rppm', function($q) use ($taAktif) {
-                $q->where('tahun_ajaran_id', $taAktif?->id);
+                $q->where('tahun_ajaran_id', $taAktif?->id)
+                  ->where('status', 'disetujui');
             });
 
         if ($request->filled('status')) {

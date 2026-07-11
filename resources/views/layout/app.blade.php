@@ -201,7 +201,6 @@
             });
         });
     </script>
-    @if (Auth::user()->role !== 'admin')
         <script>
             // ---------------- Kolom Notifikasi ----------------
             $(document).on('click', '.notif-bell', function(e) {
@@ -328,7 +327,6 @@
 
 
         </script>
-    @endif
     <script>
         function urlBase64ToUint8Array(base64String) {
             const padding = '='.repeat((4 - base64String.length % 4) % 4);
@@ -386,7 +384,7 @@
 
         if ('serviceWorker' in navigator && 'PushManager' in window) {
             window.addEventListener('load', function() {
-                navigator.serviceWorker.register('/webpush-sw.js?v=4')
+                navigator.serviceWorker.register('/webpush-sw.js?v=11')
                     .then(function(registration) {
                         console.log('Service Worker terdaftar:', registration.scope);
                         

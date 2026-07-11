@@ -19,27 +19,26 @@ self.addEventListener('fetch', function(event) {
 });
 
 self.addEventListener('push', function(event) {
-    let title = 'Notifikasi Baru';
+    let title = 'SipenaQi Notifikasi';
     let options = {
-        body: 'Anda mendapat pesan baru',
-        vibrate: [200, 100, 200, 100, 200, 100, 200],
-        requireInteraction: true
+        body: 'Anda mendapat pesan baru'
     };
 
     if (event.data) {
         try {
-            const data = event.data.json();
-            title = data.title || title;
-            options.body = data.body || options.body;
-            options.icon = data.icon || '/logo.jpeg';
-            options.data = data.data || null;
+            const payload = event.data.json();
+            if (payload.title) title = payload.title;
+            if (payload.body) options.body = payload.body;
+            // KITA HAPUS ICON DAN DATA UNTUK MENGHINDARI ERROR TYPE/SERIALIZATION DI ANDROID
         } catch (e) {
-            options.body = event.data.text() || options.body;
+            options.body = 'Pesan baru diterima (format tidak valid)';
         }
     }
 
     event.waitUntil(
-        self.registration.showNotification(title, options)
+        self.registration.showNotification(title, options).catch(function(err) {
+            console.error('Error showing notification:', err);
+        })
     );
 });
 

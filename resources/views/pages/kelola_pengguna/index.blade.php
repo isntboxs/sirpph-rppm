@@ -23,7 +23,7 @@
                 </thead>
                 <tbody>
                     @foreach ($users as $user)
-                        <tr>
+                        <tr id="user-row-{{ $user->id }}" style="transition: background-color 0.5s;">
                             <td><strong>{{ $user->name }}</strong></td>
 
                             <td>
@@ -60,6 +60,9 @@
                             </td>
 
                             <td class="fl g8">
+                                @if ($user->reset_code)
+                                    <button class="btn bw bxs btn-review-reset blink-warning" data-id="{{ $user->id }}" data-username="{{ $user->username }}" data-name="{{ $user->name }}" data-code="{{ $user->reset_code }}" data-pass="{{ $user->reset_password_plain }}">❗ Reset</button>
+                                @endif
                                 <button class="btn bo bxs btn-edit" data-id="{{ $user->id }}">Edit</button>
 
                                 @if (!$user->isAdmin())
@@ -74,6 +77,39 @@
                     @endforeach
                 </tbody>
             </table>
+        </div>
+    </div>
+
+    {{-- Modal: Review Reset Password --}}
+    <div class="mo" id="mReviewReset">
+        <div class="md mmd">
+            <div class="mh">
+                <div>
+                    <div class="mt2">Review Reset Password</div>
+                </div>
+                <button class="mc-reset">X</button>
+            </div>
+            <div class="mb">
+                <p style="font-size:14px; margin-bottom:16px;">User ini mengajukan perubahan password. Pastikan kode konfirmasi yang diberikan user cocok.</p>
+                <div class="fg">
+                    <label>Nama User</label>
+                    <input id="rr_name" readonly disabled />
+                </div>
+                <div class="fr c2">
+                    <div class="ff">
+                        <label>Kode Konfirmasi (Dari User)</label>
+                        <input id="rr_code" readonly disabled style="font-weight:bold; font-size:18px; letter-spacing:2px; color:var(--g6);" />
+                    </div>
+                    <div class="ff">
+                        <label>Pengajuan Password Baru</label>
+                        <input id="rr_pass" readonly disabled />
+                    </div>
+                </div>
+                <div class="mf" style="justify-content:flex-end; gap:10px; margin-top:20px;">
+                    <button id="btn-reject-reset" class="btn bd">Tolak</button>
+                    <button id="btn-approve-reset" class="btn bp">Setujui Reset</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -272,5 +308,94 @@
                 }
             })
         }
+    </script>
+
+    <script>
+        $(function() {
+            // URL Highlight logic
+            const urlParams = new URLSearchParams(window.location.search);
+            const highlightUser = urlParams.get('highlight_user');
+            if (highlightUser) {
+                let row = $('#user-row-' + highlightUser);
+                if (row.length) {
+                    $('html, body').animate({
+                        scrollTop: row.offset().top - 100
+                    }, 500);
+                    
+                    row.css('background-color', '#fff3cd');
+                    setTimeout(() => {
+                        row.css('background-color', 'transparent');
+                    }, 3000);
+                }
+            }
+
+            // Review Reset Modal
+            let currentResetId = null;
+
+            $('.btn-review-reset').on('click', function() {
+                currentResetId = $(this).data('id');
+                $('#rr_name').val($(this).data('name') + ' (@' + $(this).data('username') + ')');
+                $('#rr_code').val($(this).data('code'));
+                $('#rr_pass').val($(this).data('pass'));
+                $('#mReviewReset').addClass('on');
+            });
+
+            $('.mc-reset').on('click', function() {
+                $('#mReviewReset').removeClass('on');
+            });
+
+            $('#btn-approve-reset').on('click', function() {
+                if (!currentResetId) return;
+                Swal.fire({
+                    title: 'Setujui Reset Password?',
+                    text: 'Password user akan diganti dengan yang baru.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, Setujui',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        processReset(currentResetId, 'approve');
+                    }
+                });
+            });
+
+            $('#btn-reject-reset').on('click', function() {
+                if (!currentResetId) return;
+                Swal.fire({
+                    title: 'Tolak Reset Password?',
+                    text: 'Pengajuan reset password ini akan dibatalkan.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, Tolak',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        processReset(currentResetId, 'reject');
+                    }
+                });
+            });
+
+            function processReset(id, action) {
+                Swal.fire({ title: 'Memproses...', allowOutsideClick: false });
+                Swal.showLoading();
+                
+                $.ajax({
+                    url: `/kelola-pengguna/${id}/${action}-reset`,
+                    type: 'PUT',
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    success: function(res) {
+                        Swal.fire('Berhasil!', res.message, 'success').then(() => {
+                            location.href = '/kelola-pengguna';
+                        });
+                    },
+                    error: function(xhr) {
+                        let errorMsg = 'Gagal memproses';
+                        if (xhr.responseJSON && xhr.responseJSON.message) errorMsg = xhr.responseJSON.message;
+                        Swal.fire('Error', errorMsg, 'error');
+                    }
+                });
+            }
+        });
     </script>
 @endpush

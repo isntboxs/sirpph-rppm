@@ -207,4 +207,38 @@ class KelolaPenggunaController extends Controller
             return response()->json(['message' => 'Gagal menghapus user: ' . $e->getMessage()], 500);
         }
     }
+
+    public function approveReset($id)
+    {
+        try {
+            $user = User::findOrFail($id);
+            if (!$user->reset_password_plain) {
+                return response()->json(['message' => 'Tidak ada pengajuan reset password'], 400);
+            }
+
+            $user->password = \Illuminate\Support\Facades\Hash::make($user->reset_password_plain);
+            $user->reset_code = null;
+            $user->reset_password_plain = null;
+            $user->save();
+
+            return response()->json(['message' => 'Reset password disetujui']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Gagal menyetujui reset: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function rejectReset($id)
+    {
+        try {
+            $user = User::findOrFail($id);
+            
+            $user->reset_code = null;
+            $user->reset_password_plain = null;
+            $user->save();
+
+            return response()->json(['message' => 'Reset password ditolak']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Gagal menolak reset: ' . $e->getMessage()], 500);
+        }
+    }
 }

@@ -58,4 +58,39 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
         return redirect()->route('login');
     }
+
+    public function requestReset(Request $request)
+    {
+        $request->validate([
+            'username' => 'required|string',
+            'password_baru' => 'required|string|min:4'
+        ], [
+            'username.required' => 'Username wajib diisi.',
+            'password_baru.required' => 'Password baru wajib diisi.',
+            'password_baru.min' => 'Password baru minimal 4 karakter.'
+        ]);
+
+        $user = \App\Models\User::where('username', $request->username)->first();
+
+        if (!$user) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Username tidak ditemukan.'
+            ], 404);
+        }
+
+        $code = strtoupper(\Illuminate\Support\Str::random(5));
+        $user->reset_code = $code;
+        $user->reset_password_plain = $request->password_baru;
+        $user->save();
+
+        $admins = \App\Models\User::where('role', 'admin')->get();
+        \Illuminate\Support\Facades\Notification::send($admins, new \App\Notifications\PasswordResetNotification($user->name, $user->id, $code));
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Permintaan reset berhasil.',
+            'code' => $code
+        ]);
+    }
 }

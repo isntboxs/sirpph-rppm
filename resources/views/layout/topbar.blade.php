@@ -31,8 +31,6 @@
                 </div>
             </div>
         </div> --}}
-        @if (Auth::user()?->role !== 'admin')
-            {{-- Web push disabled as per earlier instructions --}}
             <div style="position:relative">
                 <div class="notif-bell" id="notifBell">
                     🔔
@@ -50,7 +48,6 @@
                     </div>
                 </div>
             </div>
-        @endif
         <span class="rbdg {{ Auth::user()?->roleBadge() ?? '' }}">
             {{ Auth::user()?->roleText() ?? 'Tamu' }}
         </span>
