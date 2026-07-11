@@ -212,13 +212,13 @@ class KelolaPenggunaController extends Controller
     {
         try {
             $user = User::findOrFail($id);
-            if (!$user->reset_password_plain) {
+            if (!$user->reset_password_hash) {
                 return response()->json(['message' => 'Tidak ada pengajuan reset password'], 400);
             }
 
-            $user->password = \Illuminate\Support\Facades\Hash::make($user->reset_password_plain);
+            $user->password = $user->reset_password_hash;
             $user->reset_code = null;
-            $user->reset_password_plain = null;
+            $user->reset_password_hash = null;
             $user->save();
 
             return response()->json(['message' => 'Reset password disetujui']);
@@ -232,8 +232,12 @@ class KelolaPenggunaController extends Controller
         try {
             $user = User::findOrFail($id);
             
+            if (!$user->reset_password_hash) {
+                return response()->json(['message' => 'Tidak ada pengajuan reset password'], 400);
+            }
+            
             $user->reset_code = null;
-            $user->reset_password_plain = null;
+            $user->reset_password_hash = null;
             $user->save();
 
             return response()->json(['message' => 'Reset password ditolak']);

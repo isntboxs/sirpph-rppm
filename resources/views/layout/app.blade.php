@@ -246,21 +246,24 @@
                             return;
                         }
 
-                        var html = '';
+                        var $list = $('#notifList');
+                        $list.empty();
 
                         $.each(res.notifikasis, function(i, n) {
-                            html +=
-                                '<div class="nd-item ' + (n.dibaca ? '' : 'unread') + '"' +
-                                ' data-id="' + n.id + '"' +
-                                ' data-url="' + n.url + '"' +
-                                ' style="cursor:pointer">' +
-                                '<div class="nd-title">' + n.icon + ' ' + n.judul + '</div>' +
-                                '<div class="nd-msg">' + n.pesan + '</div>' +
-                                '<div class="nd-time">🕐 ' + n.waktu + '</div>' +
-                                '</div>';
+                            var $item = $('<div>', {
+                                'class': 'nd-item ' + (n.dibaca ? '' : 'unread'),
+                                'data-id': n.id,
+                                'data-url': n.url,
+                                'css': { 'cursor': 'pointer' }
+                            });
+                            
+                            var $title = $('<div>', { 'class': 'nd-title' }).text(n.icon + ' ' + n.judul);
+                            var $msg = $('<div>', { 'class': 'nd-msg' }).text(n.pesan);
+                            var $time = $('<div>', { 'class': 'nd-time' }).text('🕐 ' + n.waktu);
+                            
+                            $item.append($title, $msg, $time);
+                            $list.append($item);
                         });
-
-                        $('#notifList').html(html);
                     });
             }
 
@@ -384,7 +387,7 @@
 
         if ('serviceWorker' in navigator && 'PushManager' in window) {
             window.addEventListener('load', function() {
-                navigator.serviceWorker.register('/webpush-sw.js?v=11')
+                navigator.serviceWorker.register('/webpush-sw.js')
                     .then(function(registration) {
                         console.log('Service Worker terdaftar:', registration.scope);
                         

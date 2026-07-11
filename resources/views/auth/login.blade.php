@@ -77,7 +77,7 @@
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
-                navigator.serviceWorker.register('/webpush-sw.js?v=11').then(function(registration) {
+                navigator.serviceWorker.register('/webpush-sw.js').then(function(registration) {
                     console.log('PWA ServiceWorker registration successful');
                 }).catch(function(err) {
                     console.log('PWA ServiceWorker registration failed: ', err);

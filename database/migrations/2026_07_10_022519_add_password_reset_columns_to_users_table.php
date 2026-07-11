@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('reset_code', 10)->nullable()->after('no_telp');
-            $table->string('reset_password_plain', 255)->nullable()->after('reset_code');
+            $table->string('reset_password_hash', 255)->nullable()->after('reset_code');
         });
     }
 
@@ -23,7 +23,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['reset_code', 'reset_password_plain']);
+            $table->dropColumn(['reset_code', 'reset_password_hash']);
         });
     }
 };

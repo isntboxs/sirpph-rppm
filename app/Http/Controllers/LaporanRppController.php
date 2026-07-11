@@ -39,9 +39,12 @@ class LaporanRppController extends Controller
         }
         $laporans = $query->latest()->get();
         $stats = [
-            'total' => LaporanRpp::where('guru_id', $guru->id)->count(),
-            'disetujui' => LaporanRpp::where('guru_id', $guru->id)->where('status', 'disetujui')->count(),
-            'menunggu' => LaporanRpp::where('guru_id', $guru->id)->where('status', 'pending')->count(),
+            $baseQuery = LaporanRpp::where('guru_id', $guru->id)->whereHas('rppm', function($q) use ($taAktif) {
+                $q->where('tahun_ajaran_id', $taAktif?->id)->where('status', 'disetujui');
+            }),
+            'total' => (clone $baseQuery)->count(),
+            'disetujui' => (clone $baseQuery)->where('status', 'disetujui')->count(),
+            'menunggu' => (clone $baseQuery)->where('status', 'pending')->count(),
         ];
 
         return view('pages.laporan_rpp.index', compact('laporans', 'stats', 'taAktif'));

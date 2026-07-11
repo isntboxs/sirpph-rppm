@@ -29,7 +29,8 @@ self.addEventListener('push', function(event) {
             const payload = event.data.json();
             if (payload.title) title = payload.title;
             if (payload.body) options.body = payload.body;
-            // KITA HAPUS ICON DAN DATA UNTUK MENGHINDARI ERROR TYPE/SERIALIZATION DI ANDROID
+            if (payload.icon) options.icon = payload.icon;
+            if (payload.data) options.data = payload.data;
         } catch (e) {
             options.body = 'Pesan baru diterima (format tidak valid)';
         }

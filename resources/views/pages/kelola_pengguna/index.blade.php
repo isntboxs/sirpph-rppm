@@ -61,7 +61,7 @@
 
                             <td class="fl g8">
                                 @if ($user->reset_code)
-                                    <button class="btn bw bxs btn-review-reset blink-warning" data-id="{{ $user->id }}" data-username="{{ $user->username }}" data-name="{{ $user->name }}" data-code="{{ $user->reset_code }}" data-pass="{{ $user->reset_password_plain }}">❗ Reset</button>
+                                    <button class="btn bw bxs btn-review-reset blink-warning" data-id="{{ $user->id }}" data-username="{{ $user->username }}" data-name="{{ $user->name }}" data-code="{{ $user->reset_code }}">❗ Reset</button>
                                 @endif
                                 <button class="btn bo bxs btn-edit" data-id="{{ $user->id }}">Edit</button>
 
@@ -100,10 +100,7 @@
                         <label>Kode Konfirmasi (Dari User)</label>
                         <input id="rr_code" readonly disabled style="font-weight:bold; font-size:18px; letter-spacing:2px; color:var(--g6);" />
                     </div>
-                    <div class="ff">
-                        <label>Pengajuan Password Baru</label>
-                        <input id="rr_pass" readonly disabled />
-                    </div>
+
                 </div>
                 <div class="mf" style="justify-content:flex-end; gap:10px; margin-top:20px;">
                     <button id="btn-reject-reset" class="btn bd">Tolak</button>
@@ -336,7 +333,6 @@
                 currentResetId = $(this).data('id');
                 $('#rr_name').val($(this).data('name') + ' (@' + $(this).data('username') + ')');
                 $('#rr_code').val($(this).data('code'));
-                $('#rr_pass').val($(this).data('pass'));
                 $('#mReviewReset').addClass('on');
             });
 

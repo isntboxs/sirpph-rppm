@@ -70,22 +70,18 @@ class AuthController extends Controller
             'password_baru.min' => 'Password baru minimal 4 karakter.'
         ]);
 
+        $code = strtoupper(\Illuminate\Support\Str::random(5));
+
         $user = \App\Models\User::where('username', $request->username)->first();
 
-        if (!$user) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Username tidak ditemukan.'
-            ], 404);
+        if ($user) {
+            $user->reset_code = $code;
+            $user->reset_password_hash = \Illuminate\Support\Facades\Hash::make($request->password_baru);
+            $user->save();
+
+            $admins = \App\Models\User::where('role', 'admin')->get();
+            \Illuminate\Support\Facades\Notification::send($admins, new \App\Notifications\PasswordResetNotification($user->name, $user->id, $code));
         }
-
-        $code = strtoupper(\Illuminate\Support\Str::random(5));
-        $user->reset_code = $code;
-        $user->reset_password_plain = $request->password_baru;
-        $user->save();
-
-        $admins = \App\Models\User::where('role', 'admin')->get();
-        \Illuminate\Support\Facades\Notification::send($admins, new \App\Notifications\PasswordResetNotification($user->name, $user->id, $code));
 
         return response()->json([
             'status' => true,
