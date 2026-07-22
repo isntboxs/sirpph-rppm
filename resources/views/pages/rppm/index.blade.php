@@ -9,7 +9,7 @@
         <div class="cb" style="padding: 20px;">
             <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                 <div>
-                    <h3 style="margin:0; font-size:18px; color:var(--txt)">Daftar Mingguan Semester {{ $semesterLabel }} {{ $taAktif?->name ?? '-' }}</h3>
+                    <h3 style="margin:0; font-size:18px; color:var(--txt)">Daftar RPP Semester {{ $semesterLabel }} {{ $taAktif?->name ?? '-' }}</h3>
                 </div>
             </div>
         </div>
@@ -228,7 +228,7 @@
         var id = $(this).data('id');
         var info = $(this).data('info');
 
-        window.confirmAction('Hapus RPPM ini?\n\n' + info + '\n\nSemua detail akan terhapus.', function() {
+        window.confirmAction('Hapus RPP ini?\n\n' + info + '\n\nSemua detail akan terhapus.', function() {
             $.ajax({
                     url: '/rppm/' + id,
                     type: 'DELETE',

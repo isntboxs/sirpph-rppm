@@ -14,8 +14,8 @@
                 </div>
                 <div>
                     <div class="nd-item unread">
-                        <div class="nd-title">📝 RPPM Baru Menunggu</div>
-                        <div class="nd-msg">Guru Kelas A mengajukan RPPM "Aku, Makhluq Allah"</div>
+                        <div class="nd-title">📝 RPP Baru Menunggu</div>
+                        <div class="nd-msg">Guru Kelas A mengajukan RPP "Aku, Makhluq Allah"</div>
                         <div class="nd-time">🕐 5 menit lalu</div>
                     </div>
                     <div class="nd-item unread">
@@ -24,15 +24,13 @@
                         <div class="nd-time">🕐 1 jam lalu</div>
                     </div>
                     <div class="nd-item">
-                        <div class="nd-title">RPPM Disetujui</div>
-                        <div class="nd-msg">RPPM "Tanah Airku" telah disetujui</div>
+                        <div class="nd-title">RPP Disetujui</div>
+                        <div class="nd-msg">RPP "Tanah Airku" telah disetujui</div>
                         <div class="nd-time">🕐 Kemarin</div>
                     </div>
                 </div>
             </div>
         </div> --}}
-        @if (Auth::user()?->role !== 'admin')
-            {{-- Web push disabled as per earlier instructions --}}
             <div style="position:relative">
                 <div class="notif-bell" id="notifBell">
                     🔔
@@ -50,7 +48,6 @@
                     </div>
                 </div>
             </div>
-        @endif
         <span class="rbdg {{ Auth::user()?->roleBadge() ?? '' }}">
             {{ Auth::user()?->roleText() ?? 'Tamu' }}
         </span>

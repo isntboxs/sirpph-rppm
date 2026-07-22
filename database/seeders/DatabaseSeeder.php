@@ -66,8 +66,7 @@ class DatabaseSeeder extends Seeder
             'guru_id' => $guruB->id,
         ]);
 
-        Kelas::create(['name' => 'Kelas C']);
-        Kelas::create(['name' => 'Kelas D']);
+
 
         Siswa::create([
             'kelas_id'      => $kelasA->id,

@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>RPP Mingguan</title>
+    <title>RPP</title>
     <style>
         body {
             font-family: 'Times New Roman', Times, serif;
@@ -143,7 +143,7 @@
         </div>
     </div>
 
-    <div class="title">RENCANA PELAKSANAAN PEMBELAJARAN MINGGUAN (RPPM)</div>
+    <div class="title">RENCANA PELAKSANAAN PEMBELAJARAN (RPP)</div>
 
     <table class="info-table">
         <tr>

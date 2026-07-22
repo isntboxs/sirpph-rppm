@@ -1,6 +1,6 @@
 @extends('layout.app')
 
-@section('page-title', 'Detail RPPM')
+@section('page-title', 'Detail RPP')
 @section('page-subtitle', $rppm->subTema->tema->name . ' - ' . $rppm->subTema->name)
 
 @section('content')
@@ -102,11 +102,11 @@
                     <div class="fl jb ic mt16">
                         <button type="button" class="btn bo btn-buka-kembalikan-show"
                             data-id="{{ $rppm->id }}"
-                            data-info="RPPM {{ $rppm->subTema->tema->name }} - {{ $rppm->subTema->name }}">
+                            data-info="RPP {{ $rppm->subTema->tema->name }} - {{ $rppm->subTema->name }}">
                             ↩️ Kembalikan (Revisi)
                         </button>
                         <button type="button" class="btn bd btn-setujui-rppm-show" data-id="{{ $rppm->id }}">
-                            ✅ Setujui RPPM
+                            ✅ Setujui RPP
                         </button>
                     </div>
                 @endif
@@ -122,14 +122,14 @@
                 <input type="hidden" id="inputKembalikanShowId" />
                 <div class="mh">
                     <div>
-                        <div class="mt2">↩️ Kembalikan RPPM</div>
+                        <div class="mt2">↩️ Kembalikan RPP</div>
                         <div class="mst" id="labelInfoKembalikanShow" style="color:var(--txt3)"></div>
                     </div>
                     <button type="button" class="mc">✕</button>
                 </div>
                 <div class="mb">
                     <div class="al alw mb12">
-                        ⚠️ Guru harus memperbaiki RPPM sebelum bisa mengajukan kembali.
+                        ⚠️ Guru harus memperbaiki RPP sebelum bisa mengajukan kembali.
                     </div>
                     <div class="ff">
                         <label>Catatan untuk Guru</label>
@@ -151,7 +151,7 @@
     <script>
         $('.btn-setujui-rppm-show').on('click', function() {
             var id = $(this).data('id');
-            if (!confirm('Setujui RPPM ini?')) return;
+            if (!confirm('Setujui RPP ini?')) return;
 
             $.ajax({
                     url: '/validasi-rppm/' + id + '/setujui',

@@ -22,6 +22,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Paginator::defaultView('vendor.pagination.custom');
+        \Carbon\Carbon::setLocale(config('app.locale'));
         if (config('app.env') === 'production') {
             URL::forceScheme('https');
         }

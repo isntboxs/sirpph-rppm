@@ -363,7 +363,7 @@
                 <span style="font-size: 20px;">🚫</span>
                 <div>
                     <strong style="display: block; font-size: 14px; margin-bottom: 4px;">Status: RPP Belum Disetujui</strong>
-                    <div style="font-size: 13px;">Laporan ini tidak dapat diisi atau diedit karena RPP Mingguan (RPPM) terkait belum divalidasi dan disetujui oleh Kepala Sekolah.</div>
+                    <div style="font-size: 13px;">Laporan ini tidak dapat diisi atau diedit karena RPP Mingguan (RPP) terkait belum divalidasi dan disetujui oleh Kepala Sekolah.</div>
                 </div>
             </div>
         @endif

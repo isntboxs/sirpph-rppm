@@ -46,7 +46,7 @@
                                 <div style="font-weight: 500;">{{ $laporan->rppm->subTema->tema->name ?? '-' }}</div>
                                 <div style="font-size: 12px; color: var(--txt2);">{{ $laporan->rppm->subTema->name ?? '-' }}</div>
                             </td>
-                            <td style="padding: 15px; font-size:13px;">{{ $laporan->created_at->format('d M Y') }}</td>
+                            <td style="padding: 15px; font-size:13px;">{{ $laporan->created_at->translatedFormat('d F Y') }}</td>
                             <td style="padding: 15px; text-align: center;">
                                 @if($laporan->status === 'pending')
                                     <span style="background: var(--g2); padding: 4px 10px; font-size: 10px; font-weight: bold; text-transform: uppercase;">Menunggu</span>

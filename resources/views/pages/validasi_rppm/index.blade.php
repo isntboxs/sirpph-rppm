@@ -1,12 +1,12 @@
 @extends('layout.app')
 
-@section('page-title', 'Validasi RPPM')
+@section('page-title', 'Validasi RPP')
 @section('page-subtitle', $taAktif?->name ?? '-')
 
 @section('content')
     <div class="card">
         <div class="ch">
-            <div class="ct">✅ Validasi RPPM</div>
+            <div class="ct">✅ Validasi RPP</div>
         </div>
 
         {{-- <div class="tabs">
@@ -38,7 +38,7 @@
                 </div>
                 <div class="ract">
                     <button class="btn bo bsm">🔍 Detail</button>
-                    <button class="btn bp bsm" onclick="showToast('✅ RPPM berhasil disetujui')">✅ Setujui</button>
+                    <button class="btn bp bsm" onclick="showToast('✅ RPP berhasil disetujui')">✅ Setujui</button>
                     <button class="btn bd bsm">↩️ Kembalikan</button>
                     <button class="btn bo bsm" onclick="document.getElementById('mCRP').classList.add('on')">🖨️</button>
                 </div>
@@ -54,7 +54,7 @@
                 </div>
                 <div class="ract">
                     <button class="btn bo bsm">🔍 Detail</button>
-                    <button class="btn bp bsm" onclick="showToast('✅ RPPM berhasil disetujui')">✅ Setujui</button>
+                    <button class="btn bp bsm" onclick="showToast('✅ RPP berhasil disetujui')">✅ Setujui</button>
                     <button class="btn bd bsm">↩️ Kembalikan</button>
                     <button class="btn bo bsm" onclick="document.getElementById('mCRP').classList.add('on')">🖨️</button>
                 </div>
@@ -71,7 +71,7 @@
                 <div class="al ale mt8">📝 Perlu ditambahkan kegiatan aspek Seni</div>
                 <div class="ract">
                     <button class="btn bo bsm">🔍 Detail</button>
-                    <button class="btn bp bsm" onclick="showToast('✅ RPPM berhasil disetujui')">✅ Setujui</button>
+                    <button class="btn bp bsm" onclick="showToast('✅ RPP berhasil disetujui')">✅ Setujui</button>
                     <button class="btn bd bsm">↩️ Kembalikan</button>
                     <button class="btn bo bsm" onclick="document.getElementById('mCRP').classList.add('on')">🖨️</button>
                 </div>
@@ -117,8 +117,8 @@
             @empty
                 <div class="emp">
                     <div class="ei">✅</div>
-                    <h3>Tidak ada RPPM yang menunggu</h3>
-                    <p>Semua RPPM sudah divalidasi.</p>
+                    <h3>Tidak ada RPP yang menunggu</h3>
+                    <p>Semua RPP sudah divalidasi.</p>
                 </div>
             @endforelse
         </div>
@@ -193,7 +193,7 @@
                     <input type="hidden" id="inputKembalikanRppmId" />
                     <div class="mh">
                         <div>
-                            <div class="mt2">↩️ Kembalikan RPPM</div>
+                            <div class="mt2">↩️ Kembalikan RPP</div>
                             <div class="mst" id="labelInfoKembalikanRppm" style="color:var(--txt3)"></div>
                         </div>
                         <button type="button" class="mc">✕</button>
@@ -228,7 +228,7 @@
                 var id = $(this).data('id');
                 var $row = $('#row-rppm-' + id);
 
-                if (!confirm('Setujui RPPM ini?')) return;
+                if (!confirm('Setujui RPP ini?')) return;
 
                 $.ajax({
                         url: '/validasi-rppm/' + id + '/setujui',

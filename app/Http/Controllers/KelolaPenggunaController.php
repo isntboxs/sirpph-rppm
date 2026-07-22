@@ -207,4 +207,47 @@ class KelolaPenggunaController extends Controller
             return response()->json(['message' => 'Gagal menghapus user: ' . $e->getMessage()], 500);
         }
     }
+
+    public function approveReset($id)
+    {
+        try {
+            return \Illuminate\Support\Facades\DB::transaction(function () use ($id) {
+                $user = User::where('id', $id)->lockForUpdate()->firstOrFail();
+                
+                if (!$user->reset_password_hash) {
+                    return response()->json(['message' => 'Tidak ada pengajuan reset password'], 400);
+                }
+
+                $user->password = $user->reset_password_hash;
+                $user->reset_code = null;
+                $user->reset_password_hash = null;
+                $user->save();
+
+                return response()->json(['message' => 'Reset password disetujui']);
+            });
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Gagal menyetujui reset: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function rejectReset($id)
+    {
+        try {
+            return \Illuminate\Support\Facades\DB::transaction(function () use ($id) {
+                $user = User::where('id', $id)->lockForUpdate()->firstOrFail();
+                
+                if (!$user->reset_password_hash) {
+                    return response()->json(['message' => 'Tidak ada pengajuan reset password'], 400);
+                }
+                
+                $user->reset_code = null;
+                $user->reset_password_hash = null;
+                $user->save();
+
+                return response()->json(['message' => 'Reset password ditolak']);
+            });
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Gagal menolak reset: ' . $e->getMessage()], 500);
+        }
+    }
 }

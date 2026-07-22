@@ -34,7 +34,10 @@ class BerandaController extends Controller
 
         $stats = [
             'guru_aktif'    => User::guru()->active()->count(),
-            'total_siswa'   => Siswa::count(),
+            'tema_disetujui' => \App\Models\Tema::where('status', 'disetujui')->where('tahun_ajaran_id', $taAktif?->id)->count(),
+            'subtema_disetujui' => \App\Models\SubTema::where('status', 'disetujui')->whereHas('tema', function($q) use ($taAktif) {
+                $q->where('tahun_ajaran_id', $taAktif?->id);
+            })->count(),
             'rppm_disetujui' => Rppm::disetujui()
                 ->where('tahun_ajaran_id', $taAktif?->id)
                 ->count(),

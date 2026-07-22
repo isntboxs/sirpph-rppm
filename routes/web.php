@@ -18,6 +18,7 @@ use App\Http\Controllers\LaporanRppController;
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::post('/password-reset-request', [AuthController::class, 'requestReset'])->name('password.reset.request')->middleware('throttle:5,1');
 
 Route::get('/', fn() => redirect()->route('login'));
 /*
@@ -37,6 +38,8 @@ Route::middleware(['auth', 'role'])->group(function () {
     Route::delete('/kelola-pengguna/{id}', [KelolaPenggunaController::class, 'destroy'])->name('kelola_pengguna.delete');
     Route::post('/kelola-pengguna', [KelolaPenggunaController::class, 'store'])->name('kelola_pengguna.store');
     Route::put('/kelola-pengguna/{id}', [KelolaPenggunaController::class, 'update'])->name('kelola_pengguna.update');
+    Route::put('/kelola-pengguna/{id}/approve-reset', [KelolaPenggunaController::class, 'approveReset'])->name('kelola_pengguna.approve_reset');
+    Route::put('/kelola-pengguna/{id}/reject-reset', [KelolaPenggunaController::class, 'rejectReset'])->name('kelola_pengguna.reject_reset');
 
     Route::get('/kelola-tema', [KelolaTemaController::class, 'index'])->name('kelola_tema');
     Route::post('/kelola-tema', [KelolaTemaController::class, 'store'])->name('kelola_tema.store');

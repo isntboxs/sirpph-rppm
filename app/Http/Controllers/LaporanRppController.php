@@ -24,7 +24,8 @@ class LaporanRppController extends Controller
         }, 'rppm.subTema.tema', 'fotos'])
             ->where('guru_id', $guru->id)
             ->whereHas('rppm', function($q) use ($taAktif) {
-                $q->where('tahun_ajaran_id', $taAktif?->id);
+                $q->where('tahun_ajaran_id', $taAktif?->id)
+                  ->where('status', 'disetujui');
             });
 
         if ($request->filled('status')) {
@@ -38,9 +39,12 @@ class LaporanRppController extends Controller
         }
         $laporans = $query->latest()->get();
         $stats = [
-            'total' => LaporanRpp::where('guru_id', $guru->id)->count(),
-            'disetujui' => LaporanRpp::where('guru_id', $guru->id)->where('status', 'disetujui')->count(),
-            'menunggu' => LaporanRpp::where('guru_id', $guru->id)->where('status', 'pending')->count(),
+            $baseQuery = LaporanRpp::where('guru_id', $guru->id)->whereHas('rppm', function($q) use ($taAktif) {
+                $q->where('tahun_ajaran_id', $taAktif?->id)->where('status', 'disetujui');
+            }),
+            'total' => (clone $baseQuery)->count(),
+            'disetujui' => (clone $baseQuery)->where('status', 'disetujui')->count(),
+            'menunggu' => (clone $baseQuery)->where('status', 'pending')->count(),
         ];
 
         return view('pages.laporan_rpp.index', compact('laporans', 'stats', 'taAktif'));
@@ -68,7 +72,7 @@ class LaporanRppController extends Controller
         $laporan = LaporanRpp::findOrFail($id);
         abort_if($laporan->guru_id !== Auth::id(), 403);
         abort_if($laporan->status === 'disetujui', 422, 'Laporan yang sudah disetujui tidak bisa diedit.');
-        abort_if($laporan->rppm->status !== 'disetujui', 422, 'RPPM induk belum disetujui.');
+        abort_if($laporan->rppm->status !== 'disetujui', 422, 'RPP induk belum disetujui.');
         $request->validate([
             'tanggal' => 'required|date',
             'keterangan_singkat' => 'required|string',

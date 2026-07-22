@@ -80,7 +80,7 @@
                                         <div><strong>{{ $laporan->rppm->subTema->tema->nama ?? $laporan->rppm->subTema->tema->name ?? '-' }}</strong></div>
                                         <div style="font-size:12px; color:var(--txt2);">{{ $laporan->rppm->subTema->nama ?? $laporan->rppm->subTema->name ?? '-' }}</div>
                                     </td>
-                                    <td>{{ \Carbon\Carbon::parse($laporan->tanggal)->format('d M Y') }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($laporan->tanggal)->translatedFormat('d F Y') }}</td>
                                     <td>
                                         <span class="bdg {{ $laporan->status_badge_class }} {{ $laporan->status === 'dikembalikan' ? 'blink-warning' : '' }}" {!! $laporan->status === 'dikembalikan' ? 'style="background: #fef3c7; color: #b45309;"' : '' !!}>
                                             {!! $laporan->status === 'dikembalikan' ? '⚠️ ' : '' !!}{{ $laporan->status_label }}
@@ -89,7 +89,6 @@
                                     <td style="display:flex; gap:5px;">
                                         @if (in_array($laporan->status, ['draft', 'dikembalikan']))
                                             <a href="{{ route('laporan_rpp.show', $laporan->id) }}" class="btn bp bsm">✏️ Edit</a>
-                                            <button class="btn bo bsm btn-hapus" data-id="{{ $laporan->id }}">🗑️ Hapus</button>
                                         @else
                                             <a href="{{ route('laporan_rpp.show', $laporan->id) }}" class="btn bo bsm">👁️ Lihat</a>
                                         @endif
@@ -149,27 +148,6 @@
         }
     }
 </style>
-<script>
-    $('.btn-hapus').on('click', function() {
-        var id = $(this).data('id');
-        if (!confirm('Hapus Laporan ini? Semua foto akan ikut terhapus.')) return;
-
-        $.ajax({
-            url: '/laporan-rpp/' + id,
-            type: 'DELETE',
-            data: { _token: '{{ csrf_token() }}' },
-        })
-        .done(function(res) {
-            showToast(res.message);
-            setTimeout(function() {
-                location.reload();
-            }, 800);
-        })
-        .fail(function(xhr) {
-            showToast('❌ ' + (xhr.responseJSON.message || 'Gagal menghapus'));
-        });
-    });
-</script>
 <script>
     function toggleLaporanAccordion(id, el) {
         var target = $('#laporan-' + id);

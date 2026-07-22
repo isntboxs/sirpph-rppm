@@ -44,7 +44,7 @@
                                         <span>👤</span>
                                         <span style="font-weight: 600; font-size: 13px;">{{ $tema->user->name ?? 'Admin' }}</span>
                                     </div>
-                                    <div style="font-size: 11px; color: var(--txt2);">{{ $tema->created_at->format('d M Y, H:i') }}</div>
+                                    <div style="font-size: 11px; color: var(--txt2);">{{ $tema->created_at->translatedFormat('d F Y, H:i') }}</div>
                                 </div>
                             </td>
                             <td style="padding: 15px; text-align: center;">
@@ -61,7 +61,7 @@
                             </td>
                         </tr>
                         <!-- SUB TEMA ROW (HIDDEN BY DEFAULT) -->
-                        <tr id="subtema-tr-{{ $tema->id }}" style="display:none; background: var(--g0);">
+                        <tr id="subtema-tr-{{ $tema->id }}" class="subtema-row-hidden" style="background: var(--g0);">
                             <td colspan="4" style="padding: 0;">
                                 <div id="subtema-div-{{ $tema->id }}" style="display:none;">
                                     <table style="width: 100%; border-collapse: collapse; margin:0;">
@@ -121,6 +121,100 @@
         @endif
     </div>
 
+    <div class="card mb16" style="border-radius: 0;">
+        <div class="ch" style="border-bottom: 2px solid var(--g2); padding: 15px 20px;">
+            <div class="ct" style="font-weight: 700; font-size: 14px;">Riwayat Validasi Tema & Subtema (Disetujui)</div>
+        </div>
+        
+        <div class="tw">
+            <table style="border-collapse: collapse; width: 100%;">
+                <thead style="background: var(--white); border-bottom: 1px solid var(--g2);">
+                    <tr>
+                        <th style="padding: 15px; text-align: left; font-size:11px; text-transform:uppercase; color:var(--txt2); width: 5%;"></th>
+                        <th style="padding: 15px; text-align: left; font-size:11px; text-transform:uppercase; color:var(--txt2); width: 45%;">Tema Utama</th>
+                        <th style="padding: 15px; text-align: center; font-size:11px; text-transform:uppercase; color:var(--txt2); width: 20%;">Submitter</th>
+                        <th style="padding: 15px; text-align: center; font-size:11px; text-transform:uppercase; color:var(--txt2); width: 30%;">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($temaHistory as $tema)
+                        <tr id="tema-history-row-{{ $tema->id }}" style="border-bottom: 1px solid var(--g1); cursor:pointer;" onclick="toggleSubTema('history_{{ $tema->id }}', this)">
+                            <td style="padding: 20px 15px; text-align: center;">
+                                <span class="arrow-icon" style="display:inline-block; transition:0.3s;">▶</span>
+                            </td>
+                            <td style="padding: 20px 15px;">
+                                <div style="font-size: 16px; font-weight: 700; color: var(--txt);">{{ $tema->name }}</div>
+                                <div style="margin-top:5px; display:flex; gap:5px; flex-wrap:wrap;">
+                                    @foreach($tema->subTemas as $st)
+                                        @if($st->status === 'disetujui')
+                                            <span style="font-size:10px; padding:2px 6px; border-radius:4px; background:var(--g1); border:1px solid var(--g2);">{{ $st->name }}</span>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            </td>
+                            <td style="padding: 15px; text-align: center;">
+                                <div style="display:flex; flex-direction:column; align-items:center; gap:5px;">
+                                    <div style="display:flex; align-items:center; gap:5px;">
+                                        <span>👤</span>
+                                        <span style="font-weight: 600; font-size: 13px;">{{ $tema->user->name ?? 'Admin' }}</span>
+                                    </div>
+                                    <div style="font-size: 11px; color: var(--txt2);">{{ $tema->created_at->translatedFormat('d F Y, H:i') }}</div>
+                                </div>
+                            </td>
+                            <td style="padding: 15px; text-align: center;">
+                                @if($tema->status === 'disetujui')
+                                    <span style="color:var(--txt2); font-weight:600; font-size:12px;">Tervalidasi</span>
+                                @else
+                                    <span style="color:var(--txt2); font-weight:600; font-size:12px; font-style:italic;">Draft (Ada Subtema Tervalidasi)</span>
+                                @endif
+                            </td>
+                        </tr>
+                        <tr id="subtema-tr-history_{{ $tema->id }}" class="subtema-row-hidden" style="background: var(--g0);">
+                            <td colspan="4" style="padding: 0;">
+                                <div id="subtema-div-history_{{ $tema->id }}" style="display:none;">
+                                    <table style="width: 100%; border-collapse: collapse; margin:0;">
+                                        <tbody>
+                                        @php
+                                            $approvedSubTemas = $tema->subTemas->where('status', 'disetujui');
+                                        @endphp
+                                        @forelse($approvedSubTemas as $subTema)
+                                        <tr style="border-bottom: 1px dashed var(--g2);">
+                                            <td style="padding: 10px 15px 10px 50px; width:50%;">
+                                                <div style="font-weight:600; font-size:13px; color:var(--txt);">↳ {{ $subTema->name }}</div>
+                                            </td>
+                                            <td style="padding: 10px 15px; text-align:center; width:20%;">
+                                                <div style="font-size:11px; color:var(--txt2);">👤 {{ $subTema->user->name ?? 'Admin' }}</div>
+                                            </td>
+                                            <td style="padding: 10px 15px; text-align:center; width:30%;">
+                                                <span style="color:var(--txt2); font-weight:600; font-size:12px;">Tervalidasi</span>
+                                            </td>
+                                        </tr>
+                                        @empty
+                                        <tr>
+                                            <td colspan="3" style="padding: 15px 50px; font-size:12px; color:var(--txt3);">Tidak ada sub-tema yang tervalidasi.</td>
+                                        </tr>
+                                        @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" style="text-align: center; padding: 30px;">Belum ada Riwayat Validasi.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+        
+        @if ($temaHistory->hasPages())
+            <div style="padding: 15px; border-top: 1px solid var(--g2); text-align: center;">
+                {{ $temaHistory->links() }}
+            </div>
+        @endif
+    </div>
+
     {{-- Modal Kembalikan Tema/SubTema --}}
     <div class="mo" id="mKembalikanData">
         <div class="md msm">
@@ -149,6 +243,9 @@
     .rotate {
         transform: rotate(90deg);
     }
+    .subtema-row-hidden {
+        display: none !important;
+    }
 </style>
 <script>
     $(function() {
@@ -157,13 +254,13 @@
             var $subdiv = $('#subtema-div-' + id);
             var $icon = $(rowElement).find('.arrow-icon');
             
-            if ($subtr.is(':hidden')) {
-                $subtr.show();
+            if ($subtr.hasClass('subtema-row-hidden')) {
+                $subtr.removeClass('subtema-row-hidden');
                 $subdiv.slideDown(200);
                 $icon.css('transform', 'rotate(90deg)');
             } else {
                 $subdiv.slideUp(200, function() {
-                    $subtr.hide();
+                    $subtr.addClass('subtema-row-hidden');
                 });
                 $icon.css('transform', 'rotate(0deg)');
             }

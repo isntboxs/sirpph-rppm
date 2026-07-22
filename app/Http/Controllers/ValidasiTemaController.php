@@ -18,11 +18,29 @@ class ValidasiTemaController extends Controller
             $q->orderBy('created_at', 'asc');
         }])
             ->where('tahun_ajaran_id', $taAktif?->id)
-            ->whereIn('status', ['pending', 'dikembalikan', 'disetujui'])
+            ->where(function($query) {
+                $query->whereIn('status', ['pending', 'dikembalikan'])
+                      ->orWhereHas('subTemas', function($q) {
+                          $q->whereIn('status', ['pending', 'dikembalikan']);
+                      });
+            })
             ->latest()
-            ->paginate(10);
+            ->paginate(10, ['*'], 'pending_page');
 
-        return view('pages.validasi_tema.index', compact('temaPending', 'taAktif'));
+        $temaHistory = Tema::with(['user', 'subTemas' => function($q) {
+            $q->orderBy('created_at', 'asc');
+        }])
+            ->where('tahun_ajaran_id', $taAktif?->id)
+            ->where(function($query) {
+                $query->where('status', 'disetujui')
+                      ->orWhereHas('subTemas', function($q) {
+                          $q->where('status', 'disetujui');
+                      });
+            })
+            ->latest()
+            ->paginate(10, ['*'], 'history_page');
+
+        return view('pages.validasi_tema.index', compact('temaPending', 'temaHistory', 'taAktif'));
     }
 
     public function setujuiTema($id)

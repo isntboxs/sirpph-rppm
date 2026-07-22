@@ -23,7 +23,7 @@
             <div class="sico bl" style="font-size:24px; font-weight:bold;">R</div>
             <div>
                 <div class="sv">12</div>
-                <div class="sl">Total RPPM</div>
+                <div class="sl">Total RPP</div>
             </div>
         </div>
         <div class="sc">

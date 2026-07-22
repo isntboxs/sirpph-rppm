@@ -85,12 +85,12 @@
     </div>
 </div>
 
-{{-- Modal: Cetak RPPM --}}
+{{-- Modal: Cetak RPP --}}
 <div class="mo" id="mCRP">
     <div class="md mxl">
         <div class="mh">
             <div>
-                <div class="mt2">🖨️ Preview Cetak RPPM</div>
+                <div class="mt2">🖨️ Preview Cetak RPP</div>
             </div>
             <button class="mc">✕</button>
         </div>
@@ -100,7 +100,7 @@
                     <div style="font-size:14px;font-weight:bold;text-transform:uppercase">PAUDQu AL-AULIA</div>
                     <div style="font-size:11px">NPSN: 69990123 | Jl. Al-Quran No.12, Serang, Banten</div>
                     <div style="font-size:16px;font-weight:bold;margin-top:7px;text-transform:uppercase">RENCANA
-                        PELAKSANAAN PEMBELAJARAN MINGGUAN (RPPM)</div>
+                        PELAKSANAAN PEMBELAJARAN MINGGUAN (RPP)</div>
                     <div>Tahun Ajaran 2024/2025 — Semester 1</div>
                 </div>
                 <table class="prt" style="margin-bottom:14px">
