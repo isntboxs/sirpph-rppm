@@ -208,11 +208,6 @@ class RppmController extends Controller
             });
             return redirect()->route('rppm')->with('success', 'RPP berhasil diperbarui dan diajukan ke Kepala Sekolah!');
         }
-        
-        // Kalau admin mengedit RPP yang sudah disetujui (bukan mengubah ke draft), kembalikan status ke pending
-        if (Auth::user()->role === 'admin' && $rppm->status === 'disetujui' && $request->input('action') !== 'draft') {
-            $rppm->update(['status' => 'pending']);
-        }
 
         return redirect()->route('rppm')->with('success', 'RPP berhasil diperbarui!');
     }

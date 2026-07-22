@@ -211,17 +211,20 @@ class KelolaPenggunaController extends Controller
     public function approveReset($id)
     {
         try {
-            $user = User::findOrFail($id);
-            if (!$user->reset_password_hash) {
-                return response()->json(['message' => 'Tidak ada pengajuan reset password'], 400);
-            }
+            return \Illuminate\Support\Facades\DB::transaction(function () use ($id) {
+                $user = User::where('id', $id)->lockForUpdate()->firstOrFail();
+                
+                if (!$user->reset_password_hash) {
+                    return response()->json(['message' => 'Tidak ada pengajuan reset password'], 400);
+                }
 
-            $user->password = $user->reset_password_hash;
-            $user->reset_code = null;
-            $user->reset_password_hash = null;
-            $user->save();
+                $user->password = $user->reset_password_hash;
+                $user->reset_code = null;
+                $user->reset_password_hash = null;
+                $user->save();
 
-            return response()->json(['message' => 'Reset password disetujui']);
+                return response()->json(['message' => 'Reset password disetujui']);
+            });
         } catch (\Exception $e) {
             return response()->json(['message' => 'Gagal menyetujui reset: ' . $e->getMessage()], 500);
         }
@@ -230,17 +233,19 @@ class KelolaPenggunaController extends Controller
     public function rejectReset($id)
     {
         try {
-            $user = User::findOrFail($id);
-            
-            if (!$user->reset_password_hash) {
-                return response()->json(['message' => 'Tidak ada pengajuan reset password'], 400);
-            }
-            
-            $user->reset_code = null;
-            $user->reset_password_hash = null;
-            $user->save();
+            return \Illuminate\Support\Facades\DB::transaction(function () use ($id) {
+                $user = User::where('id', $id)->lockForUpdate()->firstOrFail();
+                
+                if (!$user->reset_password_hash) {
+                    return response()->json(['message' => 'Tidak ada pengajuan reset password'], 400);
+                }
+                
+                $user->reset_code = null;
+                $user->reset_password_hash = null;
+                $user->save();
 
-            return response()->json(['message' => 'Reset password ditolak']);
+                return response()->json(['message' => 'Reset password ditolak']);
+            });
         } catch (\Exception $e) {
             return response()->json(['message' => 'Gagal menolak reset: ' . $e->getMessage()], 500);
         }

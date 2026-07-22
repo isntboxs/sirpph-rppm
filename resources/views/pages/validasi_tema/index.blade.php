@@ -162,7 +162,11 @@
                                 </div>
                             </td>
                             <td style="padding: 15px; text-align: center;">
-                                <span style="color:var(--txt2); font-weight:600; font-size:12px;">Tervalidasi</span>
+                                @if($tema->status === 'disetujui')
+                                    <span style="color:var(--txt2); font-weight:600; font-size:12px;">Tervalidasi</span>
+                                @else
+                                    <span style="color:var(--txt2); font-weight:600; font-size:12px; font-style:italic;">Draft (Ada Subtema Tervalidasi)</span>
+                                @endif
                             </td>
                         </tr>
                         <tr id="subtema-tr-history_{{ $tema->id }}" class="subtema-row-hidden" style="background: var(--g0);">
@@ -170,8 +174,10 @@
                                 <div id="subtema-div-history_{{ $tema->id }}" style="display:none;">
                                     <table style="width: 100%; border-collapse: collapse; margin:0;">
                                         <tbody>
-                                        @foreach($tema->subTemas as $subTema)
-                                        @if($subTema->status === 'disetujui')
+                                        @php
+                                            $approvedSubTemas = $tema->subTemas->where('status', 'disetujui');
+                                        @endphp
+                                        @forelse($approvedSubTemas as $subTema)
                                         <tr style="border-bottom: 1px dashed var(--g2);">
                                             <td style="padding: 10px 15px 10px 50px; width:50%;">
                                                 <div style="font-weight:600; font-size:13px; color:var(--txt);">↳ {{ $subTema->name }}</div>
@@ -183,13 +189,11 @@
                                                 <span style="color:var(--txt2); font-weight:600; font-size:12px;">Tervalidasi</span>
                                             </td>
                                         </tr>
-                                        @endif
-                                        @endforeach
-                                        @if($tema->subTemas->isEmpty())
+                                        @empty
                                         <tr>
-                                            <td colspan="3" style="padding: 15px 50px; font-size:12px; color:var(--txt3);">Tidak ada sub-tema.</td>
+                                            <td colspan="3" style="padding: 15px 50px; font-size:12px; color:var(--txt3);">Tidak ada sub-tema yang tervalidasi.</td>
                                         </tr>
-                                        @endif
+                                        @endforelse
                                         </tbody>
                                     </table>
                                 </div>
