@@ -37,15 +37,15 @@
                     </div>
                     <div class="g3 mb16">
                         <div class="ib">
-                            <div class="ik">Total RPPM</div>
+                            <div class="ik">Total RPP</div>
                             <div class="iv">{{ $data['rppm_total'] }}</div>
                         </div>
                         <div class="ib">
-                            <div class="ik">RPPM Disetujui</div>
+                            <div class="ik">RPP Disetujui</div>
                             <div class="iv" style="color:var(--g6)">{{ $data['rppm_disetujui'] }}</div>
                         </div>
                         <div class="ib">
-                            <div class="ik">RPPM Pending</div>
+                            <div class="ik">RPP Pending</div>
                             <div class="iv" style="color:var(--acc2)">{{ $data['rppm_pending'] }}</div>
                         </div>
                         <div class="ib">

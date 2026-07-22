@@ -77,7 +77,7 @@ class ValidasiRppmController extends Controller
         if ($rppm->status !== 'pending') {
             return response()->json([
                 'status'  => false,
-                'message' => 'RPPM sudah diproses sebelumnya.',
+                'message' => 'RPP sudah diproses sebelumnya.',
             ], 422);
         }
 
@@ -90,7 +90,7 @@ class ValidasiRppmController extends Controller
 
         return response()->json([
             'status'  => true,
-            'message' => '✅ RPPM berhasil disetujui. Guru dapat membuat RPPH.',
+            'message' => '✅ RPP berhasil disetujui. Guru dapat membuat RPPH.',
         ]);
     }
 
@@ -115,7 +115,7 @@ class ValidasiRppmController extends Controller
         if ($rppm->status !== 'pending') {
             return response()->json([
                 'status'  => false,
-                'message' => 'RPPM sudah diproses sebelumnya.',
+                'message' => 'RPP sudah diproses sebelumnya.',
             ], 422);
         }
 
@@ -128,7 +128,7 @@ class ValidasiRppmController extends Controller
 
         return response()->json([
             'status'  => true,
-            'message' => '↩️ RPPM dikembalikan ke guru.',
+            'message' => '↩️ RPP dikembalikan ke guru.',
         ]);
     }
 }

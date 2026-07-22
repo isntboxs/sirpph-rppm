@@ -216,7 +216,7 @@ tr:last-child td{border-bottom:none}tr:hover td{background:#fafcfb}
 .pb.gr{background:var(--g5)}.pb.or{background:var(--acc)}.pb.bl{background:var(--blue)}
 .pb.pu{background:var(--purple)}.pb.pk{background:var(--pink)}.pb.ye{background:#eab308}
 
-/* RPPM CARD */
+/* RPP CARD */
 .rc2{border:2px solid var(--g1);border-radius:var(--r);padding:16px;margin-bottom:9px;
   transition:.18s;background:var(--white)}
 .rc2:hover{border-color:var(--g3);box-shadow:var(--sh)}
@@ -354,11 +354,11 @@ tr:last-child td{border-bottom:none}tr:hover td{background:#fafcfb}
 <div id="lp">
   <div class="ll">
     <h1>Si<span>RPPH</span></h1>
-    <p>Sistem Informasi Penyusunan RPPM & RPPH<br>PAUDQu AL-AULIA — Kota Serang</p>
+    <p>Sistem Informasi Penyusunan RPP & RPPH<br>PAUDQu AL-AULIA — Kota Serang</p>
     <div class="role-chips">
       <div class="rc"><div class="rc-ico">⚙️</div><div><div class="rc-nm">Admin/Operator</div><div class="rc-ds">Kelola data master</div></div></div>
       <div class="rc"><div class="rc-ico">👑</div><div><div class="rc-nm">Kepala Sekolah</div><div class="rc-ds">Validasi & PROSEM</div></div></div>
-      <div class="rc"><div class="rc-ico">🧑‍🏫</div><div><div class="rc-nm">Guru</div><div class="rc-ds">Buat RPPM & RPPH</div></div></div>
+      <div class="rc"><div class="rc-ico">🧑‍🏫</div><div><div class="rc-nm">Guru</div><div class="rc-ds">Buat RPP & RPPH</div></div></div>
       <div class="rc"><div class="rc-ico">👨‍👩‍👧</div><div><div class="rc-nm">Orang Tua</div><div class="rc-ds">Pantau anak</div></div></div>
     </div>
   </div>
@@ -422,18 +422,18 @@ tr:last-child td{border-bottom:none}tr:hover td{background:#fafcfb}
         <a class="ni" href="#prosem"><span class="nic">📊</span> PROSEM</a>
         <a class="ni" href="#tema"><span class="nic">📚</span> Kelola Tema</a>
         <a class="ni" href="#master"><span class="nic">🔧</span> Master Bentuk & Alat</a>
-        <a class="ni" href="#vrppm"><span class="nic">✅</span> Validasi RPPM <span class="nbg">3</span></a>
+        <a class="ni" href="#vrppm"><span class="nic">✅</span> Validasi RPP <span class="nbg">3</span></a>
         <a class="ni" href="#vrpph"><span class="nic">📄</span> Validasi RPPH <span class="nbg">2</span></a>
         <a class="ni" href="#vkeg"><span class="nic">🗂️</span> Validasi Kegiatan <span class="nbg">1</span></a>
         <a class="ni" href="#monitoring"><span class="nic">📈</span> Monitoring Guru</a>
         <div class="sns">Guru</div>
         <a class="ni" href="#keg"><span class="nic">🗂️</span> Kumpulan Kegiatan</a>
-        <a class="ni" href="#rppm"><span class="nic">📋</span> Buat & Kelola RPPM</a>
+        <a class="ni" href="#rppm"><span class="nic">📋</span> Buat & Kelola RPP</a>
         <a class="ni" href="#rpph"><span class="nic">📅</span> Buat & Kelola RPPH</a>
         <a class="ni" href="#porto"><span class="nic">📸</span> Portofolio Siswa</a>
         <a class="ni" href="#analisis"><span class="nic">📊</span> Analisis Aspek</a>
         <div class="sns">Orang Tua</div>
-        <a class="ni" href="#ortu-rppm"><span class="nic">📝</span> Lihat RPPM</a>
+        <a class="ni" href="#ortu-rppm"><span class="nic">📝</span> Lihat RPP</a>
         <a class="ni" href="#ortu-rpph"><span class="nic">📄</span> Lihat RPPH</a>
         <a class="ni" href="#ortu-porto"><span class="nic">📸</span> Portofolio Anak</a>
       </nav>
@@ -452,9 +452,9 @@ tr:last-child td{border-bottom:none}tr:hover td{background:#fafcfb}
             <div class="notif-dropdown show" style="display:none">
               <div class="nd-head"><span>Notifikasi</span><button class="btn bo bxs">Tandai semua dibaca</button></div>
               <div>
-                <div class="nd-item unread"><div class="nd-title">📝 RPPM Baru Menunggu</div><div class="nd-msg">Guru Kelas A mengajukan RPPM "Aku, Makhluq Allah"</div><div class="nd-time">🕐 5 menit lalu</div></div>
+                <div class="nd-item unread"><div class="nd-title">📝 RPP Baru Menunggu</div><div class="nd-msg">Guru Kelas A mengajukan RPP "Aku, Makhluq Allah"</div><div class="nd-time">🕐 5 menit lalu</div></div>
                 <div class="nd-item unread"><div class="nd-title">📄 RPPH Menunggu Validasi</div><div class="nd-msg">Guru Kelas B mengajukan RPPH hari Senin</div><div class="nd-time">🕐 1 jam lalu</div></div>
-                <div class="nd-item"><div class="nd-title">✅ RPPM Disetujui</div><div class="nd-msg">RPPM "Tanah Airku" telah disetujui</div><div class="nd-time">🕐 Kemarin</div></div>
+                <div class="nd-item"><div class="nd-title">✅ RPP Disetujui</div><div class="nd-msg">RPP "Tanah Airku" telah disetujui</div><div class="nd-time">🕐 Kemarin</div></div>
               </div>
             </div>
           </div>
@@ -468,7 +468,7 @@ tr:last-child td{border-bottom:none}tr:hover td{background:#fafcfb}
         <div class="sg">
           <div class="sc"><div class="sico gr">🧑‍🏫</div><div><div class="sv">4</div><div class="sl">Guru Aktif</div></div></div>
           <div class="sc"><div class="sico or">👶</div><div><div class="sv">24</div><div class="sl">Total Siswa</div></div></div>
-          <div class="sc"><div class="sico bl">📝</div><div><div class="sv">12</div><div class="sl">Total RPPM</div></div></div>
+          <div class="sc"><div class="sico bl">📝</div><div><div class="sv">12</div><div class="sl">Total RPP</div></div></div>
           <div class="sc"><div class="sico pu">📸</div><div><div class="sv">48</div><div class="sl">Entri Portofolio</div></div></div>
         </div>
         <div class="g2" style="gap:14px">
@@ -676,10 +676,10 @@ tr:last-child td{border-bottom:none}tr:hover td{background:#fafcfb}
         </div>
       </div>
 
-      <!-- ===== HALAMAN: VALIDASI RPPM ===== -->
+      <!-- ===== HALAMAN: VALIDASI RPP ===== -->
       <div class="ca pg" id="vrppm">
         <div class="card">
-          <div class="ch"><div class="ct">✅ Validasi RPPM</div></div>
+          <div class="ch"><div class="ct">✅ Validasi RPP</div></div>
           <div class="tabs">
             <button class="tbn on">⏳ Menunggu (3)</button>
             <button class="tbn">✅ Disetujui (8)</button>
@@ -781,11 +781,11 @@ tr:last-child td{border-bottom:none}tr:hover td{background:#fafcfb}
               <div><div class="fw7">Ustadzah Siti Rahmah</div><div class="fs11 tc2">Kelas A • 0812-1111-2222</div></div>
             </div>
             <div class="g3 mb16">
-              <div class="ib"><div class="ik">Total RPPM</div><div class="iv">6</div></div>
-              <div class="ib"><div class="ik">RPPM Disetujui</div><div class="iv" style="color:var(--g6)">4</div></div>
+              <div class="ib"><div class="ik">Total RPP</div><div class="iv">6</div></div>
+              <div class="ib"><div class="ik">RPP Disetujui</div><div class="iv" style="color:var(--g6)">4</div></div>
               <div class="ib"><div class="ik">Total RPPH</div><div class="iv">18</div></div>
               <div class="ib"><div class="ik">Portofolio</div><div class="iv">24 entri</div></div>
-              <div class="ib"><div class="ik">RPPM Pending</div><div class="iv" style="color:var(--acc2)">2</div></div>
+              <div class="ib"><div class="ik">RPP Pending</div><div class="iv" style="color:var(--acc2)">2</div></div>
               <div class="ib"><div class="ik">Progress</div><div class="iv">67%</div></div>
             </div>
             <div class="pw"><div class="pb gr" style="width:67%"></div></div>
@@ -796,11 +796,11 @@ tr:last-child td{border-bottom:none}tr:hover td{background:#fafcfb}
               <div><div class="fw7">Ustadzah Dewi Nursanti</div><div class="fs11 tc2">Kelas B • 0813-3333-4444</div></div>
             </div>
             <div class="g3 mb16">
-              <div class="ib"><div class="ik">Total RPPM</div><div class="iv">5</div></div>
-              <div class="ib"><div class="ik">RPPM Disetujui</div><div class="iv" style="color:var(--g6)">4</div></div>
+              <div class="ib"><div class="ik">Total RPP</div><div class="iv">5</div></div>
+              <div class="ib"><div class="ik">RPP Disetujui</div><div class="iv" style="color:var(--g6)">4</div></div>
               <div class="ib"><div class="ik">Total RPPH</div><div class="iv">15</div></div>
               <div class="ib"><div class="ik">Portofolio</div><div class="iv">20 entri</div></div>
-              <div class="ib"><div class="ik">RPPM Pending</div><div class="iv" style="color:var(--acc2)">1</div></div>
+              <div class="ib"><div class="ik">RPP Pending</div><div class="iv" style="color:var(--acc2)">1</div></div>
               <div class="ib"><div class="ik">Progress</div><div class="iv">80%</div></div>
             </div>
             <div class="pw"><div class="pb gr" style="width:80%"></div></div>
@@ -859,13 +859,13 @@ tr:last-child td{border-bottom:none}tr:hover td{background:#fafcfb}
         </div>
       </div>
 
-      <!-- ===== HALAMAN: BUAT & KELOLA RPPM ===== -->
+      <!-- ===== HALAMAN: BUAT & KELOLA RPP ===== -->
       <div class="ca pg" id="rppm">
         <div class="tabs">
-          <button class="tbn on">📋 Daftar RPPM (6)</button>
-          <button class="tbn">+ Buat RPPM Baru</button>
+          <button class="tbn on">📋 Daftar RPP (6)</button>
+          <button class="tbn">+ Buat RPP Baru</button>
         </div>
-        <!-- Daftar RPPM -->
+        <!-- Daftar RPP -->
         <div>
           <div class="rc2">
             <div class="rh"><div><div class="rw">Mgg ke-1 — Sem 1 — 2024/2025</div><div class="rn">Aku, Makhluq Allah</div><div class="rs">Allah Tuhanku</div></div><span class="bdg bok">✅ Disetujui</span></div>
@@ -881,10 +881,10 @@ tr:last-child td{border-bottom:none}tr:hover td{background:#fafcfb}
             <div class="ract"><button class="btn bo bsm">👁️ Detail</button><button class="btn ba bsm">📤 Ajukan ke Kepala</button><button class="btn bo bsm">🖨️</button></div>
           </div>
         </div>
-        <!-- Form Buat RPPM (tersembunyi, tampil saat tab diklik) -->
+        <!-- Form Buat RPP (tersembunyi, tampil saat tab diklik) -->
         <div style="display:none">
           <div class="card">
-            <div class="ch"><div class="ct">📝 Form RPPM Baru</div></div>
+            <div class="ch"><div class="ct">📝 Form RPP Baru</div></div>
             <div class="fs11 tc2 mb16" style="text-transform:uppercase;letter-spacing:1px;font-weight:700">A. Identitas</div>
             <div class="fr c3">
               <div class="ff"><label>Tema</label><select><option>-- Pilih --</option><option>Aku, Makhluq Allah</option><option>Tanah Airku</option></select></div>
@@ -937,9 +937,9 @@ tr:last-child td{border-bottom:none}tr:hover td{background:#fafcfb}
       <!-- ===== HALAMAN: BUAT & KELOLA RPPH ===== -->
       <div class="ca pg" id="rpph">
         <div class="card mb16">
-          <div class="ch"><div class="ct">📄 RPPH dari RPPM Disetujui</div></div>
+          <div class="ch"><div class="ct">📄 RPPH dari RPP Disetujui</div></div>
           <div class="rc2">
-            <div class="rh"><div><div class="rw">Mgg ke-1 • 2024/2025</div><div class="rn">Aku, Makhluq Allah</div><div class="rs">Allah Tuhanku</div></div><span class="bdg bok">✅ RPPM Disetujui</span></div>
+            <div class="rh"><div><div class="rw">Mgg ke-1 • 2024/2025</div><div class="rn">Aku, Makhluq Allah</div><div class="rs">Allah Tuhanku</div></div><span class="bdg bok">✅ RPP Disetujui</span></div>
             <div class="fl fw g8 mt8 mb8">
               <div style="padding:6px 12px;background:var(--g1);border:2px solid var(--g4);border-radius:7px;font-size:11.5px;font-weight:700">Senin ✅</div>
               <div style="padding:6px 12px;background:#eff6ff;border:2px solid #bfdbfe;border-radius:7px;font-size:11.5px;font-weight:700">Selasa 📝</div>
@@ -947,7 +947,7 @@ tr:last-child td{border-bottom:none}tr:hover td{background:#fafcfb}
               <div style="padding:6px 12px;background:var(--g1);border:2px solid var(--g4);border-radius:7px;font-size:11.5px;font-weight:700">Kamis ✅</div>
               <div style="padding:6px 12px;background:var(--g0);border:2px solid var(--g1);border-radius:7px;font-size:11.5px;font-weight:700">Jumat ⚪</div>
             </div>
-            <div class="ract"><button class="btn bp bsm">⚡ Generate/Refresh RPPH</button><button class="btn bo bsm">🖨️ RPPM</button></div>
+            <div class="ract"><button class="btn bp bsm">⚡ Generate/Refresh RPPH</button><button class="btn bo bsm">🖨️ RPP</button></div>
             <div class="ds mt8">
               <div class="dsh"><span class="dn">📅 Senin</span><div class="fl g8"><button class="btn bp bxs">✏️ Edit</button><button class="btn bo bxs">🖨️</button></div></div>
               <div class="dki"><strong>Kolase Tulisan "Terima Kasih Ya Allah"</strong> <span class="fs11 tc2">(Kolase)</span></div>
@@ -1008,7 +1008,7 @@ tr:last-child td{border-bottom:none}tr:hover td{background:#fafcfb}
       <!-- ===== HALAMAN: ANALISIS ASPEK ===== -->
       <div class="ca pg" id="analisis">
         <div class="card mb16">
-          <div class="ch"><div><div class="ct">📊 Distribusi Aspek — Kelas A</div><div class="cs">Dari 4 RPPM disetujui — 32 slot kegiatan</div></div></div>
+          <div class="ch"><div><div class="ct">📊 Distribusi Aspek — Kelas A</div><div class="cs">Dari 4 RPP disetujui — 32 slot kegiatan</div></div></div>
           <div class="graf-bar"><div class="graf-label"><span class="ap a1">🕌 Nilai Agama</span></div><div class="graf-wrap"><div class="graf-fill pb gr" style="width:28%"><span class="graf-val">9</span></div></div><div class="graf-pct">28%</div></div>
           <div class="graf-bar"><div class="graf-label"><span class="ap a2">🏃 Fisik Motorik</span></div><div class="graf-wrap"><div class="graf-fill pb bl" style="width:22%"><span class="graf-val">7</span></div></div><div class="graf-pct">22%</div></div>
           <div class="graf-bar"><div class="graf-label"><span class="ap a3">🧠 Kognitif</span></div><div class="graf-wrap"><div class="graf-fill pb ye" style="width:19%"><span class="graf-val">6</span></div></div><div class="graf-pct">19%</div></div>
@@ -1040,7 +1040,7 @@ tr:last-child td{border-bottom:none}tr:hover td{background:#fafcfb}
           </div>
           <div class="g3">
             <div class="ib"><div class="ik">Portofolio</div><div class="iv">8 Entri</div></div>
-            <div class="ib"><div class="ik">RPPM Aktif</div><div class="iv">4</div></div>
+            <div class="ib"><div class="ik">RPP Aktif</div><div class="iv">4</div></div>
             <div class="ib"><div class="ik">Komentar Saya</div><div class="iv">3</div></div>
           </div>
           <div class="fl g8 mt16">
@@ -1050,10 +1050,10 @@ tr:last-child td{border-bottom:none}tr:hover td{background:#fafcfb}
         </div>
       </div>
 
-      <!-- ===== HALAMAN: ORANG TUA — LIHAT RPPM ===== -->
+      <!-- ===== HALAMAN: ORANG TUA — LIHAT RPP ===== -->
       <div class="ca pg" id="ortu-rppm">
         <div class="card">
-          <div class="ch"><div class="ct">📝 RPPM Kelas Anak</div><div class="cs">Hanya RPPM yang telah disetujui Kepala Sekolah</div></div>
+          <div class="ch"><div class="ct">📝 RPP Kelas Anak</div><div class="cs">Hanya RPP yang telah disetujui Kepala Sekolah</div></div>
           <div class="rc2">
             <div class="rh"><div><div class="rw">Mgg ke-1 • Kelas A • 2024/2025</div><div class="rn">Aku, Makhluq Allah</div><div class="rs">Allah Tuhanku</div></div><span class="bdg bok">✅ Disetujui</span></div>
             <div class="ig mt8">
@@ -1242,9 +1242,9 @@ tr:last-child td{border-bottom:none}tr:hover td{background:#fafcfb}
   <div class="mf"><button class="btn bo">Batal</button><button class="btn bd">↩️ Kembalikan</button></div>
 </div></div>
 
-<!-- Modal Detail RPPM -->
-<div class="mo" id="mDRPPM"><div class="md mxl">
-  <div class="mh"><div><div class="mt2">📋 Detail RPPM</div><div class="mst">Aku, Makhluq Allah — Allah Tuhanku | Ustadzah Siti Rahmah</div></div><button class="mc">✕</button></div>
+<!-- Modal Detail RPP -->
+<div class="mo" id="mDRPP"><div class="md mxl">
+  <div class="mh"><div><div class="mt2">📋 Detail RPP</div><div class="mst">Aku, Makhluq Allah — Allah Tuhanku | Ustadzah Siti Rahmah</div></div><button class="mc">✕</button></div>
   <div class="mb">
     <div class="ig mb16">
       <div class="ib"><div class="ik">Guru</div><div class="iv">Ustadzah Siti Rahmah</div></div>
@@ -1339,15 +1339,15 @@ tr:last-child td{border-bottom:none}tr:hover td{background:#fafcfb}
   <div class="mf"><button class="btn bo">Batal</button><button class="btn bp">💾 Simpan</button></div>
 </div></div>
 
-<!-- Modal Cetak RPPM -->
+<!-- Modal Cetak RPP -->
 <div class="mo" id="mCRP"><div class="md mxl">
-  <div class="mh"><div><div class="mt2">🖨️ Preview Cetak RPPM</div></div><button class="mc">✕</button></div>
+  <div class="mh"><div><div class="mt2">🖨️ Preview Cetak RPP</div></div><button class="mc">✕</button></div>
   <div class="mb">
     <div class="pra">
       <div style="text-align:center;border-bottom:3px double #000;padding-bottom:10px;margin-bottom:14px">
         <div style="font-size:14px;font-weight:bold;text-transform:uppercase">PAUDQu AL-AULIA</div>
         <div style="font-size:11px">NPSN: 69990123 | Jl. Al-Quran No.12, Serang, Banten</div>
-        <div style="font-size:16px;font-weight:bold;margin-top:7px;text-transform:uppercase">RENCANA PELAKSANAAN PEMBELAJARAN MINGGUAN (RPPM)</div>
+        <div style="font-size:16px;font-weight:bold;margin-top:7px;text-transform:uppercase">RENCANA PELAKSANAAN PEMBELAJARAN MINGGUAN (RPP)</div>
         <div>Tahun Ajaran 2024/2025 — Semester 1</div>
       </div>
       <table class="prt" style="margin-bottom:14px">
@@ -1408,11 +1408,11 @@ document.querySelectorAll('.sb a.ni').forEach(function(link) {
     var titles = {
       'beranda':'Beranda','pengguna':'Kelola Pengguna','siswa':'Data Siswa',
       'ta':'Tahun Ajaran','sekolah':'Data Sekolah','prosem':'Program Semester (PROSEM)',
-      'tema':'Kelola Tema','master':'Master Bentuk & Alat','vrppm':'Validasi RPPM',
+      'tema':'Kelola Tema','master':'Master Bentuk & Alat','vrppm':'Validasi RPP',
       'vrpph':'Validasi RPPH','vkeg':'Validasi Kumpulan Kegiatan','monitoring':'Monitoring Guru',
-      'keg':'Kumpulan Kegiatan','rppm':'Buat & Kelola RPPM','rpph':'Buat & Kelola RPPH',
+      'keg':'Kumpulan Kegiatan','rppm':'Buat & Kelola RPP','rpph':'Buat & Kelola RPPH',
       'porto':'Portofolio Siswa','analisis':'Analisis Aspek Perkembangan',
-      'ortu-rppm':'Lihat RPPM','ortu-rpph':'Lihat RPPH','ortu-porto':'Portofolio Anak'
+      'ortu-rppm':'Lihat RPP','ortu-rpph':'Lihat RPPH','ortu-porto':'Portofolio Anak'
     };
     var t = document.getElementById('pageTitle');
     if (t) t.textContent = titles[target] || target;

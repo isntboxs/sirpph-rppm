@@ -38,7 +38,7 @@
                             </td>
                             <td style="text-align: center;">{{ $rppm->guru->kelas->name ?? '-' }}</td>
                             <td style="text-align: center;">
-                                <div>{{ $rppm->updated_at->format('d M Y') }}</div>
+                                <div>{{ $rppm->updated_at->translatedFormat('d F Y') }}</div>
                                 <div style="font-size:11px; color:var(--txt3);">{{ $rppm->updated_at->format('H:i') }}</div>
                             </td>
                             <td style="text-align: center;">

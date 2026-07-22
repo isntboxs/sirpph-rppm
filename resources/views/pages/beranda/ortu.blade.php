@@ -51,7 +51,7 @@
                     <div class="iv">{{ $item['porto_count'] }} Entri</div>
                 </div>
                 <div class="ib">
-                    <div class="ik">RPPM Aktif</div>
+                    <div class="ik">RPP Aktif</div>
                     <div class="iv">{{ $item['rppm_aktif'] }}</div>
                 </div>
                 <div class="ib">

@@ -80,7 +80,7 @@
                                         <div><strong>{{ $laporan->rppm->subTema->tema->nama ?? $laporan->rppm->subTema->tema->name ?? '-' }}</strong></div>
                                         <div style="font-size:12px; color:var(--txt2);">{{ $laporan->rppm->subTema->nama ?? $laporan->rppm->subTema->name ?? '-' }}</div>
                                     </td>
-                                    <td>{{ \Carbon\Carbon::parse($laporan->tanggal)->format('d M Y') }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($laporan->tanggal)->translatedFormat('d F Y') }}</td>
                                     <td>
                                         <span class="bdg {{ $laporan->status_badge_class }} {{ $laporan->status === 'dikembalikan' ? 'blink-warning' : '' }}" {!! $laporan->status === 'dikembalikan' ? 'style="background: #fef3c7; color: #b45309;"' : '' !!}>
                                             {!! $laporan->status === 'dikembalikan' ? '⚠️ ' : '' !!}{{ $laporan->status_label }}

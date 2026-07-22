@@ -72,7 +72,7 @@ class LaporanRppController extends Controller
         $laporan = LaporanRpp::findOrFail($id);
         abort_if($laporan->guru_id !== Auth::id(), 403);
         abort_if($laporan->status === 'disetujui', 422, 'Laporan yang sudah disetujui tidak bisa diedit.');
-        abort_if($laporan->rppm->status !== 'disetujui', 422, 'RPPM induk belum disetujui.');
+        abort_if($laporan->rppm->status !== 'disetujui', 422, 'RPP induk belum disetujui.');
         $request->validate([
             'tanggal' => 'required|date',
             'keterangan_singkat' => 'required|string',

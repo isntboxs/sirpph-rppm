@@ -1,7 +1,7 @@
 @extends('layout.app')
 
 @section('page-title', 'Validasi Data')
-@section('page-subtitle', 'Persetujuan Tema, Sub Tema, dan RPPM')
+@section('page-subtitle', 'Persetujuan Tema, Sub Tema, dan RPP')
 
 @section('content')
 <div class="card" style="margin-bottom: 20px;">
@@ -94,7 +94,7 @@
 
 <div class="card">
     <div class="ch">
-        <div class="ct">Validasi RPPM Baru</div>
+        <div class="ct">Validasi RPP Baru</div>
     </div>
     <div class="cb" style="padding: 16px;">
         <table class="tb" style="width: 100%; text-align: left;">
@@ -129,7 +129,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" style="text-align: center; color: var(--txt3)">Tidak ada RPPM yang butuh validasi.</td>
+                        <td colspan="6" style="text-align: center; color: var(--txt3)">Tidak ada RPP yang butuh validasi.</td>
                     </tr>
                 @endforelse
             </tbody>

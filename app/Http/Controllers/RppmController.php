@@ -89,7 +89,7 @@ class RppmController extends Controller
         $gurus = User::guru()->active()->with('kelas')->get();
         $temas = Tema::with('subTemas')->get();
         
-        // Kalau tidak ada RPPM, buat instance baru agar tidak error di view
+        // Kalau tidak ada RPP, buat instance baru agar tidak error di view
         $rppm = new Rppm([
             'tahun_ajaran_id' => $taAktif?->id,
             'tanggal_dibuat' => now()->toDateString(),
@@ -209,7 +209,7 @@ class RppmController extends Controller
             return redirect()->route('rppm')->with('success', 'RPP berhasil diperbarui dan diajukan ke Kepala Sekolah!');
         }
         
-        // Kalau admin mengedit RPPM yang sudah disetujui (bukan mengubah ke draft), kembalikan status ke pending
+        // Kalau admin mengedit RPP yang sudah disetujui (bukan mengubah ke draft), kembalikan status ke pending
         if (Auth::user()->role === 'admin' && $rppm->status === 'disetujui' && $request->input('action') !== 'draft') {
             $rppm->update(['status' => 'pending']);
         }
@@ -239,7 +239,7 @@ class RppmController extends Controller
 
         return response()->json([
             'status'  => true,
-            'message' => '📤 RPPM berhasil diajukan ke Kepala Sekolah.',
+            'message' => '📤 RPP berhasil diajukan ke Kepala Sekolah.',
         ]);
     }
 
@@ -254,7 +254,7 @@ class RppmController extends Controller
         if ($rppm->status === 'disetujui') {
             return response()->json([
                 'status'  => false,
-                'message' => 'RPPM yang sudah disetujui tidak bisa dihapus.',
+                'message' => 'RPP yang sudah disetujui tidak bisa dihapus.',
             ], 422);
         }
 
@@ -262,7 +262,7 @@ class RppmController extends Controller
 
         return response()->json([
             'status'  => true,
-            'message' => '🗑️ RPPM berhasil dihapus. Kamu bisa membuat RPPM baru untuk minggu tersebut.',
+            'message' => '🗑️ RPP berhasil dihapus. Kamu bisa membuat RPP baru untuk minggu tersebut.',
         ]);
     }
 
@@ -278,8 +278,7 @@ class RppmController extends Controller
         );
 
         $pdf = Pdf::loadView('pages.rppm.pdf', compact('rppm'));
-        
-        $filename = 'RPP_Mingguan_' . ($rppm->guru?->name ?? 'Guru') . '_Minggu_' . ($rppm->subTema?->minggu_ke ?? '') . '.pdf';
+        $filename = 'RPP_' . ($rppm->guru?->name ?? 'Guru') . '_Minggu_' . ($rppm->subTema?->minggu_ke ?? '') . '.pdf';
         
         return $pdf->stream($filename);
     }

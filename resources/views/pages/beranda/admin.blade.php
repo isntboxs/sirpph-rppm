@@ -15,17 +15,24 @@
             </div>
         </div>
         <div class="sc">
+            <div class="sico or" style="font-size:24px; font-weight:bold;">T</div>
+            <div>
+                <div class="sv">{{ $stats['tema_disetujui'] }}</div>
+                <div class="sl">Tema Disetujui</div>
+            </div>
+        </div>
+        <div class="sc">
             <div class="sico or" style="font-size:24px; font-weight:bold;">S</div>
             <div>
-                <div class="sv">{{ $stats['total_siswa'] }}</div>
-                <div class="sl">Total Siswa</div>
+                <div class="sv">{{ $stats['subtema_disetujui'] }}</div>
+                <div class="sl">Subtema Disetujui</div>
             </div>
         </div>
         <div class="sc">
             <div class="sico bl" style="font-size:24px; font-weight:bold;">R</div>
             <div>
                 <div class="sv">{{ $stats['rppm_disetujui'] }}</div>
-                <div class="sl">RPPM Disetujui</div>
+                <div class="sl">RPP Disetujui</div>
             </div>
         </div>
     </div>
